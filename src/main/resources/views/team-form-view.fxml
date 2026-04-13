@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.esportify.controllers.TeamFormController"
+            fitToWidth="true"
+            styleClass="page-scroll">
+    <content>
+        <VBox spacing="24" styleClass="content-layer page">
+            <children>
+                <VBox spacing="16" styleClass="hero-card">
+                    <children>
+                        <Label fx:id="heroTitleLabel" text="Creer mon equipe" styleClass="hero-title"/>
+                        <Label text="Construis une page d'equipe qui garde le style du site reference." styleClass="muted-label"/>
+                    </children>
+                </VBox>
+                <HBox spacing="20" styleClass="workspace-row">
+                    <children>
+                        <VBox fx:id="formShell" spacing="18" styleClass="coord-card form-shell" HBox.hgrow="ALWAYS">
+                            <children>
+                                <GridPane hgap="16" vgap="14" styleClass="form-grid">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                                    </columnConstraints>
+                                    <children>
+                                        <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label text="Nom" styleClass="field-label"/>
+                                                <TextField fx:id="nomField" promptText="Nom" styleClass="field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label text="Classement" styleClass="field-label"/>
+                                                <TextField fx:id="classementField" promptText="Classement" styleClass="field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label text="Tag" styleClass="field-label"/>
+                                                <TextField fx:id="tagField" promptText="Tag" styleClass="field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                            <children>
+                                                <Label text="Region" styleClass="field-label"/>
+                                                <ComboBox fx:id="regionBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                            <children>
+                                                <Label text="Max members" styleClass="field-label"/>
+                                                <TextField fx:id="maxMembersField" promptText="Max members" styleClass="field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                            <children>
+                                                <Label text="Logo" styleClass="field-label"/>
+                                                <TextField fx:id="logoField" promptText="Logo (JPG, PNG, ...)" styleClass="field"/>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </GridPane>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button onAction="#onUploadLogo" text="Uploader logo" styleClass="classic-button"/>
+                                    </children>
+                                </HBox>
+                                <GridPane hgap="16" vgap="14">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                                    </columnConstraints>
+                                    <children>
+                                        <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label text="Discord" styleClass="field-label"/>
+                                                <TextField fx:id="discordField" promptText="Discord" styleClass="field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label text="Visibilite" styleClass="field-label"/>
+                                                <ComboBox fx:id="visibiliteBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label text="Statut" styleClass="field-label"/>
+                                                <ComboBox fx:id="statutBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo"/>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </GridPane>
+                                <VBox spacing="10">
+                                    <children>
+                                        <Label text="Description" styleClass="field-label"/>
+                                        <TextArea fx:id="descriptionArea" prefRowCount="4" promptText="Description de l'equipe" styleClass="text-area"/>
+                                    </children>
+                                </VBox>
+                                <Label fx:id="infoLabel" styleClass="muted-label login-info"/>
+                                <HBox alignment="CENTER_RIGHT" spacing="12" styleClass="form-actions">
+                                    <children>
+                                        <Button fx:id="cancelButton" onAction="#onCancel" text="Annuler" styleClass="classic-button"/>
+                                        <Button fx:id="saveButton" onAction="#onSave" text="Creer l'equipe" styleClass="classic-button"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <VBox prefWidth="320" spacing="18" styleClass="dashboard-side-column">
+                            <children>
+                                <VBox spacing="16" styleClass="side-panel-card">
+                                    <children>
+                                        <Label text="Direction artistique" styleClass="section-title"/>
+                                        <ImageView fitWidth="286" fitHeight="170" preserveRatio="false">
+                                            <image>
+                                                <Image url="@../images/banner.png"/>
+                                            </image>
+                                        </ImageView>
+                                        <VBox spacing="12" styleClass="quick-list-card">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="12">
+                                                    <children>
+                                                        <Label text="Guide" styleClass="chip-active"/>
+                                                        <Label text="Choisir un tag court" styleClass="muted-label"/>
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="12">
+                                                    <children>
+                                                        <Label text="Guide" styleClass="chip-active"/>
+                                                        <Label text="Ajouter une description claire" styleClass="muted-label"/>
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="12">
+                                                    <children>
+                                                        <Label text="Guide" styleClass="chip-active"/>
+                                                        <Label text="Renseigner Discord et visibilite" styleClass="muted-label"/>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="14" styleClass="spotlight-card">
+                                    <children>
+                                        <Label text="Equipe spotlight" styleClass="card-title"/>
+                                        <ImageView fx:id="spotlightImageView" fitWidth="286" fitHeight="120" preserveRatio="false"/>
+                                        <Label fx:id="spotlightTitleLabel" styleClass="card-title"/>
+                                        <Label fx:id="spotlightTagLabel" styleClass="chip-active"/>
+                                        <Label fx:id="spotlightDescriptionLabel" wrapText="true" styleClass="muted-label"/>
+                                        <Button text="Ouvrir le profil" styleClass="classic-button"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+        </VBox>
+    </content>
+</ScrollPane>

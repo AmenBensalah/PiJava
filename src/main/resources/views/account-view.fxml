@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.esportify.controllers.AccountController"
+            fitToWidth="true"
+            styleClass="page-scroll">
+    <content>
+        <VBox spacing="22" styleClass="content-layer page">
+            <children>
+                <VBox spacing="14" styleClass="hero-card">
+                    <children>
+                        <Label text="MON COMPTE" styleClass="hero-title"/>
+                        <Label text="Retrouve les informations de ton profil et les acces rapides de ton espace." styleClass="muted-label"/>
+                        <HBox spacing="12">
+                            <children>
+                                <Label text="Compte manager" styleClass="chip-active"/>
+                                <Label text="Role Manager" styleClass="chip-active"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+                <VBox spacing="16" styleClass="coord-card">
+                    <children>
+                        <Label text="Profil" styleClass="section-title"/>
+                        <VBox spacing="6" styleClass="recruitment-row">
+                            <children>
+                                <Label fx:id="usernameValueLabel" styleClass="hero-title"/>
+                                <Label text="Username" styleClass="card-title"/>
+                                <Label text="Session active" styleClass="muted-label"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="6" styleClass="recruitment-row">
+                            <children>
+                                <Label fx:id="roleValueLabel" styleClass="hero-title"/>
+                                <Label text="Role" styleClass="card-title"/>
+                                <Label text="Niveau d'acces" styleClass="muted-label"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="6" styleClass="recruitment-row">
+                            <children>
+                                <Label fx:id="statusValueLabel" styleClass="hero-title"/>
+                                <Label text="Statut" styleClass="card-title"/>
+                                <Label text="Base de donnees" styleClass="muted-label"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+                <HBox spacing="14">
+                    <children>
+                        <Button onAction="#onMyTeam" text="Mon equipe" styleClass="classic-button"/>
+                        <Button onAction="#onApplications" text="Candidatures" styleClass="classic-button"/>
+                        <Button onAction="#onLogout" text="Deconnexion" styleClass="classic-button"/>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+        </VBox>
+    </content>
+</ScrollPane>

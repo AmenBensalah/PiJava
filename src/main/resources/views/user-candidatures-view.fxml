@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.esportify.controllers.UserCandidaturesController"
+            fitToWidth="true"
+            styleClass="page-scroll">
+    <content>
+        <VBox spacing="22" styleClass="content-layer page">
+            <children>
+                <VBox spacing="14" styleClass="hero-card">
+                    <children>
+                        <Label text="MES CANDIDATURES" styleClass="hero-title"/>
+                        <Label text="Consulte, modifie ou supprime les demandes deja envoyees aux equipes." styleClass="muted-label"/>
+                        <Button fx:id="viewMyTeamButton" onAction="#onViewMyTeam" text="Voir mon equipe" styleClass="manager-action-button" visible="false" managed="false"/>
+                    </children>
+                </VBox>
+                <VBox fx:id="candidaturesContainer" spacing="14"/>
+                <Button onAction="#onBack" text="Retour aux equipes" styleClass="manager-outline-button"/>
+            </children>
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+        </VBox>
+    </content>
+</ScrollPane>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.esportify.controllers.UserHomeController"
+            styleClass="app-shell">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="18" styleClass="topbar">
+            <children>
+                <Label text="Interface User" styleClass="card-title"/>
+                <Label fx:id="welcomeLabel" styleClass="muted-label"/>
+                <Button onAction="#onLogout" text="Logout" styleClass="ghost-button"/>
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="page-scroll">
+            <content>
+                <VBox spacing="24" styleClass="content-layer page">
+                    <children>
+                        <VBox spacing="16" styleClass="hero-card">
+                            <children>
+                                <Label text="Explorer les equipes" styleClass="hero-title"/>
+                                <Label text="Consulte les equipes et les recrutements disponibles." styleClass="muted-label"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="12">
+                            <children>
+                                <Label text="Equipes" styleClass="section-title"/>
+                                <VBox fx:id="teamsContainer" spacing="12"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="12">
+                            <children>
+                                <Label text="Recrutements" styleClass="section-title"/>
+                                <VBox fx:id="recrutementsContainer" spacing="12"/>
+                            </children>
+                        </VBox>
+                    </children>
+                    <padding>
+                        <Insets top="24" right="24" bottom="24" left="24"/>
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.esportify.controllers.UserTeamsController"
+            fitToWidth="true"
+            styleClass="page-scroll">
+    <content>
+        <VBox spacing="22" styleClass="content-layer page">
+            <children>
+                <VBox spacing="14" styleClass="hero-card">
+                    <children>
+                        <Label text="EXPLORER UNE EQUIPE" styleClass="hero-title"/>
+                        <Label text="Explore les equipes, filtre les profils et postule directement sur les lineups disponibles." styleClass="muted-label"/>
+                        <HBox spacing="18" styleClass="analytics-board">
+                            <children>
+                                <VBox spacing="6" styleClass="summary-card" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="activeTeamsLabel" styleClass="summary-value"/>
+                                        <Label text="Equipes actives" styleClass="card-title"/>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="6" styleClass="summary-card" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="candidaturesLabel" styleClass="summary-value"/>
+                                        <Label text="Mes candidatures" styleClass="card-title"/>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="6" styleClass="summary-card" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label fx:id="recrutementsLabel" styleClass="summary-value"/>
+                                        <Label text="Recrutements" styleClass="card-title"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                        <HBox spacing="12">
+                            <children>
+                                <Button onAction="#onMyApplications" text="Mes candidatures" styleClass="manager-action-button"/>
+                                <Button onAction="#onBecomeManager" text="Devenir manager" styleClass="manager-secondary-button"/>
+                                <Button fx:id="viewMyTeamButton" onAction="#onViewMyTeam" text="Voir mon equipe" styleClass="manager-outline-button" visible="false" managed="false"/>
+                                <Label fx:id="myTeamStatusLabel" styleClass="chip-active"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+                <VBox spacing="16" styleClass="coord-card team-search-card">
+                    <children>
+                        <HBox spacing="20" styleClass="team-explorer-banner">
+                            <children>
+                                <VBox spacing="12" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="ESPORT TEAMS HUB" styleClass="eyebrow"/>
+                                        <Label text="Trouve une equipe qui te correspond" styleClass="hero-title"/>
+                                        <Label text="Analyse rapidement les profils, le niveau, la region et les opportunites disponibles avant de postuler." wrapText="true" styleClass="muted-label"/>
+                                        <HBox spacing="10">
+                                            <children>
+                                                <Label text="Recherche rapide" styleClass="chip-active"/>
+                                                <Label text="Filtres dynamiques" styleClass="chip-active"/>
+                                                <Label text="Candidature directe" styleClass="chip-active"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <ImageView fitWidth="330" fitHeight="180" preserveRatio="true" styleClass="team-explorer-art">
+                                    <image>
+                                        <Image url="@../images/banner.png"/>
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+                <VBox spacing="16" styleClass="coord-card team-search-card">
+                    <children>
+                        <Label text="Recherche d'equipe" styleClass="section-title"/>
+                        <HBox spacing="14" styleClass="team-search-grid">
+                            <children>
+                                <TextField fx:id="nomField" promptText="Nom de l'equipe" HBox.hgrow="ALWAYS" styleClass="field"/>
+                                <ComboBox fx:id="regionBox" prefWidth="180" styleClass="dark-combo"/>
+                                <ComboBox fx:id="niveauBox" prefWidth="180" styleClass="dark-combo"/>
+                                <Button onAction="#onSearch" text="Rechercher" styleClass="classic-button"/>
+                                <Button onAction="#onReset" text="Reinitialiser" styleClass="manager-outline-button"/>
+                            </children>
+                        </HBox>
+                        <Label fx:id="resultsLabel" styleClass="muted-label"/>
+                    </children>
+                </VBox>
+                <FlowPane fx:id="teamsContainer" hgap="18" vgap="18" prefWrapLength="1100"/>
+                <HBox spacing="18">
+                    <children>
+                        <VBox spacing="12" styleClass="chart-panel" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="Activite des equipes" styleClass="section-title"/>
+                                <Label text="Vue globale du niveau de recrutement et de la disponibilite des equipes." styleClass="muted-label"/>
+                                <VBox spacing="18" styleClass="chart-placeholder">
+                                    <children>
+                                        <HBox alignment="BOTTOM_LEFT" spacing="12" styleClass="analytics-bars">
+                                            <children>
+                                                <VBox alignment="BOTTOM_CENTER" spacing="8" styleClass="bar-group">
+                                                    <children>
+                                                        <VBox prefHeight="120" prefWidth="24" styleClass="analytics-bar"/>
+                                                        <Label text="Lun" styleClass="chart-axis-label"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox alignment="BOTTOM_CENTER" spacing="8" styleClass="bar-group">
+                                                    <children>
+                                                        <VBox prefHeight="82" prefWidth="24" styleClass="analytics-bar"/>
+                                                        <Label text="Mar" styleClass="chart-axis-label"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox alignment="BOTTOM_CENTER" spacing="8" styleClass="bar-group">
+                                                    <children>
+                                                        <VBox prefHeight="136" prefWidth="24" styleClass="analytics-bar"/>
+                                                        <Label text="Mer" styleClass="chart-axis-label"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox alignment="BOTTOM_CENTER" spacing="8" styleClass="bar-group">
+                                                    <children>
+                                                        <VBox prefHeight="96" prefWidth="24" styleClass="analytics-bar"/>
+                                                        <Label text="Jeu" styleClass="chart-axis-label"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox alignment="BOTTOM_CENTER" spacing="8" styleClass="bar-group">
+                                                    <children>
+                                                        <VBox prefHeight="150" prefWidth="24" styleClass="analytics-bar"/>
+                                                        <Label text="Ven" styleClass="chart-axis-label"/>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                        <VBox spacing="14" prefWidth="310" styleClass="quick-list-card">
+                            <children>
+                                <Label text="Resume rapide" styleClass="section-title"/>
+                                <VBox spacing="10" styleClass="mini-stat-card">
+                                    <children>
+                                        <Label text="1 equipe max" styleClass="card-title"/>
+                                        <Label text="Un joueur user ne peut rejoindre qu'une seule equipe a la fois." styleClass="muted-label"/>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="10" styleClass="mini-stat-card">
+                                    <children>
+                                        <Label text="Validation manager" styleClass="card-title"/>
+                                        <Label text="La candidature devient membre apres acceptation du manager." styleClass="muted-label"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+        </VBox>
+    </content>
+</ScrollPane>

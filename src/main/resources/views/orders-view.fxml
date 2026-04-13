@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.esportify.controllers.OrdersController"
+            fitToWidth="true"
+            styleClass="page-scroll">
+    <content>
+        <VBox spacing="22" styleClass="content-layer page">
+            <children>
+                <VBox spacing="14" styleClass="hero-card">
+                    <children>
+                        <Label text="PANIER" styleClass="hero-title"/>
+                        <Label text="Verifie tes articles et complete tes informations pour continuer." styleClass="muted-label"/>
+                        <HBox spacing="12">
+                            <children>
+                                <Button text="Boutique" styleClass="classic-button"/>
+                                <Button text="Voir panier" styleClass="classic-button"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+                <HBox spacing="18">
+                    <children>
+                        <VBox spacing="8" styleClass="summary-card" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="0" styleClass="summary-value"/>
+                                <Label text="Commandes" styleClass="card-title"/>
+                                <Label text="Actives" styleClass="muted-label"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="8" styleClass="summary-card" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="0" styleClass="summary-value"/>
+                                <Label text="Livraisons" styleClass="card-title"/>
+                                <Label text="En cours" styleClass="muted-label"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="8" styleClass="summary-card" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="0" styleClass="summary-value"/>
+                                <Label text="Paiements" styleClass="card-title"/>
+                                <Label text="Valides" styleClass="muted-label"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+                <VBox spacing="14" styleClass="coord-card">
+                    <children>
+                        <Label text="Votre panier est vide." styleClass="section-title"/>
+                        <Label text="Retour a la boutique pour ajouter des produits gaming Esportify." styleClass="muted-label"/>
+                        <Button text="Aller a la boutique" styleClass="classic-button"/>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+        </VBox>
+    </content>
+</ScrollPane>

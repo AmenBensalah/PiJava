@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane"
+            fx:controller="edu.esportify.controllers.AdminLayoutController"
+            styleClass="app-shell admin-shell">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="18" styleClass="topbar admin-topbar">
+            <children>
+                <Button fx:id="menuToggleButton" text="Menu" onAction="#onToggleSidebar" styleClass="admin-topbar-menu-button"/>
+                <HBox alignment="CENTER_LEFT" spacing="16">
+                    <children>
+                        <ImageView fitWidth="42" fitHeight="42" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/logo5.png"/>
+                            </image>
+                        </ImageView>
+                        <Label text="E-SPORTIFY" styleClass="admin-brand-title"/>
+                        <Label text="ADMIN" styleClass="admin-role-chip"/>
+                    </children>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="overviewButton" text="Dashboard" onAction="#onOverview" styleClass="admin-primary-top-button"/>
+                <Button text="Voir mon profil" onAction="#onProfile" styleClass="admin-primary-top-button"/>
+            </children>
+            <padding>
+                <Insets top="14" right="20" bottom="14" left="20"/>
+            </padding>
+        </HBox>
+    </top>
+    <left>
+        <VBox fx:id="sidebarContainer" spacing="18" styleClass="sidebar admin-sidebar">
+            <children>
+                <Accordion fx:id="sidebarAccordion" VBox.vgrow="ALWAYS" styleClass="admin-accordion">
+                    <panes>
+                        <TitledPane text="Gestion fil d'actualite" expanded="false" styleClass="admin-nav-group">
+                            <content>
+                                <VBox spacing="10" styleClass="admin-submenu-box">
+                                    <children>
+                                        <Button fx:id="feedButton" text="Liste des annonces" onAction="#onFeed" styleClass="admin-submenu-button"/>
+                                    </children>
+                                </VBox>
+                            </content>
+                        </TitledPane>
+                        <TitledPane text="Gestion Equipes" expanded="true" styleClass="admin-nav-group">
+                            <content>
+                                <VBox spacing="10" styleClass="admin-submenu-box">
+                                    <children>
+                                        <Button fx:id="teamsButton" text="Liste des equipes" onAction="#onTeams" styleClass="admin-submenu-button"/>
+                                        <Button fx:id="requestsButton" text="Demande manager" onAction="#onRequests" styleClass="admin-submenu-button"/>
+                                    </children>
+                                </VBox>
+                            </content>
+                        </TitledPane>
+                        <TitledPane text="Gestion Tournoi" expanded="false" styleClass="admin-nav-group">
+                            <content>
+                                <VBox spacing="10" styleClass="admin-submenu-box">
+                                    <children>
+                                        <Button fx:id="tournamentsButton" text="Tournois" onAction="#onPlaceholderSection" styleClass="admin-submenu-button"/>
+                                    </children>
+                                </VBox>
+                            </content>
+                        </TitledPane>
+                        <TitledPane text="Gestion Boutique" expanded="false" styleClass="admin-nav-group">
+                            <content>
+                                <VBox spacing="10" styleClass="admin-submenu-box">
+                                    <children>
+                                        <Button fx:id="storeButton" text="Boutique" onAction="#onPlaceholderSection" styleClass="admin-submenu-button"/>
+                                    </children>
+                                </VBox>
+                            </content>
+                        </TitledPane>
+                        <TitledPane text="Gestion comptes" expanded="false" styleClass="admin-nav-group">
+                            <content>
+                                <VBox spacing="10" styleClass="admin-submenu-box">
+                                    <children>
+                                        <Button fx:id="accountsButton" text="Comptes" onAction="#onPlaceholderSection" styleClass="admin-submenu-button"/>
+                                    </children>
+                                </VBox>
+                            </content>
+                        </TitledPane>
+                    </panes>
+                </Accordion>
+                <VBox spacing="14">
+                    <children>
+                        <VBox spacing="8" styleClass="admin-theme-card">
+                            <children>
+                                <Label text="N" styleClass="admin-theme-icon"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="8" styleClass="admin-account-summary">
+                            <children>
+                                <Label fx:id="accountNameLabel" styleClass="card-title"/>
+                                <Label fx:id="accountRoleLabel" styleClass="muted-label"/>
+                                <Label fx:id="contentBadgeLabel" text="Dashboard" styleClass="small-tag"/>
+                            </children>
+                        </VBox>
+                        <Button text="Deconnexion" onAction="#onLogout" styleClass="admin-danger-logout"/>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets top="18" right="12" bottom="18" left="12"/>
+            </padding>
+        </VBox>
+    </left>
+    <center>
+        <StackPane fx:id="contentContainer" styleClass="admin-content-host"/>
+    </center>
+</BorderPane>

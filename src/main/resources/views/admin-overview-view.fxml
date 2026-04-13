@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.esportify.controllers.AdminOverviewController"
+            fitToWidth="true"
+            styleClass="page-scroll">
+    <content>
+        <VBox spacing="22" styleClass="content-layer page admin-reference-page">
+            <children>
+                <HBox spacing="18" styleClass="hero-card admin-reference-hero">
+                    <children>
+                        <VBox spacing="12" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="ADMIN" styleClass="admin-eyebrow"/>
+                                <Label text="DASHBOARD DE SUPERVISION" styleClass="admin-reference-title"/>
+                                <Label fx:id="heroSubtitleLabel" styleClass="admin-reference-subtitle" wrapText="true"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="12" styleClass="admin-dashboard-sidecard">
+                            <children>
+                                <Label text="Etat systeme" styleClass="admin-search-title"/>
+                                <Label text="Interface admin active" styleClass="admin-filter-pill is-active"/>
+                                <Label text="Monitoring temps reel des equipes, demandes et regions." styleClass="muted-label" wrapText="true"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <TilePane prefColumns="3" prefTileWidth="260" hgap="16" vgap="16">
+                    <children>
+                        <VBox spacing="8" styleClass="admin-kpi-neo">
+                            <children>
+                                <Label text="Groupes totaux" styleClass="muted-label"/>
+                                <Label fx:id="totalTeamsLabel" text="0" styleClass="admin-kpi-value"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="8" styleClass="admin-kpi-neo">
+                            <children>
+                                <Label text="Groupes actifs" styleClass="muted-label"/>
+                                <Label fx:id="activeTeamsLabel" text="0" styleClass="admin-kpi-value"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="8" styleClass="admin-kpi-neo">
+                            <children>
+                                <Label text="Groupes prives" styleClass="muted-label"/>
+                                <Label fx:id="privateTeamsLabel" text="0" styleClass="admin-kpi-value"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="8" styleClass="admin-kpi-neo">
+                            <children>
+                                <Label text="Demandes en attente" styleClass="muted-label"/>
+                                <Label fx:id="pendingRequestsLabel" text="0" styleClass="admin-kpi-value"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="8" styleClass="admin-kpi-neo">
+                            <children>
+                                <Label text="Demandes acceptees" styleClass="muted-label"/>
+                                <Label fx:id="approvedRequestsLabel" text="0" styleClass="admin-kpi-value"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="8" styleClass="admin-kpi-neo">
+                            <children>
+                                <Label text="Regions couvertes" styleClass="muted-label"/>
+                                <Label fx:id="regionsLabel" text="0" styleClass="admin-kpi-value"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </TilePane>
+
+                <GridPane hgap="18" vgap="18">
+                    <children>
+                        <VBox spacing="12" styleClass="admin-chart-shell" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <children>
+                                <Label text="Repartition des groupes" styleClass="admin-search-title"/>
+                                <PieChart fx:id="regionChart" minHeight="300" styleClass="admin-chart admin-dashboard-chart"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="12" styleClass="admin-chart-shell" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <children>
+                                <Label text="Statut des demandes manager" styleClass="admin-search-title"/>
+                                <BarChart fx:id="requestChart" legendVisible="false" minHeight="300" styleClass="admin-chart admin-dashboard-chart">
+                                    <xAxis>
+                                        <CategoryAxis/>
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis/>
+                                    </yAxis>
+                                </BarChart>
+                            </children>
+                        </VBox>
+                        <VBox spacing="12" styleClass="admin-chart-shell" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <children>
+                                <Label text="Equipes recentes" styleClass="admin-search-title"/>
+                                <TableView fx:id="recentTeamsTable" minHeight="280" styleClass="manager-table admin-reference-table">
+                                    <columns>
+                                        <TableColumn fx:id="teamNameColumn" prefWidth="220" text="EQUIPE"/>
+                                        <TableColumn fx:id="teamRegionColumn" prefWidth="140" text="REGION"/>
+                                        <TableColumn fx:id="teamManagerColumn" prefWidth="180" text="MANAGER"/>
+                                        <TableColumn fx:id="teamStatusColumn" prefWidth="120" text="STATUT"/>
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </VBox>
+                        <VBox spacing="12" styleClass="admin-chart-shell" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <children>
+                                <Label text="Demandes recentes" styleClass="admin-search-title"/>
+                                <TableView fx:id="recentRequestsTable" minHeight="280" styleClass="manager-table admin-reference-table">
+                                    <columns>
+                                        <TableColumn fx:id="requestUserColumn" prefWidth="160" text="UTILISATEUR"/>
+                                        <TableColumn fx:id="requestEmailColumn" prefWidth="260" text="EMAIL"/>
+                                        <TableColumn fx:id="requestStatusColumn" prefWidth="140" text="STATUT"/>
+                                        <TableColumn fx:id="requestDateColumn" prefWidth="160" text="DATE"/>
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </VBox>
+                    </children>
+                </GridPane>
+            </children>
+            <padding>
+                <Insets top="26" right="28" bottom="32" left="28"/>
+            </padding>
+        </VBox>
+    </content>
+</ScrollPane>

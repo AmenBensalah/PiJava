@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.esportify.controllers.UserStoreController"
+            fitToWidth="true"
+            styleClass="page-scroll">
+    <content>
+        <VBox spacing="22" styleClass="content-layer page">
+            <children>
+                <VBox spacing="14" styleClass="hero-card">
+                    <children>
+                        <Label text="BOUTIQUE" styleClass="hero-title"/>
+                        <Label text="Retrouve les produits gaming et les accessoires recommandes." styleClass="muted-label"/>
+                        <HBox spacing="12">
+                            <children>
+                                <Label text="Tous" styleClass="chip-active"/>
+                                <Label text="Clavier" styleClass="chip-active"/>
+                                <Label text="Souris" styleClass="chip-active"/>
+                                <Label text="PC gamer" styleClass="chip-active"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+                <HBox spacing="18">
+                    <children>
+                        <VBox prefWidth="300" spacing="14" styleClass="coord-card">
+                            <children>
+                                <Label text="Recherche avancee" styleClass="section-title"/>
+                                <TextField promptText="Nom du produit" styleClass="field"/>
+                                <ComboBox promptText="Categorie" styleClass="dark-combo"/>
+                                <HBox spacing="12">
+                                    <children>
+                                        <Button text="Rechercher" styleClass="classic-button"/>
+                                        <Button text="Reinitialiser" styleClass="manager-outline-button"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <VBox spacing="12" styleClass="coord-card" HBox.hgrow="ALWAYS">
+                            <children>
+                                <ImageView fitWidth="210" fitHeight="210" preserveRatio="false">
+                                    <image><Image url="@../images/logo3.png"/></image>
+                                </ImageView>
+                                <Label text="Carte mere HYTS" styleClass="section-title"/>
+                                <Label text="100.00 EUR" styleClass="summary-value"/>
+                                <Label text="EN STOCK" styleClass="chip-active"/>
+                                <Button text="Voir details" styleClass="classic-button"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="12" styleClass="coord-card" HBox.hgrow="ALWAYS">
+                            <children>
+                                <ImageView fitWidth="210" fitHeight="210" preserveRatio="false">
+                                    <image><Image url="@../images/logo5.png"/></image>
+                                </ImageView>
+                                <Label text="Casque Esportify Pro" styleClass="section-title"/>
+                                <Label text="140.00 EUR" styleClass="summary-value"/>
+                                <Label text="EN STOCK" styleClass="chip-active"/>
+                                <Button text="Voir details" styleClass="classic-button"/>
+                            </children>
+                        </VBox>
+                        <VBox spacing="12" styleClass="coord-card" HBox.hgrow="ALWAYS">
+                            <children>
+                                <ImageView fitWidth="210" fitHeight="210" preserveRatio="false">
+                                    <image><Image url="@../images/logo3.png"/></image>
+                                </ImageView>
+                                <Label text="PC Gamer MPLA" styleClass="section-title"/>
+                                <Label text="1400.00 EUR" styleClass="summary-value"/>
+                                <Label text="RUPTURE" styleClass="chip-active"/>
+                                <Button text="Voir details" styleClass="classic-button"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
+        </VBox>
+    </content>
+</ScrollPane>
