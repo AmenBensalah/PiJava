@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane prefHeight="760.0" prefWidth="1280.0" styleClass="app-root"
+            stylesheets="@styles/esportify-theme.css"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.PROJETPI.MainController">
+    <left>
+        <VBox prefWidth="250.0" styleClass="sidebar">
+            <padding>
+                <Insets bottom="24.0" left="20.0" right="20.0" top="26.0"/>
+            </padding>
+            <children>
+                <Label styleClass="brand-label" text="E-SPORTIFY"/>
+                <Label styleClass="brand-subtitle" text="Etape 1 - Produits"/>
+                <Region VBox.vgrow="ALWAYS"/>
+                <Label styleClass="sidebar-footer" text="Cliquez sur un produit puis ajoutez-le au panier"/>
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <VBox spacing="18.0" styleClass="content-shell">
+            <padding>
+                <Insets bottom="24.0" left="24.0" right="24.0" top="24.0"/>
+            </padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" styleClass="top-bar">
+                    <children>
+                        <Label styleClass="page-title" text="Catalogue produits"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button mnemonicParsing="false" onAction="#goToCart" prefHeight="48.0" prefWidth="180.0" styleClass="secondary-button" text="Voir le panier"/>
+                        <Button mnemonicParsing="false" onAction="#openAdminDashboard" prefHeight="48.0" prefWidth="150.0" styleClass="admin-access-button" text="Admin">
+                            <graphic>
+                                <SVGPath content="M12 2C8.13 2 5 5.13 5 9v3.09c0 .46-.16.91-.45 1.26L3 15v1h18v-1l-1.55-1.65c-.29-.35-.45-.8-.45-1.26V9c0-3.87-3.13-7-7-7zm0 20a3 3 0 0 0 2.83-2H9.17A3 3 0 0 0 12 22z"
+                                         fill="#0f1632"
+                                         scaleX="1.0"
+                                         scaleY="1.0"/>
+                            </graphic>
+                        </Button>
+                    </children>
+                </HBox>
+                <HBox spacing="20.0">
+                    <children>
+                        <VBox HBox.hgrow="ALWAYS" spacing="16.0">
+                            <children>
+                                <VBox spacing="16.0" styleClass="panel-card">
+                                    <children>
+                                        <Label styleClass="section-title" text="Produits disponibles"/>
+                                        <TableView fx:id="tableView" styleClass="data-table" VBox.vgrow="ALWAYS">
+                                            <columns>
+                                                <TableColumn fx:id="colId" prefWidth="70.0" text="ID"/>
+                                                <TableColumn fx:id="colNom" prefWidth="220.0" text="Produit"/>
+                                                <TableColumn fx:id="colPrix" prefWidth="120.0" text="Prix"/>
+                                                <TableColumn fx:id="colStock" prefWidth="100.0" text="Stock"/>
+                                                <TableColumn fx:id="colDescription" prefWidth="320.0" text="Description"/>
+                                            </columns>
+                                        </TableView>
+                                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                            <children>
+                                                <Label styleClass="metric-label" text="Quantite"/>
+                                                <TextField fx:id="quantiteField" prefWidth="120.0" promptText="Ex: 1" styleClass="dark-text-field"/>
+                                                <Button mnemonicParsing="false" onAction="#addSelectedProduct" prefWidth="220.0" styleClass="primary-button" text="Ajouter au panier"/>
+                                                <Button mnemonicParsing="false" onAction="#clearCart" prefWidth="180.0" styleClass="ghost-button" text="Vider le panier"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>
