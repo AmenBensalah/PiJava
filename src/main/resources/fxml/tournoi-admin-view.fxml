@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.connexion3a77.controllers.TournoiAdminController"
+            styleClass="app-root">
+
+    <left>
+        <VBox prefWidth="250.0" styleClass="sidebar">
+            <padding>
+                <Insets top="20" right="14" bottom="20" left="14"/>
+            </padding>
+
+            <Label text="E-SPORTIFY" styleClass="logo-title"/>
+            <Label text="ADMIN" styleClass="logo-badge"/>
+
+            <Button text="Gestion fil d'actualite" maxWidth="1.7976931348623157E308" styleClass="menu-btn"/>
+            <Button text="Gestion Equipes" maxWidth="1.7976931348623157E308" styleClass="menu-btn"/>
+            <Button text="Creation tournoi" maxWidth="1.7976931348623157E308" styleClass="menu-btn active"/>
+            <Button fx:id="btnParticipations" text="Participations" onAction="#onShowParticipationView" maxWidth="1.7976931348623157E308" styleClass="menu-btn"/>
+            <Button text="Gestion Boutique" maxWidth="1.7976931348623157E308" styleClass="menu-btn"/>
+            <Button text="Gestion comptes" maxWidth="1.7976931348623157E308" styleClass="menu-btn"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane styleClass="main-content">
+            <VBox fx:id="tournamentPane" spacing="16.0" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="20" right="24" bottom="20" left="24"/>
+                </padding>
+
+                <VBox spacing="8.0" styleClass="header-card">
+                    <Label text="ADMIN" styleClass="header-kicker"/>
+                    <Label text="GESTION DES TOURNOIS" styleClass="header-title"/>
+                    <Label text="Pilote les tournois, filtre, trie et gere les actions cles." styleClass="header-subtitle"/>
+                    <HBox spacing="10.0">
+                        <Button fx:id="btnCreateTournoi" text="Creer un tournoi" onAction="#onToggleCreateForm" styleClass="primary-btn"/>
+                        <Button text="Rafraichir" onAction="#onRefresh" styleClass="secondary-btn"/>
+                        <Button text="Espace user" onAction="#onGoToUserView" styleClass="secondary-btn"/>
+                    </HBox>
+                </VBox>
+
+                <VBox fx:id="formCard" spacing="14.0" styleClass="form-card">
+                    <padding>
+                        <Insets top="18" right="18" bottom="18" left="18"/>
+                    </padding>
+
+                    <Label fx:id="formTitle" text="Ajouter un Tournoi" styleClass="form-title"/>
+
+                    <HBox spacing="12.0">
+                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                            <Label text="NOM DU TOURNOI" styleClass="field-label"/>
+                            <TextField fx:id="tfNomTournoi" promptText="Nom du tournoi" styleClass="field-input"/>
+                        </VBox>
+                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                            <Label text="TYPE DE TOURNOI" styleClass="field-label"/>
+                            <ComboBox fx:id="cbTypeTournoi" promptText="-- Selectionner --" maxWidth="1.7976931348623157E308" styleClass="field-input"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12.0">
+                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                            <Label text="TYPE DE JEU" styleClass="field-label"/>
+                            <ComboBox fx:id="cbTypeJeu" promptText="-- Selectionner --" maxWidth="1.7976931348623157E308" styleClass="field-input"/>
+                        </VBox>
+                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                            <Label text="NOM DU JEU" styleClass="field-label"/>
+                            <TextField fx:id="tfNomJeu" promptText="ex: Valorant" styleClass="field-input"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12.0">
+                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                            <Label text="DATE DE DEBUT" styleClass="field-label"/>
+                            <DatePicker fx:id="dpDateDebut" maxWidth="1.7976931348623157E308" styleClass="field-input"/>
+                        </VBox>
+                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                            <Label text="DATE DE FIN" styleClass="field-label"/>
+                            <DatePicker fx:id="dpDateFin" maxWidth="1.7976931348623157E308" styleClass="field-input"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12.0">
+                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                            <Label text="DOTATION ($)" styleClass="field-label"/>
+                            <TextField fx:id="tfCashPrize" promptText="Montant" styleClass="field-input"/>
+                        </VBox>
+                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                            <Label text="PLACES MAX (OPTIONNEL)" styleClass="field-label"/>
+                            <TextField fx:id="tfNombreParticipants" promptText="Laisser vide = 4 min" styleClass="field-input"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="10.0">
+                        <Label fx:id="statusLabel" text="Pret." styleClass="status-label"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Annuler" onAction="#onCancelForm" styleClass="secondary-btn"/>
+                        <Button text="Enregistrer" onAction="#onSaveTournoi" styleClass="primary-btn"/>
+                    </HBox>
+                </VBox>
+
+                <VBox spacing="10.0" styleClass="table-card" VBox.vgrow="ALWAYS">
+                    <Label text="Liste des tournois" styleClass="section-title"/>
+
+                    <TableView fx:id="tournoiTable" VBox.vgrow="ALWAYS" styleClass="tournament-table">
+                        <columns>
+                            <TableColumn fx:id="colId" text="ID" prefWidth="50.0"/>
+                            <TableColumn fx:id="colNom" text="NOM" prefWidth="180.0"/>
+                            <TableColumn fx:id="colTypeJeu" text="TYPE JEU" prefWidth="110.0"/>
+                            <TableColumn fx:id="colTypeTournoi" text="TYPE TOURNOI" prefWidth="130.0"/>
+                            <TableColumn fx:id="colJeu" text="JEU" prefWidth="130.0"/>
+                            <TableColumn fx:id="colDateDebut" text="DEBUT" prefWidth="120.0"/>
+                            <TableColumn fx:id="colDateFin" text="FIN" prefWidth="120.0"/>
+                            <TableColumn fx:id="colParticipants" text="PLACES" prefWidth="90.0"/>
+                            <TableColumn fx:id="colCashPrize" text="PRIX" prefWidth="100.0"/>
+                            <TableColumn fx:id="colActions" text="ACTIONS" prefWidth="170.0"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </VBox>
+
+            <VBox fx:id="participationPane" spacing="16.0" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="20" right="24" bottom="20" left="24"/>
+                </padding>
+
+                <VBox spacing="8.0" styleClass="header-card">
+                    <Label text="ADMIN" styleClass="header-kicker"/>
+                    <Label text="GESTION DES PARTICIPATIONS" styleClass="header-title"/>
+                    <Label text="Consultez les demandes et acceptez ou refusez les participations." styleClass="header-subtitle"/>
+                    <HBox spacing="10.0">
+                        <Button text="Retour aux tournois" onAction="#onBackToTournois" styleClass="primary-btn"/>
+                        <Button text="Rafraichir" onAction="#onRefreshParticipations" styleClass="secondary-btn"/>
+                    </HBox>
+                </VBox>
+
+                <VBox spacing="10.0" styleClass="table-card" VBox.vgrow="ALWAYS">
+                    <Label text="Demandes de participation" styleClass="section-title"/>
+                    <TableView fx:id="participationAdminTable" VBox.vgrow="ALWAYS" styleClass="tournament-table">
+                        <columns>
+                            <TableColumn fx:id="colPartAdminId" text="ID" prefWidth="60.0"/>
+                            <TableColumn fx:id="colPartAdminTournoiId" text="Tournoi ID" prefWidth="90.0"/>
+                            <TableColumn fx:id="colPartAdminTournoiNom" text="Tournoi" prefWidth="180.0"/>
+                            <TableColumn fx:id="colPartAdminDescription" text="Description" prefWidth="220.0"/>
+                            <TableColumn fx:id="colPartAdminNiveau" text="Niveau" prefWidth="100.0"/>
+                            <TableColumn fx:id="colPartAdminActions" text="Action" prefWidth="160.0"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <Label fx:id="participationAdminStatusLabel" text="Pret." styleClass="status-label"/>
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>
