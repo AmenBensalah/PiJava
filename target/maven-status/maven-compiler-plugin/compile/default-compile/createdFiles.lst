@@ -1,0 +1,11 @@
+edu\projetJava\services\CategorieService.class
+edu\projetJava\services\ProduitService.class
+edu\projetJava\tools\MyDatabase.class
+edu\projetJava\controllers\BackCategorieController.class
+edu\projetJava\interfaces\IService.class
+edu\projetJava\controllers\AjoutProduitController.class
+edu\projetJava\controllers\BackAjoutProduitController.class
+edu\projetJava\controllers\BackListProduitController.class
+edu\projetJava\controllers\BackListCategorieController.class
+edu\projetJava\entities\Produit.class
+edu\projetJava\entities\Categorie.class
