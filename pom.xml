@@ -15,7 +15,7 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.mysql</groupId>
+            <groupId>com.mysq+++++++++l</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>9.2.0</version>
         </dependency>
