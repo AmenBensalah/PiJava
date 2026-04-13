@@ -1,0 +1,205 @@
+.login-root {
+    -fx-font-family: "Poppins", "Montserrat", "Segoe UI", sans-serif;
+    -fx-background-color: #070d1e;
+}
+
+.arena-background {
+    -fx-background-color:
+        radial-gradient(center 24% 18%, radius 30%, rgba(255, 166, 92, 0.16), transparent 58%),
+        radial-gradient(center 76% 16%, radius 34%, rgba(77, 189, 255, 0.14), transparent 66%),
+        radial-gradient(center 50% 74%, radius 24%, rgba(130, 97, 215, 0.16), transparent 62%),
+        linear-gradient(to right, #0b1530 0%, #121d41 38%, #111736 68%, #100f2a 100%);
+}
+
+.arena-overlay {
+    -fx-background-color:
+        linear-gradient(to right, rgba(7, 11, 22, 0.6), rgba(8, 15, 31, 0.24) 35%, rgba(7, 10, 22, 0.6) 100%),
+        radial-gradient(center 50% 64%, radius 34%, rgba(76, 184, 255, 0.1), transparent 64%),
+        radial-gradient(center 52% 62%, radius 30%, rgba(131, 97, 216, 0.1), transparent 62%);
+}
+
+.login-card {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(18, 37, 73, 0.92), rgba(15, 23, 55, 0.95));
+    -fx-background-radius: 26;
+    -fx-border-radius: 26;
+    -fx-border-color: rgba(120, 151, 221, 0.34);
+    -fx-border-width: 1.2;
+    -fx-effect: dropshadow(gaussian, rgba(1, 5, 18, 0.75), 55, 0.26, 0, 24);
+}
+
+.register-card {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(19, 34, 67, 0.94), rgba(12, 18, 42, 0.96));
+}
+
+.brand-badge {
+    -fx-font-size: 18px;
+    -fx-opacity: 0.28;
+    -fx-text-fill: #8c95bb;
+}
+
+.brand-name {
+    -fx-font-size: 42px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #ff9b45;
+}
+
+.register-brand {
+    -fx-text-fill: #ff9b45;
+}
+
+.screen-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #eff5ff;
+}
+
+.register-title {
+    -fx-font-size: 24px;
+}
+
+.input-shell {
+    -fx-alignment: center-left;
+    -fx-background-color: rgba(42, 59, 109, 0.42);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(117, 145, 212, 0.38);
+    -fx-border-width: 1;
+    -fx-padding: 0 20 0 20;
+    -fx-min-height: 62;
+}
+
+.input-icon {
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+    -fx-opacity: 0.92;
+}
+
+.accent-pink {
+    -fx-text-fill: #ffa65c;
+}
+
+.accent-blue {
+    -fx-text-fill: #62bdff;
+}
+
+.login-input {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #f4f8ff;
+    -fx-prompt-text-fill: #9fb4e5;
+    -fx-font-size: 15px;
+    -fx-pref-height: 62;
+    -fx-padding: 0;
+}
+
+.login-input:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.register-role-box {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-mark-color: #ff4ea3;
+    -fx-font-size: 15px;
+}
+
+.register-role-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-padding: 0;
+}
+
+.register-role-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.register-role-box .arrow {
+    -fx-background-color: #ff4ea3;
+}
+
+.primary-login-button {
+    -fx-background-color: linear-gradient(to right, #2f7ec3, #6350b4);
+    -fx-border-color: rgba(90, 200, 246, 0.88);
+    -fx-border-radius: 16;
+    -fx-text-fill: #f4f8ff;
+    -fx-background-radius: 16;
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+    -fx-padding: 14 16 14 16;
+}
+
+.primary-login-button:hover {
+    -fx-background-color: linear-gradient(to right, #3a8cd1, #735fc8);
+}
+
+.faceid-button {
+    -fx-background-color: rgba(52, 67, 116, 0.56);
+    -fx-border-color: rgba(99, 124, 186, 0.36);
+    -fx-border-width: 1;
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-text-fill: #edf4ff;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-padding: 13 16 13 16;
+}
+
+.links-row {
+    -fx-padding: 10 0 4 0;
+}
+
+.text-link {
+    -fx-text-fill: #d9e6ff;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-font-size: 14px;
+}
+
+.muted-link {
+    -fx-text-fill: #9eb2df;
+    -fx-font-size: 14px;
+}
+
+.login-message {
+    -fx-text-fill: #ffd593;
+    -fx-font-size: 13px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.login-separator .line {
+    -fx-border-color: rgba(255, 255, 255, 0.08);
+}
+
+.continue-text {
+    -fx-text-fill: #9db2de;
+    -fx-font-size: 14px;
+}
+
+.social-button {
+    -fx-background-color: rgba(53, 70, 123, 0.52);
+    -fx-border-color: rgba(123, 151, 214, 0.42);
+    -fx-border-width: 1;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-text-fill: #e7f0ff;
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-min-width: 58;
+    -fx-min-height: 58;
+    -fx-max-width: 58;
+    -fx-max-height: 58;
+}
+
+.admin-hint {
+    -fx-text-fill: #8ea4d6;
+    -fx-font-size: 12px;
+}
+
+.register-note {
+    -fx-text-fill: #9ba4c8;
+    -fx-font-size: 13px;
+}

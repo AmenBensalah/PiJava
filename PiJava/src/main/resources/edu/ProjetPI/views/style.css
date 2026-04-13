@@ -1,0 +1,91 @@
+.root {
+    -fx-font-family: "Poppins", "Montserrat", "Segoe UI", sans-serif;
+}
+
+.page-root {
+    -fx-background-color: #070d1e;
+}
+
+.page-background {
+    -fx-background-color:
+        radial-gradient(center 26% 18%, radius 32%, rgba(255, 166, 92, 0.15), transparent 62%),
+        radial-gradient(center 75% 20%, radius 34%, rgba(77, 189, 255, 0.13), transparent 66%),
+        radial-gradient(center 52% 78%, radius 24%, rgba(130, 97, 215, 0.14), transparent 62%),
+        linear-gradient(to right, #0b1530 0%, #121d41 38%, #111736 68%, #100f2a 100%);
+}
+
+.page-overlay {
+    -fx-background-color:
+        linear-gradient(to right, rgba(7, 11, 22, 0.60), rgba(8, 15, 31, 0.24) 35%, rgba(7, 10, 22, 0.60) 100%);
+}
+
+.page-card {
+    -fx-background-color: linear-gradient(to bottom, rgba(18, 37, 73, 0.92), rgba(15, 23, 55, 0.95));
+    -fx-background-radius: 26;
+    -fx-border-radius: 26;
+    -fx-border-color: rgba(120, 151, 221, 0.34);
+    -fx-border-width: 1.1;
+    -fx-effect: dropshadow(gaussian, rgba(1, 5, 18, 0.75), 50, 0.24, 0, 20);
+}
+
+.title {
+    -fx-font-size: 36px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #ff9b45;
+}
+
+.subtitle {
+    -fx-font-size: 15px;
+    -fx-text-fill: #b9cfff;
+}
+
+.hint {
+    -fx-text-fill: #8ea4d6;
+    -fx-font-size: 12px;
+}
+
+.message {
+    -fx-text-fill: #ffd593;
+    -fx-font-size: 13px;
+}
+
+.text-field,
+.password-field,
+.combo-box {
+    -fx-background-color: rgba(42, 59, 109, 0.42);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(117, 145, 212, 0.38);
+    -fx-border-width: 1;
+    -fx-text-fill: #f4f8ff;
+    -fx-prompt-text-fill: #9fb4e5;
+    -fx-padding: 11 14 11 14;
+}
+
+.button {
+    -fx-background-color: linear-gradient(to right, #2f7ec3, #6350b4);
+    -fx-border-color: rgba(90, 200, 246, 0.86);
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-text-fill: #f4f8ff;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-padding: 11 18 11 18;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to right, #3a8cd1, #735fc8);
+}
+
+.secondary-button {
+    -fx-background-color: rgba(52, 67, 116, 0.56);
+    -fx-border-color: rgba(99, 124, 186, 0.36);
+    -fx-text-fill: #edf4ff;
+}
+
+.danger-button {
+    -fx-background-color: rgba(84, 28, 58, 0.74);
+    -fx-border-color: rgba(236, 94, 151, 0.78);
+    -fx-text-fill: #ffd2e4;
+}
