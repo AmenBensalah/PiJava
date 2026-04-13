@@ -1,0 +1,95 @@
+package edu.connexion3a77.tools;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
+public class MyConnection {
+    private static final String DEFAULT_URL = "jdbc:mysql://localhost:3306/esportify?serverTimezone=UTC";
+    private static final String DEFAULT_USER = "root";
+    private static final String DEFAULT_PASSWORD = "";
+    private static final String DEFAULT_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String POSTS_SCHEMA_SQL = """
+            CREATE TABLE IF NOT EXISTS posts (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                content TEXT NULL,
+                media_type VARCHAR(255) DEFAULT 'text',
+                media_filename VARCHAR(255) NULL,
+                created_at DATETIME NOT NULL,
+                image_path VARCHAR(255) NULL,
+                video_url VARCHAR(255) NULL,
+                is_event TINYINT(1) NOT NULL DEFAULT 0,
+                event_title VARCHAR(180) NULL,
+                event_date DATETIME NULL,
+                event_location VARCHAR(255) NULL,
+                max_participants INT NULL,
+                author_id INT NULL
+            )
+            """;
+
+    private final String url;
+    private final String login;
+    private final String pwd;
+    private final String driver;
+    private Connection cnx;
+
+    private static MyConnection instance;
+
+    private MyConnection() {
+        Properties properties = loadProperties("db.properties");
+        this.url = properties.getProperty("db.url", DEFAULT_URL);
+        this.login = properties.getProperty("db.user", DEFAULT_USER);
+        this.pwd = properties.getProperty("db.password", DEFAULT_PASSWORD);
+        this.driver = properties.getProperty("db.driver", DEFAULT_DRIVER);
+    }
+
+    public MyConnection(String url, String login, String pwd, String driver) {
+        this.url = url;
+        this.login = login;
+        this.pwd = pwd;
+        this.driver = driver;
+    }
+
+    public synchronized Connection getCnx() {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                Class.forName(driver);
+                cnx = DriverManager.getConnection(url, login, pwd);
+            }
+            return cnx;
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new IllegalStateException("Connexion JDBC impossible: " + e.getMessage(), e);
+        }
+    }
+
+    public synchronized void initializeDatabase() {
+        try (Statement st = getCnx().createStatement()) {
+            st.executeUpdate(POSTS_SCHEMA_SQL);
+        } catch (SQLException e) {
+            throw new IllegalStateException("Initialisation de la base impossible: " + e.getMessage(), e);
+        }
+    }
+
+    public static synchronized MyConnection getInstance() {
+        if (instance == null) {
+            instance = new MyConnection();
+        }
+        return instance;
+    }
+
+    private Properties loadProperties(String resource) {
+        Properties properties = new Properties();
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource)) {
+            if (inputStream != null) {
+                properties.load(inputStream);
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("Lecture du fichier de configuration impossible: " + e.getMessage(), e);
+        }
+        return properties;
+    }
+}
