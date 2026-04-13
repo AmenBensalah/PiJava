@@ -1,4 +1,4 @@
-package edu.connexion3a77.tests;
+package edu.esportify.tests;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -1,7 +1,7 @@
-package edu.connexion3a77.tests;
+package edu.esportify.tests;
 
-import edu.connexion3a77.services.FilActualiteService;
-import edu.connexion3a77.tools.MyConnection;
+import edu.esportify.services.FilActualiteService;
+import edu.esportify.tools.MyConnection;
 
 public class MainClass {
     public static void main(String[] args) {

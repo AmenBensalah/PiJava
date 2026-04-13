@@ -1,8 +1,8 @@
-package edu.connexion3a77.services;
+package edu.esportify.services;
 
-import edu.connexion3a77.entities.Commentaire;
-import edu.connexion3a77.interfaces.IService;
-import edu.connexion3a77.tools.MyConnection;
+import edu.esportify.entities.Commentaire;
+import edu.esportify.interfaces.IService;
+import edu.esportify.tools.MyConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -95,6 +95,14 @@ public class CommentaireService implements IService<Commentaire> {
             throw new IllegalStateException("Erreur base de donnees: " + e.getMessage(), e);
         }
         return data;
+    }
+
+    public void clearAll() {
+        try (Statement st = getConnection().createStatement()) {
+            st.executeUpdate("DELETE FROM commentaires");
+        } catch (SQLException e) {
+            throw new IllegalStateException("Erreur base de donnees: " + e.getMessage(), e);
+        }
     }
 
     public void deleteById(int id) {

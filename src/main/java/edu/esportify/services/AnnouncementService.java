@@ -1,8 +1,8 @@
-package edu.connexion3a77.services;
+package edu.esportify.services;
 
-import edu.connexion3a77.entities.Announcement;
-import edu.connexion3a77.interfaces.IService;
-import edu.connexion3a77.tools.MyConnection;
+import edu.esportify.entities.Announcement;
+import edu.esportify.interfaces.IService;
+import edu.esportify.tools.MyConnection;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -97,6 +97,14 @@ public class AnnouncementService implements IService<Announcement> {
             throw new IllegalStateException("Erreur base de donnees: " + e.getMessage(), e);
         }
         return data;
+    }
+
+    public void clearAll() {
+        try (Statement st = getConnection().createStatement()) {
+            st.executeUpdate("DELETE FROM announcements");
+        } catch (SQLException e) {
+            throw new IllegalStateException("Erreur base de donnees: " + e.getMessage(), e);
+        }
     }
 
     public void deleteById(int id) {

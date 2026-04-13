@@ -1,4 +1,4 @@
-package edu.connexion3a77.entities;
+package edu.esportify.entities;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

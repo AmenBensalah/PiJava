@@ -1,11 +1,11 @@
-package edu.connexion3a77.controllers;
+package edu.esportify.controllers;
 
-import edu.connexion3a77.entities.Announcement;
-import edu.connexion3a77.entities.Commentaire;
-import edu.connexion3a77.entities.FilActualite;
-import edu.connexion3a77.services.AnnouncementService;
-import edu.connexion3a77.services.CommentaireService;
-import edu.connexion3a77.services.FilActualiteService;
+import edu.esportify.entities.Announcement;
+import edu.esportify.entities.Commentaire;
+import edu.esportify.entities.FilActualite;
+import edu.esportify.services.AnnouncementService;
+import edu.esportify.services.CommentaireService;
+import edu.esportify.services.FilActualiteService;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;

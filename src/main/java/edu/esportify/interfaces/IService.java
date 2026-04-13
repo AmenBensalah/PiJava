@@ -1,4 +1,4 @@
-package edu.connexion3a77.interfaces;
+package edu.esportify.interfaces;
 
 import java.util.List;
 

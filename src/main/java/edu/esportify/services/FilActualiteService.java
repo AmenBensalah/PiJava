@@ -1,8 +1,8 @@
-package edu.connexion3a77.services;
+package edu.esportify.services;
 
-import edu.connexion3a77.entities.FilActualite;
-import edu.connexion3a77.interfaces.IService;
-import edu.connexion3a77.tools.MyConnection;
+import edu.esportify.entities.FilActualite;
+import edu.esportify.interfaces.IService;
+import edu.esportify.tools.MyConnection;
 
 import java.net.URI;
 import java.net.URISyntaxException;

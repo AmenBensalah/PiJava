@@ -1,4 +1,4 @@
-package edu.connexion3a77.tools;
+package edu.esportify.tools;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +28,27 @@ public class MyConnection {
                 event_location VARCHAR(255) NULL,
                 max_participants INT NULL,
                 author_id INT NULL
+            )
+            """;
+    private static final String ANNOUNCEMENTS_SCHEMA_SQL = """
+            CREATE TABLE IF NOT EXISTS announcements (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                title VARCHAR(180) NOT NULL,
+                content TEXT NULL,
+                tag VARCHAR(60) NOT NULL,
+                link VARCHAR(255) NULL,
+                created_at DATETIME NOT NULL,
+                media_type VARCHAR(255) NOT NULL DEFAULT 'text',
+                media_filename VARCHAR(255) NULL
+            )
+            """;
+    private static final String COMMENTAIRES_SCHEMA_SQL = """
+            CREATE TABLE IF NOT EXISTS commentaires (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                author_id INT NOT NULL,
+                post_id INT NOT NULL,
+                content TEXT NOT NULL,
+                created_at DATETIME NOT NULL
             )
             """;
 
@@ -69,6 +90,8 @@ public class MyConnection {
     public synchronized void initializeDatabase() {
         try (Statement st = getCnx().createStatement()) {
             st.executeUpdate(POSTS_SCHEMA_SQL);
+            st.executeUpdate(ANNOUNCEMENTS_SCHEMA_SQL);
+            st.executeUpdate(COMMENTAIRES_SCHEMA_SQL);
         } catch (SQLException e) {
             throw new IllegalStateException("Initialisation de la base impossible: " + e.getMessage(), e);
         }

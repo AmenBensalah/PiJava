@@ -1,7 +1,7 @@
-package edu.connexion3a77.services;
+package edu.esportify.services;
 
-import edu.connexion3a77.entities.FilActualite;
-import edu.connexion3a77.tools.MyConnection;
+import edu.esportify.entities.FilActualite;
+import edu.esportify.tools.MyConnection;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;

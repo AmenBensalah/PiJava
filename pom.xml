@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>edu.connexion3a77</groupId>
+    <groupId>edu.esportify</groupId>
     <artifactId>pi_dev_java</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>pi_dev_java</name>
@@ -62,7 +62,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>edu.connexion3a77.tests.MainFX</mainClass>
+                    <mainClass>edu.esportify.tests.MainFX</mainClass>
                 </configuration>
             </plugin>
         </plugins>
