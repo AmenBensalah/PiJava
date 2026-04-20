@@ -99,4 +99,15 @@ public class ProduitService implements IService<Produit> {
         }
         return list;
     }
+
+    public boolean existeDeja(String nom) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM `produit` WHERE `nom` = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, nom);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+        return false;
+    }
 }

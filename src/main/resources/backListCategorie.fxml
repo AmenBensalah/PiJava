@@ -67,16 +67,28 @@
                             </children>
                         </HBox>
 
-                        <VBox styleClass="filter-panel" VBox.vgrow="ALWAYS">
-                            <HBox styleClass="table-header-row" spacing="10">
-                                <Label text="ID" prefWidth="50" styleClass="table-header-text" />
-                                <Label text="NOM" prefWidth="300" styleClass="table-header-text" />
-                                <Label text="NB PRODUITS" prefWidth="150" styleClass="table-header-text" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Label text="ACTIONS" prefWidth="150" alignment="CENTER_RIGHT" styleClass="table-header-text" />
-                            </HBox>
-                            <VBox fx:id="tableContainer" />
-                        </VBox>
+                        <HBox spacing="30.0" VBox.vgrow="ALWAYS">
+                            <!-- SECTION GAUCHE : TABLEAU -->
+                            <VBox styleClass="filter-panel" HBox.hgrow="ALWAYS">
+                                <HBox styleClass="table-header-row" spacing="10">
+                                    <Label text="ID" prefWidth="50" styleClass="table-header-text" />
+                                    <Label text="NOM" prefWidth="250" styleClass="table-header-text" />
+                                    <Label text="NB PRODUITS" prefWidth="120" styleClass="table-header-text" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Label text="ACTIONS" prefWidth="150" alignment="CENTER_RIGHT" styleClass="table-header-text" />
+                                </HBox>
+                                <VBox fx:id="tableContainer" />
+                            </VBox>
+
+                            <!-- SECTION DROITE : STATISTIQUES 3D -->
+                            <VBox style="-fx-background-color: #151521; -fx-border-color: linear-gradient(to right, #00e5ff, #8a2be2); -fx-border-width: 2px; -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-effect: dropshadow(three-pass-box, rgba(138,43,226,0.5), 30, 0, 0, 0);" minWidth="400" prefWidth="450" alignment="TOP_CENTER" spacing="20">
+                                <padding><Insets top="30" right="20" bottom="20" left="20"/></padding>
+                                <Label text="📊 RÉPARTITION DENSITÉ" style="-fx-text-fill: #00e5ff; -fx-font-size: 20px; -fx-font-weight: 900; -fx-font-family: 'Impact'; -fx-effect: dropshadow(one-pass-box, #00e5ff, 10, 0, 0, 0);" />
+                                <Label text="Volume de produits par Catégorie" style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;" />
+                                
+                                <javafx.scene.chart.PieChart fx:id="statChart" prefHeight="400" style="-fx-pie-label-visible: true; -fx-legend-visible: false; -fx-cursor: hand;" />
+                            </VBox>
+                        </HBox>
                     </children>
                 </VBox>
             </content>

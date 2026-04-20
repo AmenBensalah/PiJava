@@ -14,6 +14,15 @@ public class CategorieService implements IService<Categorie> {
 
     public CategorieService() {
         connection = MyDatabase.getInstance().getConnection();
+        try {
+            // Essaie de définir id comme clé primaire (échouera silencieusement si c'est déjà le cas)
+            connection.createStatement().executeUpdate("ALTER TABLE `categorie` ADD PRIMARY KEY(`id`);");
+        } catch (SQLException ignored) {}
+        
+        try {
+            // Force l'auto-increment sur la colonne ID
+            connection.createStatement().executeUpdate("ALTER TABLE `categorie` MODIFY `id` INT AUTO_INCREMENT;");
+        } catch (SQLException ignored) {}
     }
 
     @Override

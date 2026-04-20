@@ -96,6 +96,12 @@ public class BackAjoutProduitController implements Initializable {
     void ajouterProduit(ActionEvent event) {
         if (validerSaisie()) {
             try {
+                // VERIFICATION DES DOUBLONS PAR NOM
+                if (produitService.existeDeja(tfNom.getText().trim())) {
+                    showAlert(Alert.AlertType.WARNING, "PRODUIT EXISTANT", "Un produit portant le nom '" + tfNom.getText().trim() + "' existe déjà dans le catalogue.");
+                    return;
+                }
+
                 Produit p = new Produit();
                 remplirProduitDepuisFormulaire(p);
                 produitService.ajouter(p);

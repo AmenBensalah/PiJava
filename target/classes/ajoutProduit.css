@@ -547,3 +547,124 @@
     -fx-background-color: rgba(0, 229, 255, 0.1);
     -fx-background-radius: 0 10px 10px 0;
 }
+
+/* =========================================
+   CHATBOT UI - FLOATING WINDOW
+   ========================================= */
+.btn-chatbot-toggle {
+    -fx-background-color: linear-gradient(to right, #00e5ff, #0099ff);
+    -fx-text-fill: #000;
+    -fx-font-weight: 900;
+    -fx-font-size: 14px;
+    -fx-background-radius: 30px;
+    -fx-padding: 15px 25px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 229, 255, 0.6), 15, 0, 0, 0);
+    -fx-cursor: hand;
+}
+.btn-chatbot-toggle:hover {
+    -fx-graphic-text-gap: 10px;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 229, 255, 1.0), 20, 0, 0, 0);
+    -fx-translate-y: -2px;
+}
+
+.chatbot-window {
+    -fx-background-color: rgba(15, 23, 42, 0.95);
+    -fx-background-radius: 12px;
+    -fx-border-color: #2a3143;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 20, 0, 0, 10);
+}
+
+.chatbot-header {
+    -fx-background-color: linear-gradient(to right, #001f3f, #1e003b);
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-padding: 10px 15px;
+    -fx-border-color: transparent transparent #00e5ff transparent;
+    -fx-border-width: 1px;
+}
+
+.chatbot-close-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94a3b8;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+.chatbot-close-btn:hover {
+    -fx-text-fill: #ff0055;
+    -fx-background-color: rgba(255, 0, 85, 0.1);
+    -fx-background-radius: 5px;
+}
+
+.chatbot-scroll {
+    -fx-background-color: transparent;
+}
+.chatbot-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.chatbot-input {
+    -fx-background-color: #0f172a;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #64748b;
+    -fx-background-radius: 20px;
+    -fx-border-color: #334155;
+    -fx-border-radius: 20px;
+    -fx-padding: 8px 15px;
+}
+.chatbot-input:focused {
+    -fx-border-color: #00e5ff;
+}
+
+/* ========================================================
+   CYBER PIE CHART (3D GLASSMORPHISM)
+   ======================================================== */
+.cyber-pie-chart {
+    -fx-padding: 0;
+}
+.cyber-pie-chart .chart-pie {
+    -fx-border-color: rgba(255, 255, 255, 0.4);
+    -fx-border-width: 1px;
+    -fx-effect: innershadow(three-pass-box, rgba(255, 255, 255, 0.5), 15, 0, 0, 0); 
+}
+.cyber-pie-chart .chart-pie-label {
+    -fx-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(one-pass-box, #ff0055, 5, 0, 0, 0);
+}
+.cyber-pie-chart .chart-pie-label-line {
+    -fx-stroke: #00e5ff;
+    -fx-stroke-width: 1.5px;
+}
+
+/* 3D Radiant Gradients for slices */
+.cyber-pie-chart .default-color0.chart-pie { -fx-pie-color: linear-gradient(to bottom right, #ff0055, #8a2be2); }
+.cyber-pie-chart .default-color1.chart-pie { -fx-pie-color: linear-gradient(to bottom right, #00e5ff, #0088ff); }
+.cyber-pie-chart .default-color2.chart-pie { -fx-pie-color: linear-gradient(to bottom right, #bd00ff, #ff00a0); }
+.cyber-pie-chart .default-color3.chart-pie { -fx-pie-color: linear-gradient(to bottom right, #00ffbb, #0088ff); }
+.cyber-pie-chart .default-color4.chart-pie { -fx-pie-color: linear-gradient(to bottom right, #ffe600, #ff5500); }
+.cyber-pie-chart .default-color5.chart-pie { -fx-pie-color: radial-gradient(center 50% 50%, radius 100%, #ffffff, #8a2be2); }
+
+.cyber-bar-chart .chart-bar {
+    -fx-bar-fill: linear-gradient(to top, #ff0055, #00e5ff);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 229, 255, 0.8), 20, 0, 0, 0);
+    -fx-background-radius: 5px 5px 0 0;
+}
+.cyber-bar-chart .axis {
+    -fx-tick-label-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 10px;
+}
+.cyber-bar-chart .chart-plot-background {
+    -fx-background-color: transparent;
+}
+.cyber-bar-chart .chart-vertical-grid-lines,
+.cyber-bar-chart .chart-horizontal-grid-lines {
+    -fx-stroke: transparent;
+}
+.cyber-bar-chart .axis-tick-mark, .cyber-bar-chart .axis-minor-tick-mark {
+    -fx-stroke: transparent;
+}

@@ -49,6 +49,7 @@
                 
                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="🛍️ Gestion Boutique" />
                 <VBox>
+                    <Button maxWidth="1.7976931348623157E308" text="🤍 Centre de Mailing" styleClass="sidebar-submenu-btn" onAction="#goToMailing" />
                     <Button maxWidth="1.7976931348623157E308" text="🏷️ Produits" styleClass="sidebar-submenu-btn, sidebar-submenu-active" />
                     <Button maxWidth="1.7976931348623157E308" text="🏷️ Catégories" styleClass="sidebar-submenu-btn" onAction="#goToAdminCategorie" />
                     <Button maxWidth="1.7976931348623157E308" text="💳 Paiements" styleClass="sidebar-submenu-btn" />
@@ -89,6 +90,36 @@
                                     <Button onAction="#chargerProduits" text="🔁" styleClass="btn-secondary" prefWidth="50" prefHeight="45" />
                                 </HBox>
                             </children>
+                        </HBox>
+
+                        <HBox spacing="20">
+                            <!-- STAT: TOTAL PRODUITS -->
+                            <VBox style="-fx-background-color: #151521; -fx-border-color: #00e5ff; -fx-border-width: 0 0 0 4; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(0, 229, 255, 0.4), 15, 0, 0, 0);" minWidth="200" prefHeight="100" alignment="CENTER" spacing="5">
+                                <Label text="TOTAL PRODUITS" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: bold;" />
+                                <Label fx:id="statTotal" text="0" style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 900; -fx-effect: dropshadow(one-pass-box, #00e5ff, 5, 0, 0, 0);" />
+                            </VBox>
+                            
+                            <!-- STAT: VALEUR CATALOGUE -->
+                            <VBox style="-fx-background-color: #151521; -fx-border-color: #8a2be2; -fx-border-width: 0 0 0 4; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(138,43,226,0.4), 15, 0, 0, 0);" minWidth="200" prefHeight="100" alignment="CENTER" spacing="5">
+                                <Label text="VALEUR CATALOGUE" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: bold;" />
+                                <Label fx:id="statValeur" text="0 €" style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 900; -fx-effect: dropshadow(one-pass-box, #8a2be2, 5, 0, 0, 0);" />
+                            </VBox>
+                            
+                            <!-- STAT: EN RUPTURE -->
+                            <VBox style="-fx-background-color: #151521; -fx-border-color: #ff0055; -fx-border-width: 0 0 0 4; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(255,0,85,0.4), 15, 0, 0, 0);" minWidth="200" prefHeight="100" alignment="CENTER" spacing="5">
+                                <Label text="EN RUPTURE" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: bold;" />
+                                <Label fx:id="statRupture" text="0" style="-fx-text-fill: #ff0055; -fx-font-size: 28px; -fx-font-weight: 900; -fx-effect: dropshadow(one-pass-box, #ff0055, 5, 0, 0, 0);" />
+                            </VBox>
+
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <!-- GRAPH : STOCKS -->
+                            <VBox style="-fx-background-color: #11111a; -fx-border-color: linear-gradient(to bottom right, #ff0055, #bd00ff, #00e5ff); -fx-border-width: 2px; -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-effect: dropshadow(three-pass-box, rgba(189, 0, 255, 0.5), 30, 0, 0, 0);" prefWidth="400" prefHeight="130" alignment="CENTER" spacing="5">
+                                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                                <Label text="📊 DENSITÉ DES STOCKS PAR PRODUIT" style="-fx-text-fill: white; -fx-font-weight: 900; -fx-font-size: 11px; -fx-effect: dropshadow(one-pass-box, #ff0055, 5, 0, 0, 0);" />
+                                <!-- PIECHART ANIMÉ ET PLUS LISIBLE -->
+                                <javafx.scene.chart.PieChart fx:id="statChartProduit" prefHeight="120" style="-fx-legend-visible: false; -fx-pie-label-visible: true; -fx-font-weight: bold; -fx-cursor: hand;" />
+                            </VBox>
                         </HBox>
 
                         <HBox fx:id="categoryPillsContainer" spacing="12" alignment="CENTER_LEFT" />

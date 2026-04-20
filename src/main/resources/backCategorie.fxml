@@ -73,8 +73,8 @@
 
                     <GridPane alignment="CENTER" hgap="20.0" vgap="25.0">
                         <children>
-                            <Label styleClass="filter-label" text="ID CATÉGORIE" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                            <TextField fx:id="tfId" promptText="ID (requis pour Modifier/Supprimer)" styleClass="filter-input" prefWidth="350" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                            <Label styleClass="filter-label" text="ID (AUTO-INCRÉMENT)" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <TextField fx:id="tfId" promptText="Laissez vide pour l'Ajout. Requis pour Modif/Suppr." styleClass="filter-input" prefWidth="350" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                             <Label styleClass="filter-label" text="NOM" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                             <TextField fx:id="tfNom" promptText="Ex: Périphériques, Composants..." styleClass="filter-input" GridPane.columnIndex="1" GridPane.rowIndex="1" />

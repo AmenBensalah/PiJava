@@ -29,6 +29,7 @@ import java.util.ResourceBundle;
 public class BackListCategorieController implements Initializable {
 
     @FXML private VBox tableContainer;
+    @FXML private javafx.scene.chart.PieChart statChart;
 
     private CategorieService categorieService = new CategorieService();
     private ProduitService produitService = new ProduitService();
@@ -42,11 +43,26 @@ public class BackListCategorieController implements Initializable {
     void chargerCategories() {
         try {
             tableContainer.getChildren().clear();
+            if (statChart != null) statChart.getData().clear();
+            
             List<Categorie> categories = categorieService.recuperer();
             
             for (Categorie c : categories) {
                 HBox row = createTableRow(c);
                 tableContainer.getChildren().add(row);
+                
+                // Remplissage du Graphique 3D
+                if (statChart != null) {
+                    long count = 0;
+                    try {
+                        count = produitService.recuperer().stream().filter(p -> p.getCategorieId() == c.getId()).count();
+                    } catch (Exception ignored) {}
+                    
+                    if (count > 0) {
+                        javafx.scene.chart.PieChart.Data slice = new javafx.scene.chart.PieChart.Data(c.getNom() + " (" + count + ")", count);
+                        statChart.getData().add(slice);
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

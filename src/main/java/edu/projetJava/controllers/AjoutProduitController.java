@@ -192,8 +192,17 @@ public class AjoutProduitController implements Initializable {
         actionBox.setAlignment(Pos.CENTER);
         actionBox.setSpacing(10.0);
         
-        Label details = new Label("Voir détails");
-        details.getStyleClass().add("link-details");
+        Button youtubeBtn = new Button("▶ Tuto Install");
+        youtubeBtn.setStyle("-fx-background-color: #e52d27; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5px; -fx-cursor: hand; -fx-font-size: 10px;");
+        youtubeBtn.setOnAction(e -> {
+            try {
+                String query = "comment installer " + p.getNom();
+                String url = "https://www.youtube.com/results?search_query=" + java.net.URLEncoder.encode(query, "UTF-8");
+                java.awt.Desktop.getDesktop().browse(new java.net.URI(url));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
         
         Region spacer2 = new Region();
         HBox.setHgrow(spacer2, Priority.ALWAYS);
@@ -201,9 +210,59 @@ public class AjoutProduitController implements Initializable {
         Button cartBtn = new Button("Ajouter");
         cartBtn.getStyleClass().add("btn-cart");
         
-        actionBox.getChildren().addAll(details, spacer2, cartBtn);
+        actionBox.getChildren().addAll(youtubeBtn, spacer2, cartBtn);
 
         card.getChildren().addAll(imgArea, title, priceStockBox, actionBox);
         return card;
+    }
+
+    // --- CHATBOT GEMINI INTEGRATION ---
+    @FXML private VBox chatbotWindow;
+    @FXML private VBox chatMessages;
+    @FXML private TextField chatInput;
+
+    @FXML
+    void toggleChatbot(ActionEvent event) {
+        chatbotWindow.setVisible(!chatbotWindow.isVisible());
+        if (chatbotWindow.isVisible() && chatMessages.getChildren().isEmpty()) {
+            addMessageBubble("IA Assistant", "Bonjour! Je suis l'assistant E-SPORTIFY. Comment puis-je vous aider aujourd'hui?", "-fx-background-color: #1a1a2e; -fx-border-color: linear-gradient(to right, #8a2be2, #4a00e0); -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(138,43,226,0.6), 15, 0, 0, 0); -fx-text-fill: white;");
+        }
+    }
+
+    @FXML
+    void sendChatMessage(ActionEvent event) {
+        String text = chatInput.getText().trim();
+        if(text.isEmpty()) return;
+        
+        addMessageBubble("Vous", text, "-fx-background-color: #0f3443; -fx-border-color: #00e5ff; -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(0,229,255,0.7), 15, 0, 0, 0); -fx-text-fill: white;");
+        chatInput.clear();
+        
+        // Appeler Gemini API de manière asynchrone pour ne pas bloquer l'interface
+        new Thread(() -> {
+            String response = edu.projetJava.services.GeminiAIService.getResponse(text);
+            javafx.application.Platform.runLater(() -> {
+                addMessageBubble("IA Assistant", response, "-fx-background-color: #1a1a2e; -fx-border-color: linear-gradient(to right, #8a2be2, #4a00e0); -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(138,43,226,0.6), 15, 0, 0, 0); -fx-text-fill: white;");
+            });
+        }).start();
+    }
+
+    private void addMessageBubble(String sender, String text, String style) {
+        VBox bubbleBox = new VBox(5);
+        Label senderLabel = new Label(sender);
+        senderLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #aaa;");
+        
+        Label messageLabel = new Label(text);
+        messageLabel.setWrapText(true);
+        messageLabel.setMaxWidth(260); // Evite de depasser la largeur de la fenetre
+        messageLabel.setStyle(style + " -fx-padding: 10; -fx-background-radius: 10;");
+        
+        if (sender.equals("Vous")) {
+            bubbleBox.setAlignment(Pos.CENTER_RIGHT);
+        } else {
+            bubbleBox.setAlignment(Pos.CENTER_LEFT);
+        }
+        
+        bubbleBox.getChildren().addAll(senderLabel, messageLabel);
+        chatMessages.getChildren().add(bubbleBox);
     }
 }

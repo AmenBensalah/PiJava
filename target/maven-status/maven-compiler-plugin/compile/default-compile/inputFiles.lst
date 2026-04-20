@@ -3,10 +3,13 @@ C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\servi
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\models\Produit.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\BackListProduitController.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\test\Main.java
-C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\BackAjoutProduitController.java
-C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\BackCategorieController.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\BackListCategorieController.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\interfaces\IService.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\models\Categorie.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\AjoutProduitController.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\BackMailingController.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\BackAjoutProduitController.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\BackCategorieController.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\services\GeminiAIService.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\services\MailService.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\services\CategorieService.java

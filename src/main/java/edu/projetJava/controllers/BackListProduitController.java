@@ -131,6 +131,11 @@ public class BackListProduitController implements Initializable {
     @FXML void triPrixDesc() { currentSortMode = "prix_desc"; appliquerFiltres(); }
     @FXML void triStock() { currentSortMode = "stock"; appliquerFiltres(); }
 
+    @FXML private Label statTotal;
+    @FXML private Label statValeur;
+    @FXML private Label statRupture;
+    @FXML private javafx.scene.chart.PieChart statChartProduit;
+
     @FXML void chargerProduits() {
         if(searchNom != null) searchNom.clear();
         if(searchPrixMin != null) searchPrixMin.clear();
@@ -140,6 +145,41 @@ public class BackListProduitController implements Initializable {
         currentSortMode = "none";
         chargerCategoriesPills();
         appliquerFiltres();
+        mettreAJourStatistiques();
+    }
+
+    private void mettreAJourStatistiques() {
+        try {
+            List<Produit> tous = produitService.recuperer();
+            int total = tous.size();
+            long rupture = tous.stream().filter(p -> p.getStock() <= 0).count();
+            
+            // Calcul exact de la valeur totale en stock : (Prix * Quantité) pour tous les produits dispo
+            long valeurCatalogue = tous.stream()
+                .filter(p -> p.getStock() > 0)
+                .mapToLong(p -> (long)(p.getPrix() * p.getStock()))
+                .sum();
+
+            if (statTotal != null) statTotal.setText(String.valueOf(total));
+            if (statValeur != null) statValeur.setText(valeurCatalogue + " €");
+            if (statRupture != null) statRupture.setText(String.valueOf(rupture));
+
+            if (statChartProduit != null) {
+                statChartProduit.getData().clear();
+                
+                // Trie les produits par stock (décroissant) et prend les 10 plus gros (ou tous si moins de 10)
+                tous.stream()
+                    .filter(p -> p.getStock() > 0)
+                    .sorted((p1, p2) -> Integer.compare(p2.getStock(), p1.getStock()))
+                    .limit(10)
+                    .forEach(p -> {
+                        javafx.scene.chart.PieChart.Data slice = new javafx.scene.chart.PieChart.Data(p.getNom(), p.getStock());
+                        statChartProduit.getData().add(slice);
+                    });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private HBox createTableRow(Produit p) {
@@ -335,6 +375,14 @@ public class BackListProduitController implements Initializable {
     @FXML
     void goToFrontOffice(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/ajoutProduit.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.setFullScreen(true);
+    }
+
+    @FXML
+    void goToMailing(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/backMailing.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.setFullScreen(true);
