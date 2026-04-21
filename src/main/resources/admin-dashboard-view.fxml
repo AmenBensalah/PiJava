@@ -3,7 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -39,11 +41,13 @@
         </VBox>
     </left>
     <center>
-        <VBox spacing="18.0" styleClass="content-shell">
-            <padding>
-                <Insets bottom="24.0" left="24.0" right="24.0" top="24.0"/>
-            </padding>
-            <children>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="page-scroll">
+            <content>
+                <VBox spacing="18.0" styleClass="content-shell">
+                    <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0"/>
+                    </padding>
+                    <children>
                 <HBox alignment="CENTER_LEFT" styleClass="top-bar">
                     <children>
                         <Label fx:id="pageTitleLabel" styleClass="page-title" text="Liste des commandes"/>
@@ -102,6 +106,158 @@
                                         </VBox>
                                     </children>
                                 </VBox>
+                                <VBox fx:id="paymentFilterCard" managed="false" spacing="16.0" styleClass="admin-filter-card" visible="false">
+                                    <children>
+                                        <HBox spacing="16.0">
+                                            <children>
+                                                <VBox spacing="8.0" prefWidth="220.0">
+                                                    <children>
+                                                        <Label styleClass="admin-filter-label" text="Date debut"/>
+                                                        <DatePicker fx:id="paymentDateDebutPicker" prefWidth="220.0" styleClass="dark-date-picker"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox spacing="8.0" prefWidth="220.0">
+                                                    <children>
+                                                        <Label styleClass="admin-filter-label" text="Date fin"/>
+                                                        <DatePicker fx:id="paymentDateFinPicker" prefWidth="220.0" styleClass="dark-date-picker"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox alignment="BOTTOM_LEFT" spacing="8.0">
+                                                    <children>
+                                                        <Label opacity="0.0" text="."/>
+                                                        <HBox spacing="10.0">
+                                                            <children>
+                                                                <Button mnemonicParsing="false" onAction="#applyPaymentFilters" prefWidth="140.0" styleClass="primary-button" text="Filtrer"/>
+                                                                <Button mnemonicParsing="false" onAction="#resetPaymentFilters" prefWidth="140.0" styleClass="ghost-button" text="Reinitialiser"/>
+                                                                <Button mnemonicParsing="false" onAction="#printPaymentReport" prefWidth="140.0" styleClass="secondary-button" text="Imprimer"/>
+                                                                <Button mnemonicParsing="false" onAction="#exportPaymentReportPdf" prefWidth="160.0" styleClass="primary-button" text="Exporter PDF"/>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <VBox fx:id="predictionPanel" managed="false" spacing="16.0" styleClass="prediction-shell" visible="false">
+                                    <children>
+                                        <Label fx:id="predictionModeLabel" styleClass="prediction-pill" text="Mode prediction: analyse historique des paiements"/>
+                                        <FlowPane hgap="16.0" vgap="16.0">
+                                            <children>
+                                                <VBox prefWidth="250.0" spacing="10.0" styleClass="prediction-card">
+                                                    <children>
+                                                        <Label styleClass="prediction-card-title" text="Prevision chiffre d'affaires"/>
+                                                        <Label fx:id="predictedRevenueLabel" styleClass="prediction-primary-value" text="0.00 TND"/>
+                                                        <Label styleClass="prediction-card-subtitle" text="Jour suivant"/>
+                                                        <HBox spacing="24.0">
+                                                            <children>
+                                                                <VBox spacing="4.0">
+                                                                    <children>
+                                                                        <Label styleClass="prediction-mini-label" text="Semaine"/>
+                                                                        <Label fx:id="predictedRevenueWeekLabel" styleClass="prediction-mini-value" text="0.00 TND"/>
+                                                                    </children>
+                                                                </VBox>
+                                                                <VBox spacing="4.0">
+                                                                    <children>
+                                                                        <Label styleClass="prediction-mini-label" text="Mois"/>
+                                                                        <Label fx:id="predictedRevenueMonthLabel" styleClass="prediction-mini-value" text="0.00 TND"/>
+                                                                    </children>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <Label fx:id="predictedTrendLabel" styleClass="prediction-accent-label" text="Tendance 7j: +0.00%"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox prefWidth="250.0" spacing="10.0" styleClass="prediction-card">
+                                                    <children>
+                                                        <Label styleClass="prediction-card-title" text="Paiements prevus"/>
+                                                        <Label fx:id="predictedOrdersLabel" styleClass="prediction-primary-value" text="0"/>
+                                                        <Label styleClass="prediction-card-subtitle" text="Paiements pour le prochain jour"/>
+                                                        <HBox spacing="24.0">
+                                                            <children>
+                                                                <VBox spacing="4.0">
+                                                                    <children>
+                                                                        <Label styleClass="prediction-mini-label" text="Semaine"/>
+                                                                        <Label fx:id="predictedOrdersWeekLabel" styleClass="prediction-mini-value" text="0"/>
+                                                                    </children>
+                                                                </VBox>
+                                                                <VBox spacing="4.0">
+                                                                    <children>
+                                                                        <Label styleClass="prediction-mini-label" text="Mois"/>
+                                                                        <Label fx:id="predictedOrdersMonthLabel" styleClass="prediction-mini-value" text="0"/>
+                                                                    </children>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <Label styleClass="prediction-card-subtitle" text="Projection basee sur moyenne glissante + saisonnalite"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox prefWidth="220.0" spacing="10.0" styleClass="prediction-card">
+                                                    <children>
+                                                        <Label styleClass="prediction-card-title" text="Panier moyen"/>
+                                                        <Label fx:id="averageTicketLabel" styleClass="prediction-primary-value" text="0.00 TND"/>
+                                                        <Label styleClass="prediction-card-subtitle" text="Montant moyen par paiement"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox prefWidth="240.0" spacing="8.0" styleClass="prediction-card">
+                                                    <children>
+                                                        <Label styleClass="prediction-card-title" text="Snapshot actuel"/>
+                                                        <HBox spacing="12.0">
+                                                            <children>
+                                                                <VBox spacing="2.0">
+                                                                    <children>
+                                                                        <Label styleClass="prediction-mini-label" text="CA aujourd'hui"/>
+                                                                        <Label fx:id="snapshotTodayRevenueLabel" styleClass="prediction-mini-value" text="0.00 TND"/>
+                                                                    </children>
+                                                                </VBox>
+                                                                <VBox spacing="2.0">
+                                                                    <children>
+                                                                        <Label styleClass="prediction-mini-label" text="CA 7 jours"/>
+                                                                        <Label fx:id="snapshotWeekRevenueLabel" styleClass="prediction-mini-value" text="0.00 TND"/>
+                                                                    </children>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <VBox spacing="2.0">
+                                                            <children>
+                                                                <Label styleClass="prediction-mini-label" text="CA 30 jours"/>
+                                                                <Label fx:id="snapshotMonthRevenueLabel" styleClass="prediction-mini-value" text="0.00 TND"/>
+                                                            </children>
+                                                        </VBox>
+                                                        <VBox spacing="2.0">
+                                                            <children>
+                                                                <Label styleClass="prediction-mini-label" text="Paiements affiches"/>
+                                                                <Label fx:id="snapshotPaidCountLabel" styleClass="prediction-mini-value" text="0"/>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </FlowPane>
+                                        <HBox spacing="16.0">
+                                            <children>
+                                                <VBox HBox.hgrow="ALWAYS" spacing="12.0" styleClass="prediction-list-card">
+                                                    <children>
+                                                        <Label styleClass="section-title" text="Distribution par jour"/>
+                                                        <VBox fx:id="distributionContainer" spacing="4.0"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox HBox.hgrow="ALWAYS" spacing="12.0" styleClass="prediction-list-card">
+                                                    <children>
+                                                        <Label styleClass="section-title" text="Evolution journaliere (14 jours)"/>
+                                                        <VBox fx:id="dailyEvolutionContainer" spacing="4.0"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox HBox.hgrow="ALWAYS" spacing="12.0" styleClass="prediction-list-card">
+                                                    <children>
+                                                        <Label styleClass="section-title" text="Evolution hebdomadaire (8 semaines)"/>
+                                                        <VBox fx:id="weeklyEvolutionContainer" spacing="4.0"/>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
                                 <HBox alignment="CENTER_LEFT">
                                     <children>
                                         <Label fx:id="sectionTitleLabel" styleClass="section-title" text="Liste des commandes"/>
@@ -135,7 +291,9 @@
                         </VBox>
                     </children>
                 </HBox>
-            </children>
-        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
     </center>
 </BorderPane>

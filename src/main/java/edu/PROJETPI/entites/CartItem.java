@@ -1,6 +1,12 @@
 package edu.PROJETPI.entites;
 
-public class CartItem {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class CartItem implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private final int produitId;
     private final String nomProduit;
     private int quantite;

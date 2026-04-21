@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class MyConexion {
     private static final String ROOT_URL = "jdbc:mysql://localhost:3306/";
-    private static final String DB_NAME = "projetpi";
+    private static final String DB_NAME = resolveDatabaseName();
     private static final String URL = ROOT_URL + DB_NAME
             + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
     private static final String LOGIN = "root";
@@ -58,7 +58,12 @@ public class MyConexion {
                             "nom VARCHAR(120) NULL, " +
                             "prenom VARCHAR(120) NULL, " +
                             "telephone VARCHAR(40) NULL, " +
-                            "adresse VARCHAR(255) NULL)"
+                            "adresse VARCHAR(255) NULL, " +
+                            "paysLivraison VARCHAR(120) NULL, " +
+                            "gouvernoratLivraison VARCHAR(120) NULL, " +
+                            "codePostalLivraison VARCHAR(40) NULL, " +
+                            "adresseLivraison VARCHAR(255) NULL, " +
+                            "descriptionLivraison VARCHAR(500) NULL)"
             );
 
             st.executeUpdate(
@@ -86,6 +91,11 @@ public class MyConexion {
             ensureColumnExists(conn, "commande", "prenom", "VARCHAR(120) NULL");
             ensureColumnExists(conn, "commande", "telephone", "VARCHAR(40) NULL");
             ensureColumnExists(conn, "commande", "adresse", "VARCHAR(255) NULL");
+            ensureColumnExists(conn, "commande", "paysLivraison", "VARCHAR(120) NULL");
+            ensureColumnExists(conn, "commande", "gouvernoratLivraison", "VARCHAR(120) NULL");
+            ensureColumnExists(conn, "commande", "codePostalLivraison", "VARCHAR(40) NULL");
+            ensureColumnExists(conn, "commande", "adresseLivraison", "VARCHAR(255) NULL");
+            ensureColumnExists(conn, "commande", "descriptionLivraison", "VARCHAR(500) NULL");
             ensureColumnExists(conn, "lignecommande", "commandeId", "INT NOT NULL");
             ensureColumnExists(conn, "lignecommande", "produitId", "INT NOT NULL");
             ensureColumnExists(conn, "lignecommande", "quantite", "INT NOT NULL");
@@ -118,5 +128,19 @@ public class MyConexion {
                 }
             }
         }
+    }
+
+    private static String resolveDatabaseName() {
+        String propertyValue = System.getProperty("projetpi.db");
+        if (propertyValue != null && !propertyValue.isBlank()) {
+            return propertyValue.trim();
+        }
+
+        String envValue = System.getenv("PROJETPI_DB");
+        if (envValue != null && !envValue.isBlank()) {
+            return envValue.trim();
+        }
+
+        return "projetpi";
     }
 }

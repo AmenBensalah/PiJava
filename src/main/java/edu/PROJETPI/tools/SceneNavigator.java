@@ -2,6 +2,7 @@ package edu.PROJETPI.tools;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -13,18 +14,29 @@ public final class SceneNavigator {
 
     public static void switchScene(Node node, String resource, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(SceneNavigator.class.getResource(resource));
-            Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(SceneNavigator.class.getResource("/styles/esportify-theme.css").toExternalForm());
-
             Stage stage = (Stage) node.getScene().getWindow();
             boolean maximized = stage.isMaximized();
-            boolean fullScreen = stage.isFullScreen();
+            double x = stage.getX();
+            double y = stage.getY();
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+
+            FXMLLoader loader = new FXMLLoader(SceneNavigator.class.getResource(resource));
+            Parent root = loader.load();
+            Scene scene = new Scene(root, node.getScene().getWidth(), node.getScene().getHeight());
+            scene.getStylesheets().add(SceneNavigator.class.getResource("/styles/esportify-theme.css").toExternalForm());
+
             stage.setTitle(title);
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMaximized(maximized || !fullScreen);
-            stage.setFullScreen(fullScreen);
+            if (maximized) {
+                stage.setMaximized(true);
+            } else {
+                stage.setX(x);
+                stage.setY(y);
+                stage.setWidth(width);
+                stage.setHeight(height);
+            }
         } catch (IOException e) {
             throw new IllegalStateException("Impossible de charger l'ecran " + resource, e);
         }

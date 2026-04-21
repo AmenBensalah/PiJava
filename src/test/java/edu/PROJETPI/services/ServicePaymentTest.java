@@ -1,5 +1,6 @@
 package edu.PROJETPI.services;
 
+import edu.PROJETPI.entites.Commande;
 import edu.PROJETPI.entites.Payment;
 import org.junit.jupiter.api.Test;
 
@@ -54,5 +55,29 @@ class ServicePaymentTest extends ServiceTestSupport {
         servicePayment.delete(paymentId);
 
         assertTrue(servicePayment.readAll().isEmpty());
+    }
+
+    @Test
+    void readByPeriodShouldReturnOnlyPaymentsInsideRange() throws SQLException {
+        int commandeId1 = insertCommande(sampleCommande());
+        Commande commande2 = sampleCommande();
+        commande2.setDateCommande(java.sql.Date.valueOf("2026-04-15"));
+        int commandeId2 = insertCommande(commande2);
+
+        connection.createStatement().executeUpdate(
+                "INSERT INTO payment (commandeId, montant, datePayment) VALUES (" + commandeId1 + ", 120.0, '2026-04-11')"
+        );
+        connection.createStatement().executeUpdate(
+                "INSERT INTO payment (commandeId, montant, datePayment) VALUES (" + commandeId2 + ", 220.0, '2026-04-15')"
+        );
+
+        List<Payment> payments = servicePayment.readByPeriod(
+                java.sql.Date.valueOf("2026-04-12"),
+                java.sql.Date.valueOf("2026-04-16")
+        );
+
+        assertEquals(1, payments.size());
+        assertEquals(commandeId2, payments.get(0).getCommandeId());
+        assertEquals(220.0, payments.get(0).getMontant());
     }
 }

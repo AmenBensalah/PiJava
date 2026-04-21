@@ -5,6 +5,8 @@ import edu.PROJETPI.entites.LigneCommande;
 import edu.PROJETPI.entites.Payment;
 import edu.PROJETPI.entites.Produit;
 import edu.PROJETPI.services.CatalogueProduitService;
+import edu.PROJETPI.services.PaymentPredictionService;
+import edu.PROJETPI.services.PaymentReportPdfService;
 import edu.PROJETPI.services.ServiceCommande;
 import edu.PROJETPI.services.ServiceLigneCommande;
 import edu.PROJETPI.services.ServicePayment;
@@ -19,18 +21,23 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -39,6 +46,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Comparator;
@@ -104,6 +112,12 @@ public class AdminDashboardController implements Initializable {
     @FXML
     private TableColumn<PaymentRow, PaymentRow> paymentColActions;
     @FXML
+    private VBox paymentFilterCard;
+    @FXML
+    private DatePicker paymentDateDebutPicker;
+    @FXML
+    private DatePicker paymentDateFinPicker;
+    @FXML
     private Label pageTitleLabel;
     @FXML
     private Label sectionTitleLabel;
@@ -111,11 +125,47 @@ public class AdminDashboardController implements Initializable {
     private Button commandesButton;
     @FXML
     private Button paiementsButton;
+    @FXML
+    private VBox predictionPanel;
+    @FXML
+    private Label predictionModeLabel;
+    @FXML
+    private Label predictedRevenueLabel;
+    @FXML
+    private Label predictedRevenueWeekLabel;
+    @FXML
+    private Label predictedRevenueMonthLabel;
+    @FXML
+    private Label predictedTrendLabel;
+    @FXML
+    private Label predictedOrdersLabel;
+    @FXML
+    private Label predictedOrdersWeekLabel;
+    @FXML
+    private Label predictedOrdersMonthLabel;
+    @FXML
+    private Label averageTicketLabel;
+    @FXML
+    private Label snapshotTodayRevenueLabel;
+    @FXML
+    private Label snapshotWeekRevenueLabel;
+    @FXML
+    private Label snapshotMonthRevenueLabel;
+    @FXML
+    private Label snapshotPaidCountLabel;
+    @FXML
+    private VBox dailyEvolutionContainer;
+    @FXML
+    private VBox weeklyEvolutionContainer;
+    @FXML
+    private VBox distributionContainer;
 
     private final ServiceCommande serviceCommande = new ServiceCommande();
     private final ServicePayment servicePayment = new ServicePayment();
     private final ServiceLigneCommande serviceLigneCommande = new ServiceLigneCommande();
     private final CatalogueProduitService catalogueProduitService = new CatalogueProduitService();
+    private final PaymentReportPdfService paymentReportPdfService = new PaymentReportPdfService();
+    private final PaymentPredictionService paymentPredictionService = new PaymentPredictionService();
     private final ObservableList<Commande> commandes = FXCollections.observableArrayList();
     private final FilteredList<Commande> filteredCommandes = new FilteredList<>(commandes, item -> true);
     private final SortedList<Commande> sortedCommandes = new SortedList<>(filteredCommandes);
@@ -160,9 +210,11 @@ public class AdminDashboardController implements Initializable {
     private void refreshData() {
         try {
             if (paymentMode) {
+                validatePaymentDateRange();
                 payments.setAll(buildPaymentRows());
                 paymentTableView.setItems(payments);
                 commandeCountLabel.setText(String.valueOf(payments.size()));
+                refreshPaymentPredictions();
             } else {
                 commandes.setAll(serviceCommande.readAll());
                 applyCommandFilters();
@@ -172,6 +224,8 @@ public class AdminDashboardController implements Initializable {
                     ? "Erreur lors du chargement des paiements : "
                     : "Erreur lors du chargement des commandes : ";
             AlertUtils.showError(message + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            AlertUtils.showError(e.getMessage());
         }
     }
 
@@ -183,10 +237,15 @@ public class AdminDashboardController implements Initializable {
         setActiveMenuButton(commandesButton, paiementsButton);
         commandeFilterCard.setManaged(true);
         commandeFilterCard.setVisible(true);
+        paymentFilterCard.setManaged(false);
+        paymentFilterCard.setVisible(false);
+        predictionPanel.setManaged(false);
+        predictionPanel.setVisible(false);
         commandeTableView.setManaged(true);
         commandeTableView.setVisible(true);
         paymentTableView.setManaged(false);
         paymentTableView.setVisible(false);
+        commandeTableView.setPrefHeight(560.0);
         refreshData();
     }
 
@@ -198,11 +257,43 @@ public class AdminDashboardController implements Initializable {
         setActiveMenuButton(paiementsButton, commandesButton);
         commandeFilterCard.setManaged(false);
         commandeFilterCard.setVisible(false);
+        paymentFilterCard.setManaged(true);
+        paymentFilterCard.setVisible(true);
+        predictionPanel.setManaged(true);
+        predictionPanel.setVisible(true);
         commandeTableView.setManaged(false);
         commandeTableView.setVisible(false);
         paymentTableView.setManaged(true);
         paymentTableView.setVisible(true);
+        paymentTableView.setPrefHeight(280.0);
         refreshData();
+    }
+
+    @FXML
+    private void applyPaymentFilters() {
+        try {
+            validatePaymentDateRange();
+            refreshData();
+        } catch (IllegalArgumentException e) {
+            AlertUtils.showError(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void resetPaymentFilters() {
+        paymentDateDebutPicker.setValue(null);
+        paymentDateFinPicker.setValue(null);
+        refreshData();
+    }
+
+    @FXML
+    private void exportPaymentReportPdf() {
+        generatePaymentReport(false);
+    }
+
+    @FXML
+    private void printPaymentReport() {
+        generatePaymentReport(true);
     }
 
     private void setActiveMenuButton(Button activeButton, Button inactiveButton) {
@@ -214,7 +305,7 @@ public class AdminDashboardController implements Initializable {
 
     private void initializeCommandFilters() {
         statutFilterComboBox.setItems(FXCollections.observableArrayList(
-                FILTER_ALL, "EN_ATTENTE", "PAYEE", "ANNULEE"
+                FILTER_ALL, "EN_ATTENTE", "EN_ATTENTE_PAIEMENT", "EN_LIVRAISON", "PAYEE", "ANNULEE"
         ));
         statutFilterComboBox.setValue(FILTER_ALL);
 
@@ -353,7 +444,8 @@ public class AdminDashboardController implements Initializable {
                 switch (normalized) {
                     case "PAYEE" -> badge.getStyleClass().add("commande-status-paid");
                     case "ANNULEE" -> badge.getStyleClass().add("commande-status-cancelled");
-                    case "EN_ATTENTE" -> badge.getStyleClass().add("commande-status-pending");
+                    case "EN_ATTENTE", "EN_ATTENTE_PAIEMENT", "EN_LIVRAISON" ->
+                            badge.getStyleClass().add("commande-status-pending");
                     default -> badge.getStyleClass().add("commande-status-neutral");
                 }
 
@@ -426,8 +518,11 @@ public class AdminDashboardController implements Initializable {
     }
 
     private ObservableList<PaymentRow> buildPaymentRows() throws SQLException {
+        boolean filteredByPeriod =
+                (paymentDateDebutPicker != null && paymentDateDebutPicker.getValue() != null)
+                        || (paymentDateFinPicker != null && paymentDateFinPicker.getValue() != null);
         Map<Integer, Payment> paymentsByCommandeId = new HashMap<>();
-        for (Payment payment : servicePayment.readAll()) {
+        for (Payment payment : loadPaymentsForCurrentPeriod()) {
             paymentsByCommandeId.put(payment.getCommandeId(), payment);
         }
 
@@ -439,6 +534,9 @@ public class AdminDashboardController implements Initializable {
             }
 
             Payment payment = paymentsByCommandeId.get(commande.getId());
+            if (filteredByPeriod && payment == null) {
+                continue;
+            }
             int displayId = payment != null ? payment.getId() : commande.getId();
             double montant = payment != null ? payment.getMontant() : commande.getTotal();
             Date displayDate = payment != null ? payment.getDatePayment() : commande.getDateCommande();
@@ -450,11 +548,163 @@ public class AdminDashboardController implements Initializable {
                     montant,
                     "Valide",
                     dateLabel,
+                    displayDate == null ? null : new java.sql.Date(displayDate.getTime()).toLocalDate(),
                     payment != null ? payment.getId() : null
             ));
         }
 
         return rows;
+    }
+
+    private List<Payment> loadPaymentsForCurrentPeriod() throws SQLException {
+        LocalDate dateDebut = paymentDateDebutPicker != null ? paymentDateDebutPicker.getValue() : null;
+        LocalDate dateFin = paymentDateFinPicker != null ? paymentDateFinPicker.getValue() : null;
+        if (dateDebut == null && dateFin == null) {
+            return servicePayment.readAll();
+        }
+        return servicePayment.readByPeriod(
+                dateDebut != null ? java.sql.Date.valueOf(dateDebut) : null,
+                dateFin != null ? java.sql.Date.valueOf(dateFin) : null
+        );
+    }
+
+    private void validatePaymentDateRange() {
+        LocalDate dateDebut = paymentDateDebutPicker != null ? paymentDateDebutPicker.getValue() : null;
+        LocalDate dateFin = paymentDateFinPicker != null ? paymentDateFinPicker.getValue() : null;
+        if (dateDebut != null && dateFin != null && dateDebut.isAfter(dateFin)) {
+            throw new IllegalArgumentException("La date debut doit etre inferieure ou egale a la date fin.");
+        }
+    }
+
+    private void generatePaymentReport(boolean printMode) {
+        try {
+            validatePaymentDateRange();
+            if (!paymentMode) {
+                showPaiements();
+            } else if (payments.isEmpty()) {
+                payments.setAll(buildPaymentRows());
+                paymentTableView.setItems(payments);
+            }
+
+            if (payments.isEmpty()) {
+                AlertUtils.showError("Aucun paiement a exporter pour cette periode.");
+                return;
+            }
+
+            var pdfPath = paymentReportPdfService.generateReport(
+                    List.copyOf(payments),
+                    paymentDateDebutPicker != null ? paymentDateDebutPicker.getValue() : null,
+                    paymentDateFinPicker != null ? paymentDateFinPicker.getValue() : null,
+                    getConnectedAdminName()
+            );
+
+            if (printMode) {
+                paymentReportPdfService.printReport(pdfPath);
+                AlertUtils.showSuccess("Rapport des paiements envoye vers l'impression.");
+            } else {
+                paymentReportPdfService.openReport(pdfPath);
+                AlertUtils.showSuccess("Rapport des paiements genere en PDF.");
+            }
+        } catch (IllegalArgumentException e) {
+            AlertUtils.showError(e.getMessage());
+        } catch (SQLException | IOException e) {
+            AlertUtils.showError("Impossible de generer le rapport des paiements : " + e.getMessage());
+        }
+    }
+
+    private String getConnectedAdminName() {
+        String userName = System.getProperty("user.name");
+        return userName == null || userName.isBlank() ? "Administrateur" : userName;
+    }
+
+    private void refreshPaymentPredictions() {
+        PaymentPredictionService.PredictionSnapshot snapshot = paymentPredictionService.analyze(List.copyOf(payments));
+        predictedRevenueLabel.setText(paymentPredictionService.formatMoney(snapshot.predictedNextDayRevenue()));
+        predictedRevenueWeekLabel.setText(paymentPredictionService.formatMoney(snapshot.predictedWeekRevenue()));
+        predictedRevenueMonthLabel.setText(paymentPredictionService.formatMoney(snapshot.predictedMonthRevenue()));
+        predictedTrendLabel.setText("Tendance 7j: " + paymentPredictionService.formatTrend(snapshot.trend7Days()));
+        predictedOrdersLabel.setText(String.valueOf(snapshot.predictedNextDayOrders()));
+        predictedOrdersWeekLabel.setText(String.valueOf(snapshot.predictedWeekOrders()));
+        predictedOrdersMonthLabel.setText(String.valueOf(snapshot.predictedMonthOrders()));
+        averageTicketLabel.setText(paymentPredictionService.formatMoney(snapshot.averageTicket()));
+        snapshotTodayRevenueLabel.setText(paymentPredictionService.formatMoney(snapshot.todayRevenue()));
+        snapshotWeekRevenueLabel.setText(paymentPredictionService.formatMoney(snapshot.last7DaysRevenue()));
+        snapshotMonthRevenueLabel.setText(paymentPredictionService.formatMoney(snapshot.last30DaysRevenue()));
+        snapshotPaidCountLabel.setText(String.valueOf(snapshot.totalPaidPayments()));
+        predictionModeLabel.setText(snapshot.totalPaidPayments() > 0
+                ? "Mode prediction: analyse historique des paiements"
+                : "Mode prediction: donnees insuffisantes, projection prudente");
+
+        populateDailyEvolution(snapshot.dailyPoints());
+        populateWeeklyEvolution(snapshot.weeklyPoints());
+        populateDistribution(snapshot.distributionPoints());
+    }
+
+    private void populateDailyEvolution(List<PaymentPredictionService.DailyPoint> points) {
+        double maxRevenue = points.stream().mapToDouble(PaymentPredictionService.DailyPoint::revenue).max().orElse(1);
+        dailyEvolutionContainer.getChildren().clear();
+        for (PaymentPredictionService.DailyPoint point : points) {
+            String label = String.format("%1$td/%1$tm", java.sql.Date.valueOf(point.date()));
+            dailyEvolutionContainer.getChildren().add(createAnalyticsRow(
+                    label,
+                    point.revenue(),
+                    maxRevenue,
+                    paymentPredictionService.formatMoney(point.revenue()),
+                    point.count() + " pmt"
+            ));
+        }
+    }
+
+    private void populateWeeklyEvolution(List<PaymentPredictionService.WeeklyPoint> points) {
+        double maxRevenue = points.stream().mapToDouble(PaymentPredictionService.WeeklyPoint::revenue).max().orElse(1);
+        weeklyEvolutionContainer.getChildren().clear();
+        for (PaymentPredictionService.WeeklyPoint point : points) {
+            weeklyEvolutionContainer.getChildren().add(createAnalyticsRow(
+                    point.label(),
+                    point.revenue(),
+                    maxRevenue,
+                    paymentPredictionService.formatMoney(point.revenue()),
+                    point.count() + " pmt"
+            ));
+        }
+    }
+
+    private void populateDistribution(List<PaymentPredictionService.DistributionPoint> points) {
+        double maxRevenue = points.stream().mapToDouble(PaymentPredictionService.DistributionPoint::revenue).max().orElse(1);
+        distributionContainer.getChildren().clear();
+        for (PaymentPredictionService.DistributionPoint point : points) {
+            distributionContainer.getChildren().add(createAnalyticsRow(
+                    point.label(),
+                    point.revenue(),
+                    maxRevenue,
+                    paymentPredictionService.formatMoney(point.revenue()),
+                    point.count() + " pmt"
+            ));
+        }
+    }
+
+    private HBox createAnalyticsRow(String labelText, double value, double maxValue, String valueText, String secondaryText) {
+        Label label = new Label(labelText);
+        label.getStyleClass().add("analytics-row-label");
+
+        ProgressBar progressBar = new ProgressBar(maxValue <= 0 ? 0 : Math.min(1.0, value / maxValue));
+        progressBar.getStyleClass().add("analytics-progress");
+        progressBar.setPrefWidth(160);
+
+        VBox valueBox = new VBox(2);
+        Label mainValue = new Label(valueText);
+        mainValue.getStyleClass().add("analytics-row-value");
+        Label secondaryValue = new Label(secondaryText);
+        secondaryValue.getStyleClass().add("analytics-row-subvalue");
+        valueBox.getChildren().addAll(mainValue, secondaryValue);
+
+        HBox row = new HBox(12);
+        row.getStyleClass().add("analytics-row");
+        row.setPadding(new Insets(4, 0, 4, 0));
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        row.getChildren().addAll(label, progressBar, spacer, valueBox);
+        return row;
     }
 
     private void configureModifierColumn() {
@@ -603,14 +853,16 @@ public class AdminDashboardController implements Initializable {
         private final double montant;
         private final String statut;
         private final String dateLabel;
+        private final LocalDate actualDate;
         private final Integer realPaymentId;
 
-        public PaymentRow(int id, int commandeId, double montant, String statut, String dateLabel, Integer realPaymentId) {
+        public PaymentRow(int id, int commandeId, double montant, String statut, String dateLabel, LocalDate actualDate, Integer realPaymentId) {
             this.id = id;
             this.commandeId = commandeId;
             this.montant = montant;
             this.statut = statut;
             this.dateLabel = dateLabel;
+            this.actualDate = actualDate;
             this.realPaymentId = realPaymentId;
         }
 
@@ -632,6 +884,10 @@ public class AdminDashboardController implements Initializable {
 
         public String getDateLabel() {
             return dateLabel;
+        }
+
+        public LocalDate getActualDate() {
+            return actualDate;
         }
 
         public Integer getRealPaymentId() {

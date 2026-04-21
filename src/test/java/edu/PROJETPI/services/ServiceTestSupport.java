@@ -16,6 +16,7 @@ abstract class ServiceTestSupport {
 
     @BeforeAll
     static void initializeDatabase() {
+        System.setProperty("projetpi.db", "projetpi_test");
         MyConexion.initDatabase();
     }
 

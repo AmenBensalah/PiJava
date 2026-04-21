@@ -16,12 +16,12 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="760.0" prefWidth="1280.0" styleClass="app-root"
+<BorderPane prefHeight="760.0" prefWidth="1280.0" styleClass="command-root"
             stylesheets="@styles/esportify-theme.css"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.PROJETPI.CommandeController">
     <left>
-        <VBox prefWidth="250.0" styleClass="sidebar">
+        <VBox prefWidth="250.0" styleClass="command-sidebar">
             <padding>
                 <Insets bottom="24.0" left="20.0" right="20.0" top="26.0"/>
             </padding>
@@ -31,10 +31,10 @@
                 <VBox spacing="12.0" styleClass="side-menu">
                     <children>
                         <Label styleClass="menu-heading" text="Navigation"/>
-                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="side-menu-item" text="Catalogue" onAction="#continueShopping"/>
-                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="side-menu-item" text="Panier" onAction="#goBackToCart"/>
-                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="side-menu-item side-menu-item-active" text="Commandes"/>
-                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="side-menu-item" text="Paiement" onAction="#continueToPayment"/>
+                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="command-menu-item" text="Catalogue" onAction="#continueShopping"/>
+                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="command-menu-item" text="Panier" onAction="#goBackToCart"/>
+                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="command-menu-active" text="Commandes"/>
+                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="command-menu-item" text="Paiement Stripe" onAction="#continueToPayment"/>
                     </children>
                 </VBox>
                 <Region VBox.vgrow="ALWAYS"/>
@@ -45,41 +45,41 @@
     <center>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" pannable="true" styleClass="page-scroll" vbarPolicy="AS_NEEDED">
             <content>
-                <VBox spacing="18.0" styleClass="content-shell">
+                <VBox spacing="18.0" styleClass="command-screen-shell">
                     <padding>
                         <Insets bottom="24.0" left="24.0" right="24.0" top="24.0"/>
                     </padding>
                     <children>
-                        <HBox alignment="CENTER_LEFT" styleClass="top-bar">
+                        <HBox alignment="CENTER_LEFT" styleClass="command-screen-top">
                             <children>
                                 <Label styleClass="page-title" text="Dashboard commandes"/>
                                 <Region HBox.hgrow="ALWAYS"/>
                             </children>
                         </HBox>
-                        <HBox spacing="14.0">
+                        <HBox spacing="14.0" styleClass="command-steps">
                             <children>
-                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="step-box step-box-active">
+                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="command-step-active">
                                     <children>
-                                        <Label styleClass="step-index step-index-active" text="1"/>
-                                        <Label styleClass="step-title step-title-active" text="PANIER"/>
+                                        <Label styleClass="command-step-index-active" text="1"/>
+                                        <Label styleClass="command-step-title-active" text="PANIER"/>
                                     </children>
                                 </HBox>
-                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="step-box">
+                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="command-step">
                                     <children>
-                                        <Label styleClass="step-index" text="2"/>
-                                        <Label styleClass="step-title" text="LIVRAISON"/>
+                                        <Label styleClass="command-step-index" text="2"/>
+                                        <Label styleClass="command-step-title" text="LIVRAISON"/>
                                     </children>
                                 </HBox>
-                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="step-box">
+                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="command-step">
                                     <children>
-                                        <Label styleClass="step-index" text="3"/>
-                                        <Label styleClass="step-title" text="PAIEMENT"/>
+                                        <Label styleClass="command-step-index" text="3"/>
+                                        <Label styleClass="command-step-title" text="PAIEMENT"/>
                                     </children>
                                 </HBox>
-                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="step-box">
+                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="command-step">
                                     <children>
-                                        <Label styleClass="step-index" text="4"/>
-                                        <Label styleClass="step-title" text="CONFIRMATION"/>
+                                        <Label styleClass="command-step-index" text="4"/>
+                                        <Label styleClass="command-step-title" text="CONFIRMATION"/>
                                     </children>
                                 </HBox>
                             </children>
@@ -91,7 +91,7 @@
                             <children>
                                 <VBox HBox.hgrow="ALWAYS" spacing="18.0">
                                     <children>
-                                        <VBox spacing="16.0" styleClass="panel-card">
+                                        <VBox spacing="16.0" styleClass="command-panel">
                                             <children>
                                                 <HBox alignment="CENTER_LEFT">
                                                     <children>
@@ -100,7 +100,7 @@
                                                         <Label fx:id="cartCountTopLabel" styleClass="table-hint" text="0 article(s)"/>
                                                     </children>
                                                 </HBox>
-                                                <HBox alignment="CENTER_LEFT" spacing="18.0" styleClass="cart-preview-card">
+                                                <HBox alignment="CENTER_LEFT" spacing="18.0" styleClass="command-cart-card">
                                                     <children>
                                                         <Label styleClass="product-thumb" text="IMG"/>
                                                         <VBox spacing="8.0" HBox.hgrow="ALWAYS">
@@ -122,7 +122,7 @@
                                             </children>
                                         </VBox>
 
-                                        <VBox spacing="16.0" styleClass="panel-card">
+                                        <VBox spacing="16.0" styleClass="command-panel">
                                             <children>
                                                 <Label styleClass="section-title" text="Informations client"/>
                                                 <GridPane hgap="14.0" vgap="14.0">
@@ -149,9 +149,9 @@
                                                 </GridPane>
                                                 <HBox spacing="12.0">
                                                     <children>
-                                                        <Button mnemonicParsing="false" onAction="#goBackToCart" prefWidth="190.0" styleClass="ghost-button" text="Retour au panier"/>
-                                                        <Button mnemonicParsing="false" onAction="#continueToPayment" prefWidth="240.0" styleClass="primary-button" text="Enregistrer et payer"/>
-                                                        <Button mnemonicParsing="false" onAction="#deleteCommande" prefWidth="210.0" styleClass="ghost-button" text="Vider la commande"/>
+                                                        <Button mnemonicParsing="false" onAction="#goBackToCart" prefWidth="190.0" styleClass="command-ghost-button" text="Retour au panier"/>
+                                                        <Button mnemonicParsing="false" onAction="#continueToPayment" prefWidth="240.0" styleClass="command-primary-button" text="Continuer vers Stripe"/>
+                                                        <Button mnemonicParsing="false" onAction="#deleteCommande" prefWidth="210.0" styleClass="command-ghost-button" text="Vider la commande"/>
                                                     </children>
                                                 </HBox>
                                             </children>
@@ -159,7 +159,7 @@
                                     </children>
                                 </VBox>
 
-                                <VBox prefWidth="360.0" minWidth="360.0" maxWidth="360.0" spacing="18.0" styleClass="summary-card">
+                                <VBox prefWidth="380.0" minWidth="380.0" maxWidth="380.0" spacing="18.0" styleClass="command-summary">
                                     <children>
                                         <Label styleClass="section-title" text="Resume de la commande"/>
                                         <HBox>
@@ -187,8 +187,8 @@
                                         <Label fx:id="articlesField" styleClass="metric-value" text="0"/>
                                         <Label styleClass="metric-label total" text="Montant total"/>
                                         <Label fx:id="totalField" styleClass="metric-total" text="0.00 TND"/>
-                                        <Button mnemonicParsing="false" onAction="#continueToPayment" prefWidth="300.0" styleClass="primary-button" text="Continuer vers paiement"/>
-                                        <Button mnemonicParsing="false" onAction="#deleteCommande" prefWidth="300.0" styleClass="danger-button" text="Supprimer la commande"/>
+                                        <Button mnemonicParsing="false" onAction="#continueToPayment" prefWidth="320.0" styleClass="command-primary-button" text="Payer en ligne Stripe"/>
+                                        <Button mnemonicParsing="false" onAction="#goToDeliveryPayment" prefWidth="320.0" styleClass="command-secondary-button" text="Paiement a la livraison"/>
                                     </children>
                                 </VBox>
                             </children>

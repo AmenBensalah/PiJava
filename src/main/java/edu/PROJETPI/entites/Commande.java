@@ -12,6 +12,11 @@ public class Commande {
     private String prenom;
     private String telephone;
     private String adresse;
+    private String paysLivraison;
+    private String gouvernoratLivraison;
+    private String codePostalLivraison;
+    private String adresseLivraison;
+    private String descriptionLivraison;
 
     public Commande() {
     }
@@ -110,5 +115,45 @@ public class Commande {
 
     public void setAdresse(String adresse) {
         this.adresse = adresse;
+    }
+
+    public String getPaysLivraison() {
+        return paysLivraison;
+    }
+
+    public void setPaysLivraison(String paysLivraison) {
+        this.paysLivraison = paysLivraison;
+    }
+
+    public String getGouvernoratLivraison() {
+        return gouvernoratLivraison;
+    }
+
+    public void setGouvernoratLivraison(String gouvernoratLivraison) {
+        this.gouvernoratLivraison = gouvernoratLivraison;
+    }
+
+    public String getCodePostalLivraison() {
+        return codePostalLivraison;
+    }
+
+    public void setCodePostalLivraison(String codePostalLivraison) {
+        this.codePostalLivraison = codePostalLivraison;
+    }
+
+    public String getAdresseLivraison() {
+        return adresseLivraison;
+    }
+
+    public void setAdresseLivraison(String adresseLivraison) {
+        this.adresseLivraison = adresseLivraison;
+    }
+
+    public String getDescriptionLivraison() {
+        return descriptionLivraison;
+    }
+
+    public void setDescriptionLivraison(String descriptionLivraison) {
+        this.descriptionLivraison = descriptionLivraison;
     }
 }

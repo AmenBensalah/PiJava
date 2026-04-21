@@ -3,11 +3,8 @@ package edu.PROJETPI;
 import edu.PROJETPI.entites.CartItem;
 import edu.PROJETPI.entites.Commande;
 import edu.PROJETPI.services.OrderSession;
-import edu.PROJETPI.services.ServiceCommande;
 import edu.PROJETPI.tools.AlertUtils;
 import edu.PROJETPI.tools.SceneNavigator;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -15,7 +12,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class CommandeController implements Initializable {
@@ -51,7 +47,6 @@ public class CommandeController implements Initializable {
     @FXML
     private Label totalSummaryLabel;
 
-    private final ServiceCommande serviceCommande = new ServiceCommande();
     private static final int AUTO_CLIENT_ID_PLACEHOLDER = 0;
 
     @Override
@@ -71,22 +66,10 @@ public class CommandeController implements Initializable {
             return;
         }
 
-        try {
-            Commande existingDraft = OrderSession.getInstance().getDraftCommande();
-            if (existingDraft != null && existingDraft.getId() > 0) {
-                commande.setId(existingDraft.getId());
-                serviceCommande.update(commande);
-            } else {
-                int generatedId = serviceCommande.addAndReturnId(commande);
-                commande.setId(generatedId);
-            }
-
-            OrderSession.getInstance().setDraftCommande(commande);
-            AlertUtils.showSuccess("Coordonnees enregistrees dans la base de donnees.");
-            SceneNavigator.switchScene(nomField, "/payment-view.fxml", "Paiement");
-        } catch (SQLException e) {
-            AlertUtils.showError("Erreur lors de l'enregistrement de la commande : " + e.getMessage());
-        }
+        commande.setStatut("EN_ATTENTE");
+        OrderSession.getInstance().setDraftCommande(commande);
+        OrderSession.getInstance().setCheckoutMode(OrderSession.CheckoutMode.STRIPE);
+        SceneNavigator.switchScene(nomField, "/payment-view.fxml", "Paiement en ligne Stripe");
     }
 
     @FXML
@@ -110,6 +93,19 @@ public class CommandeController implements Initializable {
         SceneNavigator.switchScene(nomField, "/main-view.fxml", "Catalogue produits");
     }
 
+    @FXML
+    private void goToDeliveryPayment() {
+        Commande commande = readForm();
+        if (commande == null) {
+            return;
+        }
+
+        commande.setStatut("EN_LIVRAISON");
+        OrderSession.getInstance().setDraftCommande(commande);
+        OrderSession.getInstance().setCheckoutMode(OrderSession.CheckoutMode.CASH_ON_DELIVERY);
+        SceneNavigator.switchScene(nomField, "/delivery-view.fxml", "Adresse de livraison");
+    }
+
     private void loadSessionData() {
         Commande draft = OrderSession.getInstance().getDraftCommande();
         java.time.LocalDate today = java.time.LocalDate.now();
@@ -120,7 +116,7 @@ public class CommandeController implements Initializable {
         nomField.setText(draft != null ? emptyIfNull(draft.getNom()) : "");
         prenomField.setText(draft != null ? emptyIfNull(draft.getPrenom()) : "");
         telephoneField.setText(draft != null ? emptyIfNull(draft.getTelephone()) : "");
-        adresseArea.setText(draft != null ? emptyIfNull(draft.getAdresse()) : "");
+        adresseArea.setText(draft != null ? extractClientAddress(draft.getAdresse()) : "");
         totalField.setText(String.format("%.2f TND", OrderSession.getInstance().getCartTotal()));
         articlesField.setText(String.valueOf(OrderSession.getInstance().getTotalItems()));
         refreshCartPreview();
@@ -142,11 +138,20 @@ public class CommandeController implements Initializable {
             return null;
         }
 
+        Commande draft = OrderSession.getInstance().getDraftCommande();
         Commande commande = new Commande(
                 java.sql.Date.valueOf(java.time.LocalDate.now()),
                 OrderSession.getInstance().getCartTotal(),
                 AUTO_CLIENT_ID_PLACEHOLDER
         );
+        if (draft != null) {
+            commande.setId(draft.getId());
+            commande.setPaysLivraison(draft.getPaysLivraison());
+            commande.setGouvernoratLivraison(draft.getGouvernoratLivraison());
+            commande.setCodePostalLivraison(draft.getCodePostalLivraison());
+            commande.setAdresseLivraison(draft.getAdresseLivraison());
+            commande.setDescriptionLivraison(draft.getDescriptionLivraison());
+        }
         commande.setNom(nom);
         commande.setPrenom(prenom);
         commande.setTelephone(telephone);
@@ -199,6 +204,15 @@ public class CommandeController implements Initializable {
 
     private String emptyIfNull(String value) {
         return value == null ? "" : value;
+    }
+
+    private String extractClientAddress(String adresse) {
+        if (adresse == null || adresse.isBlank()) {
+            return "";
+        }
+
+        int deliveryIndex = adresse.indexOf("\n\nLivraison\n");
+        return deliveryIndex >= 0 ? adresse.substring(0, deliveryIndex) : adresse;
     }
 
 }

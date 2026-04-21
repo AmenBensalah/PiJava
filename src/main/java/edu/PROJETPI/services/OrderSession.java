@@ -8,12 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderSession {
+    public enum CheckoutMode {
+        STRIPE,
+        CASH_ON_DELIVERY
+    }
+
     private static final OrderSession INSTANCE = new OrderSession();
 
     private final List<CartItem> cartItems = new ArrayList<>();
+    private final CartStorageService cartStorageService = new CartStorageService();
     private Commande draftCommande;
+    private CheckoutMode checkoutMode = CheckoutMode.STRIPE;
 
     private OrderSession() {
+        cartItems.addAll(cartStorageService.loadCartItems());
     }
 
     public static OrderSession getInstance() {
@@ -28,9 +36,11 @@ public class OrderSession {
         CartItem existing = findItem(produit.getId());
         if (existing != null) {
             existing.setQuantite(existing.getQuantite() + quantite);
+            persistCart();
             return;
         }
         cartItems.add(new CartItem(produit.getId(), produit.getNom(), quantite, produit.getPrix()));
+        persistCart();
     }
 
     public void updateQuantity(int produitId, int quantite) {
@@ -41,16 +51,20 @@ public class OrderSession {
         CartItem item = findItem(produitId);
         if (item != null) {
             item.setQuantite(quantite);
+            persistCart();
         }
     }
 
     public void removeProduct(int produitId) {
         cartItems.removeIf(item -> item.getProduitId() == produitId);
+        persistCart();
     }
 
     public void clearCart() {
         cartItems.clear();
         draftCommande = null;
+        checkoutMode = CheckoutMode.STRIPE;
+        cartStorageService.clear();
     }
 
     public boolean isCartEmpty() {
@@ -73,6 +87,14 @@ public class OrderSession {
         this.draftCommande = draftCommande;
     }
 
+    public CheckoutMode getCheckoutMode() {
+        return checkoutMode;
+    }
+
+    public void setCheckoutMode(CheckoutMode checkoutMode) {
+        this.checkoutMode = checkoutMode == null ? CheckoutMode.STRIPE : checkoutMode;
+    }
+
     public void resetAfterCheckout() {
         clearCart();
     }
@@ -82,5 +104,9 @@ public class OrderSession {
                 .filter(item -> item.getProduitId() == produitId)
                 .findFirst()
                 .orElse(null);
+    }
+
+    private void persistCart() {
+        cartStorageService.saveCartItems(cartItems);
     }
 }

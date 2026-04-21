@@ -14,6 +14,10 @@ public final class AlertUtils {
         show(Alert.AlertType.INFORMATION, "Succes", message);
     }
 
+    public static void showInfo(String message) {
+        show(Alert.AlertType.INFORMATION, "Information", message);
+    }
+
     private static void show(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
