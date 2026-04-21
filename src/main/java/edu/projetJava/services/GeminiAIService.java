@@ -8,7 +8,7 @@ import java.net.URL;
 
 public class GeminiAIService {
     private static final String API_KEY = "AIzaSyA3EWqR210VYy84Z_Y30So0PD4yK1dko-Q";
-    private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+    private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + API_KEY;
 
     public static String getResponse(String userMessage) {
         try {
@@ -63,6 +63,9 @@ public class GeminiAIService {
                 }
                 in.close();
                 System.err.println("API Error: " + errorResponse.toString());
+                if (errorResponse.toString().contains("leaked") || responseCode == 403) {
+                    return "Clé API invalide ou révoquée (403). Veuillez insérer une nouvelle clé Google Gemini dans GeminiAIService.java.";
+                }
                 return "L'assistant est hors ligne (Code " + responseCode + " - " + conn.getResponseMessage() + ").";
             }
 

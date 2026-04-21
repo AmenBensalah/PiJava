@@ -95,6 +95,7 @@ public class BackCategorieController {
         Parent root = FXMLLoader.load(getClass().getResource("/ajoutProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
+        stage.setFullScreen(true);
     }
 
     @FXML
@@ -102,6 +103,7 @@ public class BackCategorieController {
         Parent root = FXMLLoader.load(getClass().getResource("/backAjoutProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
+        stage.setFullScreen(true);
     }
     
     private void showAlert(Alert.AlertType type, String title, String content) {

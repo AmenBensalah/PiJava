@@ -86,7 +86,7 @@
                                 </VBox>
                                 <HBox spacing="15.0" alignment="CENTER_RIGHT">
                                     <Button onAction="#goToFrontOffice" text="🌍 Voir Boutique" styleClass="theme-toggle-btn" prefWidth="150" prefHeight="45" />
-                                    <Button onAction="#goToCreateForm" text="+ Créer un produit" styleClass="btn-primary" prefWidth="180" prefHeight="45" />
+                                    <Button onAction="#goToCreateForm" text="+ Créer un produit" styleClass="btn-3d-cyan" prefWidth="180" prefHeight="45" />
                                     <Button onAction="#chargerProduits" text="🔁" styleClass="btn-secondary" prefWidth="50" prefHeight="45" />
                                 </HBox>
                             </children>
@@ -114,11 +114,11 @@
                             <Region HBox.hgrow="ALWAYS" />
 
                             <!-- GRAPH : STOCKS -->
-                            <VBox style="-fx-background-color: #11111a; -fx-border-color: linear-gradient(to bottom right, #ff0055, #bd00ff, #00e5ff); -fx-border-width: 2px; -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-effect: dropshadow(three-pass-box, rgba(189, 0, 255, 0.5), 30, 0, 0, 0);" prefWidth="400" prefHeight="130" alignment="CENTER" spacing="5">
+                            <VBox style="-fx-background-color: #11111a; -fx-border-color: linear-gradient(to bottom right, #ff0055, #bd00ff, #00e5ff); -fx-border-width: 3px; -fx-border-radius: 15px; -fx-background-radius: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0, 229, 255, 0.6), 40, 0, 0, 0);" prefWidth="450" prefHeight="150" alignment="CENTER" spacing="5">
                                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                                <Label text="📊 DENSITÉ DES STOCKS PAR PRODUIT" style="-fx-text-fill: white; -fx-font-weight: 900; -fx-font-size: 11px; -fx-effect: dropshadow(one-pass-box, #ff0055, 5, 0, 0, 0);" />
-                                <!-- PIECHART ANIMÉ ET PLUS LISIBLE -->
-                                <javafx.scene.chart.PieChart fx:id="statChartProduit" prefHeight="120" style="-fx-legend-visible: false; -fx-pie-label-visible: true; -fx-font-weight: bold; -fx-cursor: hand;" />
+                                <Label text="📊 RÉPARTITION DES PRODUITS PAR CATÉGORIE (%)" style="-fx-text-fill: white; -fx-font-weight: 900; -fx-font-size: 13px; -fx-effect: dropshadow(one-pass-box, #00e5ff, 5, 0, 0, 0);" />
+                                <!-- PIECHART ANIMÉ 3D CYBERPUNK -->
+                                <javafx.scene.chart.PieChart fx:id="statChartProduit" prefHeight="130" styleClass="cyber-pie-chart" style="-fx-legend-visible: false; -fx-pie-label-visible: true; -fx-font-weight: bold; -fx-cursor: hand;" />
                             </VBox>
                         </HBox>
 

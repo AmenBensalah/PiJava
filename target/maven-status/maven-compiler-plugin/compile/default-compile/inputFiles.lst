@@ -8,8 +8,14 @@ C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\inter
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\models\Categorie.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\AjoutProduitController.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\BackMailingController.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\services\CommandeService.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\BackAjoutProduitController.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\BackCategorieController.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\services\GeminiAIService.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\services\TestGemini.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\tools\FixFullScreen.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\controllers\PaiementController.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\models\Commande.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\services\MailService.java
 C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\services\CategorieService.java
+C:\Users\ilyes\Downloads\Workshop-JDBC-JavaFX\src\main\java\edu\projetJava\services\RecommandationIAService.java

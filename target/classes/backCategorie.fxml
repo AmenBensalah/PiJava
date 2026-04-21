@@ -86,7 +86,7 @@
                             <Insets top="30.0" />
                         </VBox.margin>
                         <children>
-                            <Button mnemonicParsing="false" onAction="#ajouterCategorie" styleClass="btn-primary" text="➕ Ajouter" prefWidth="150" prefHeight="40" style="-fx-font-size: 14px;" />
+                            <Button mnemonicParsing="false" onAction="#ajouterCategorie" styleClass="btn-3d-cyan" text="➕ Ajouter" prefWidth="150" prefHeight="40" style="-fx-font-size: 14px;" />
                             <Button mnemonicParsing="false" onAction="#modifierCategorie" styleClass="theme-toggle-btn" text="✏️ Modifier" textFill="WHITE" prefWidth="150" prefHeight="40" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;" />
                             <Button mnemonicParsing="false" onAction="#supprimerCategorie" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 14px;" text="🗑️ Supprimer" prefWidth="150" prefHeight="40" />
                         </children>

@@ -22,7 +22,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import edu.projetJava.entities.Categorie;
-import edu.projetJava.entities.Produit;
+import edu.projetJava.models.Produit;
 import edu.projetJava.services.CategorieService;
 import edu.projetJava.services.ProduitService;
 
@@ -167,15 +167,46 @@ public class BackListProduitController implements Initializable {
             if (statChartProduit != null) {
                 statChartProduit.getData().clear();
                 
-                // Trie les produits par stock (décroissant) et prend les 10 plus gros (ou tous si moins de 10)
-                tous.stream()
-                    .filter(p -> p.getStock() > 0)
-                    .sorted((p1, p2) -> Integer.compare(p2.getStock(), p1.getStock()))
-                    .limit(10)
-                    .forEach(p -> {
-                        javafx.scene.chart.PieChart.Data slice = new javafx.scene.chart.PieChart.Data(p.getNom(), p.getStock());
-                        statChartProduit.getData().add(slice);
-                    });
+                // Map Category ID to Category Name
+                java.util.Map<Integer, String> categoryMap = new java.util.HashMap<>();
+                try {
+                    for (edu.projetJava.entities.Categorie c : categorieService.recuperer()) {
+                        categoryMap.put(c.getId(), c.getNom());
+                    }
+                } catch (Exception ignored) {}
+
+                // Grouper par catégorie pour avoir des pourcentages par métier/secteur
+                java.util.Map<String, Long> countByCat = tous.stream()
+                        .collect(java.util.stream.Collectors.groupingBy(p -> {
+                            return categoryMap.getOrDefault(p.getCategorieId(), "Autre");
+                        }, java.util.stream.Collectors.counting()));
+
+                long totalProduitsAvecCat = tous.size();
+
+                countByCat.forEach((nomCat, count) -> {
+                    double percentage = (double) count / totalProduitsAvecCat * 100.0;
+                    String label = String.format("%s (%.1f%%)", nomCat, percentage);
+                    javafx.scene.chart.PieChart.Data slice = new javafx.scene.chart.PieChart.Data(label, count);
+                    statChartProduit.getData().add(slice);
+                });
+
+                // Animation 3D / Active effect on pie slices
+                for (javafx.scene.chart.PieChart.Data data : statChartProduit.getData()) {
+                    javafx.scene.Node sliceNode = data.getNode();
+                    if (sliceNode != null) {
+                        // Effet interactif au survol
+                        sliceNode.setOnMouseEntered(e -> {
+                            sliceNode.setScaleX(1.1);
+                            sliceNode.setScaleY(1.1);
+                            sliceNode.setEffect(new javafx.scene.effect.DropShadow(20, javafx.scene.paint.Color.CYAN));
+                        });
+                        sliceNode.setOnMouseExited(e -> {
+                            sliceNode.setScaleX(1.0);
+                            sliceNode.setScaleY(1.0);
+                            sliceNode.setEffect(null);
+                        });
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -395,4 +426,5 @@ public class BackListProduitController implements Initializable {
         stage.setScene(new Scene(root));
         stage.setFullScreen(true);
     }
+
 }

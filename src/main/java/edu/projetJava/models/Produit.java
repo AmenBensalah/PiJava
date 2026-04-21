@@ -1,4 +1,4 @@
-package edu.projetJava.entities;
+package edu.projetJava.models;
 
 public class Produit {
     private int id;

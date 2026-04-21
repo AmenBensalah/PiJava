@@ -115,6 +115,7 @@ public class BackListCategorieController implements Initializable {
 
                 Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                 stage.setScene(new Scene(root));
+                stage.setFullScreen(true);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -144,6 +145,7 @@ public class BackListCategorieController implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("/backCategorie.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
+        stage.setFullScreen(true);
     }
 
     // --- NAVIGATION ---
@@ -152,6 +154,7 @@ public class BackListCategorieController implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("/ajoutProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
+        stage.setFullScreen(true);
     }
 
     @FXML
@@ -159,5 +162,6 @@ public class BackListCategorieController implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("/backListProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
+        stage.setFullScreen(true);
     }
 }

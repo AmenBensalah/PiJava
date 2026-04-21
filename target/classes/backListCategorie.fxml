@@ -62,7 +62,7 @@
                                 </VBox>
                                 <HBox spacing="15.0">
                                     <Button onAction="#goToFrontOffice" text="🌍 Boutique" styleClass="theme-toggle-btn" prefWidth="140" prefHeight="45" />
-                                    <Button onAction="#goToCreateForm" text="+ Nouvelle Catégorie" styleClass="btn-primary" prefWidth="200" prefHeight="45" />
+                                    <Button onAction="#goToCreateForm" text="+ Nouvelle Catégorie" styleClass="btn-3d-cyan" prefWidth="200" prefHeight="45" />
                                 </HBox>
                             </children>
                         </HBox>

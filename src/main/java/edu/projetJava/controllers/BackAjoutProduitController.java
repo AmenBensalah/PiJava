@@ -18,7 +18,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import edu.projetJava.entities.Categorie;
-import edu.projetJava.entities.Produit;
+import edu.projetJava.models.Produit;
 import edu.projetJava.services.CategorieService;
 import edu.projetJava.services.ProduitService;
 

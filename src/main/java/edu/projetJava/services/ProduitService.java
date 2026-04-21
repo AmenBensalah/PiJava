@@ -1,7 +1,7 @@
 package edu.projetJava.services;
 
 import edu.projetJava.interfaces.IService;
-import edu.projetJava.entities.Produit;
+import edu.projetJava.models.Produit;
 import edu.projetJava.tools.MyDatabase;
 
 import java.sql.*;

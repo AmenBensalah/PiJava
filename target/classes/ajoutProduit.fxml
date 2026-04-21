@@ -50,6 +50,7 @@
                                     <Label styleClass="banner-subtitle" text="Découvrez nos produits gaming et e-sport." />
                                 </VBox>
                                 <HBox spacing="15.0" alignment="CENTER_RIGHT">
+                                    <Button onAction="#voirRecommandationsIA" text="🤖 Recommandations IA" styleClass="btn-secondary" style="-fx-text-fill: #bd00ff; -fx-border-color: #bd00ff;" prefHeight="45" />
                                     <Button onAction="#chargerProduits" text="Réinitialiser Filtres" styleClass="btn-primary" prefWidth="180" prefHeight="45" />
                                 </HBox>
                             </children>
@@ -60,7 +61,16 @@
                         <!-- FILTERS -->
                         <VBox styleClass="advanced-search-box" spacing="15">
                             <padding><Insets top="20" right="25" bottom="20" left="25"/></padding>
-                            <Label text="🔍 Trouver un produit" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+                            <Label text="🔍 Trouver un produit &amp; Offres" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+                            
+                            <!-- NOUVEAU : VERIFICATION FIDELITE -->
+                            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: rgba(255,255,255,0.05); -fx-padding: 10; -fx-background-radius: 8;">
+                                <Label text="🌟 Client fidèle ?" style="-fx-text-fill: #d946ef; -fx-font-weight: bold;" />
+                                <TextField fx:id="inputFideliteEmail" promptText="Entrez votre e-mail..." styleClass="filter-input" prefWidth="250" />
+                                <Button text="Activer -10% sur tout 🎁" onAction="#activerOffreGlobale" styleClass="btn-special-pink" />
+                                <Label fx:id="lblGlobalPromo" text="✓ Offre activée !" visible="false" style="-fx-text-fill: #00ffaa; -fx-font-weight: bold;" />
+                            </HBox>
+                            
                             <HBox spacing="20" alignment="CENTER_LEFT">
                                 <VBox spacing="5" HBox.hgrow="ALWAYS">
                                     <Label text="MOT CLÉ" styleClass="filter-label" />
@@ -98,6 +108,17 @@
             <TextField fx:id="chatInput" promptText="Poser une question..." HBox.hgrow="ALWAYS" onAction="#sendChatMessage" styleClass="chatbot-input" />
             <Button text="Envoyer" onAction="#sendChatMessage" styleClass="btn-primary" />
         </HBox>
+    </VBox>
+
+    <!-- RECOMMANDATION OVERLAY -->
+    <VBox fx:id="recoOverlay" visible="false" alignment="CENTER" spacing="20" style="-fx-background-color: rgba(5, 5, 15, 0.95); -fx-padding: 50;">
+        <HBox alignment="CENTER_RIGHT" maxWidth="1200">
+            <Button text="✕ Fermer l'IA" onAction="#closeRecommandations" style="-fx-background-color: transparent; -fx-border-color: #ff0055; -fx-border-radius: 8; -fx-text-fill: #ff0055; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 8 20;"/>
+        </HBox>
+        <Label text="🤖 SÉLECTION DE L'INTELLIGENCE ARTIFICIELLE" style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: 900; -fx-effect: dropshadow(three-pass-box, #bd00ff, 30, 0, 0, 0);"/>
+        <Label text="Notre modèle de Machine Learning a identifié ces produits comme étant les plus pertinents pour vous." style="-fx-text-fill: #00e5ff; -fx-font-size: 16px; -fx-padding: 0 0 30 0;"/>
+        
+        <HBox fx:id="recoCardsContainer" alignment="CENTER" spacing="30" maxWidth="1200" />
     </VBox>
 
     <Button fx:id="chatbotToggleBtn" text="💬 Aide IA" onAction="#toggleChatbot" StackPane.alignment="BOTTOM_RIGHT" styleClass="btn-chatbot-toggle">
