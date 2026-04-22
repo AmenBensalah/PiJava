@@ -34,7 +34,7 @@ abstract class ServiceTestSupport {
     }
 
     protected int insertCommande(Commande commande) throws SQLException {
-        String query = "INSERT INTO commande (dateCommande, total, clientId, statut, nom, prenom, telephone, adresse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO commande (dateCommande, total, clientId, statut, nom, prenom, numtel, adresse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             pst.setDate(1, new java.sql.Date(commande.getDateCommande().getTime()));
             pst.setDouble(2, commande.getTotal());

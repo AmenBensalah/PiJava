@@ -133,18 +133,15 @@
                                                         <ColumnConstraints minWidth="300.0" prefWidth="300.0"/>
                                                     </columnConstraints>
                                                     <children>
-                                                        <Label minWidth="110.0" prefWidth="110.0" styleClass="field-label" text="Date commande" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                                                        <Label fx:id="dateCommandeAutoLabel" styleClass="auto-field" text="Auto" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                                        <Label minWidth="110.0" prefWidth="110.0" styleClass="field-label" text="Nom" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                                                        <TextField fx:id="nomField" promptText="Nom" styleClass="dark-text-field" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                                        <Label minWidth="120.0" prefWidth="120.0" styleClass="field-label" text="Prenom" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                                                        <TextField fx:id="prenomField" promptText="Prenom" styleClass="dark-text-field" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
 
-                                                        <Label minWidth="110.0" prefWidth="110.0" styleClass="field-label" text="Nom" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                                                        <TextField fx:id="nomField" promptText="Nom" styleClass="dark-text-field" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                                                        <Label minWidth="120.0" prefWidth="120.0" styleClass="field-label" text="Prenom" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                                                        <TextField fx:id="prenomField" promptText="Prenom" styleClass="dark-text-field" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
-
-                                                        <Label minWidth="110.0" prefWidth="110.0" styleClass="field-label" text="Telephone" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                                                        <TextField fx:id="telephoneField" promptText="Telephone" styleClass="dark-text-field" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                                                        <Label minWidth="120.0" prefWidth="120.0" styleClass="field-label" text="Adresse" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                                                        <TextArea fx:id="adresseArea" prefRowCount="3" promptText="Adresse complete" styleClass="dark-text-field" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+                                                        <Label minWidth="110.0" prefWidth="110.0" styleClass="field-label" text="Telephone" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                                        <TextField fx:id="telephoneField" promptText="Telephone" styleClass="dark-text-field" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                                        <Label minWidth="120.0" prefWidth="120.0" styleClass="field-label" text="Adresse" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                                                        <TextArea fx:id="adresseArea" prefRowCount="3" promptText="Adresse complete" styleClass="dark-text-field" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
                                                     </children>
                                                 </GridPane>
                                                 <HBox spacing="12.0">

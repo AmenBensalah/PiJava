@@ -32,6 +32,8 @@
                         <Label styleClass="menu-heading" text="Administration"/>
                         <Button fx:id="commandesButton" mnemonicParsing="false" onAction="#showCommandes" prefWidth="200.0" styleClass="side-menu-item side-menu-item-active" text="Commandes"/>
                         <Button fx:id="paiementsButton" mnemonicParsing="false" onAction="#showPaiements" prefWidth="200.0" styleClass="side-menu-item" text="Paiements"/>
+                        <Button fx:id="paymentListButton" managed="false" mnemonicParsing="false" onAction="#showPaymentList" prefWidth="178.0" styleClass="side-menu-sub-item" text="Liste paiements" visible="false"/>
+                        <Button fx:id="paymentForecastButton" managed="false" mnemonicParsing="false" onAction="#showPaymentForecast" prefWidth="178.0" styleClass="side-menu-sub-item" text="Prediction CA" visible="false"/>
                         <Button mnemonicParsing="false" onAction="#goToCatalogue" prefWidth="200.0" styleClass="side-menu-item" text="Retour catalogue"/>
                     </children>
                 </VBox>
@@ -50,7 +52,17 @@
                     <children>
                 <HBox alignment="CENTER_LEFT" styleClass="top-bar">
                     <children>
-                        <Label fx:id="pageTitleLabel" styleClass="page-title" text="Liste des commandes"/>
+                        <HBox alignment="CENTER_LEFT" spacing="14.0">
+                            <children>
+                                <Label fx:id="pageAiIconLabel" managed="false" styleClass="page-ai-icon" text="IA" visible="false"/>
+                                <VBox spacing="3.0">
+                                    <children>
+                                        <Label fx:id="pageTitleLabel" styleClass="page-title" text="Liste des commandes"/>
+                                        <Label fx:id="pageSubtitleLabel" managed="false" styleClass="page-subtitle" text="Analyse automatique des paiements" visible="false"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Button mnemonicParsing="false" onAction="#refreshData" prefWidth="160.0" styleClass="ghost-button" text="Actualiser"/>
                     </children>
@@ -141,14 +153,28 @@
                                 </VBox>
                                 <VBox fx:id="predictionPanel" managed="false" spacing="16.0" styleClass="prediction-shell" visible="false">
                                     <children>
-                                        <Label fx:id="predictionModeLabel" styleClass="prediction-pill" text="Mode prediction: analyse historique des paiements"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                            <children>
+                                                <Label fx:id="predictionModeLabel" styleClass="prediction-pill" text="Mode prediction: analyse historique des paiements"/>
+                                                <Button mnemonicParsing="false" onAction="#trainPaymentForecast" styleClass="ai-train-button">
+                                                    <graphic>
+                                                        <HBox alignment="CENTER" spacing="8.0">
+                                                            <children>
+                                                                <Label styleClass="ai-train-logo" text="IA"/>
+                                                                <Label styleClass="ai-train-text" text="Entrainer"/>
+                                                            </children>
+                                                        </HBox>
+                                                    </graphic>
+                                                </Button>
+                                            </children>
+                                        </HBox>
                                         <FlowPane hgap="16.0" vgap="16.0">
                                             <children>
                                                 <VBox prefWidth="250.0" spacing="10.0" styleClass="prediction-card">
                                                     <children>
                                                         <Label styleClass="prediction-card-title" text="Prevision chiffre d'affaires"/>
                                                         <Label fx:id="predictedRevenueLabel" styleClass="prediction-primary-value" text="0.00 TND"/>
-                                                        <Label styleClass="prediction-card-subtitle" text="Jour suivant"/>
+                                                        <Label styleClass="prediction-card-subtitle" text="Jour suivant" wrapText="true"/>
                                                         <HBox spacing="24.0">
                                                             <children>
                                                                 <VBox spacing="4.0">
@@ -172,7 +198,7 @@
                                                     <children>
                                                         <Label styleClass="prediction-card-title" text="Paiements prevus"/>
                                                         <Label fx:id="predictedOrdersLabel" styleClass="prediction-primary-value" text="0"/>
-                                                        <Label styleClass="prediction-card-subtitle" text="Paiements pour le prochain jour"/>
+                                                        <Label styleClass="prediction-card-subtitle" text="Paiements pour le prochain jour" wrapText="true"/>
                                                         <HBox spacing="24.0">
                                                             <children>
                                                                 <VBox spacing="4.0">
@@ -189,14 +215,14 @@
                                                                 </VBox>
                                                             </children>
                                                         </HBox>
-                                                        <Label styleClass="prediction-card-subtitle" text="Projection basee sur moyenne glissante + saisonnalite"/>
+                                                        <Label styleClass="prediction-card-subtitle" text="Projection historique paiements" wrapText="true"/>
                                                     </children>
                                                 </VBox>
                                                 <VBox prefWidth="220.0" spacing="10.0" styleClass="prediction-card">
                                                     <children>
                                                         <Label styleClass="prediction-card-title" text="Panier moyen"/>
                                                         <Label fx:id="averageTicketLabel" styleClass="prediction-primary-value" text="0.00 TND"/>
-                                                        <Label styleClass="prediction-card-subtitle" text="Montant moyen par paiement"/>
+                                                        <Label styleClass="prediction-card-subtitle" text="Montant moyen par paiement" wrapText="true"/>
                                                     </children>
                                                 </VBox>
                                                 <VBox prefWidth="240.0" spacing="8.0" styleClass="prediction-card">

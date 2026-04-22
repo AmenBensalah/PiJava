@@ -57,13 +57,13 @@ public class MyConexion {
                             "statut VARCHAR(40) NOT NULL DEFAULT 'EN_ATTENTE', " +
                             "nom VARCHAR(120) NULL, " +
                             "prenom VARCHAR(120) NULL, " +
-                            "telephone VARCHAR(40) NULL, " +
+                            "numtel VARCHAR(40) NULL, " +
                             "adresse VARCHAR(255) NULL, " +
-                            "paysLivraison VARCHAR(120) NULL, " +
-                            "gouvernoratLivraison VARCHAR(120) NULL, " +
-                            "codePostalLivraison VARCHAR(40) NULL, " +
+                            "pays VARCHAR(120) NULL, " +
+                            "gouvernerat VARCHAR(120) NULL, " +
+                            "code_postal VARCHAR(40) NULL, " +
                             "adresseLivraison VARCHAR(255) NULL, " +
-                            "descriptionLivraison VARCHAR(500) NULL)"
+                            "adresse_detail VARCHAR(500) NULL)"
             );
 
             st.executeUpdate(
@@ -89,13 +89,13 @@ public class MyConexion {
             ensureColumnExists(conn, "commande", "statut", "VARCHAR(40) NOT NULL DEFAULT 'EN_ATTENTE'");
             ensureColumnExists(conn, "commande", "nom", "VARCHAR(120) NULL");
             ensureColumnExists(conn, "commande", "prenom", "VARCHAR(120) NULL");
-            ensureColumnExists(conn, "commande", "telephone", "VARCHAR(40) NULL");
+            ensureColumnExists(conn, "commande", "numtel", "VARCHAR(40) NULL");
             ensureColumnExists(conn, "commande", "adresse", "VARCHAR(255) NULL");
-            ensureColumnExists(conn, "commande", "paysLivraison", "VARCHAR(120) NULL");
-            ensureColumnExists(conn, "commande", "gouvernoratLivraison", "VARCHAR(120) NULL");
-            ensureColumnExists(conn, "commande", "codePostalLivraison", "VARCHAR(40) NULL");
+            ensureColumnExists(conn, "commande", "pays", "VARCHAR(120) NULL");
+            ensureColumnExists(conn, "commande", "gouvernerat", "VARCHAR(120) NULL");
+            ensureColumnExists(conn, "commande", "code_postal", "VARCHAR(40) NULL");
             ensureColumnExists(conn, "commande", "adresseLivraison", "VARCHAR(255) NULL");
-            ensureColumnExists(conn, "commande", "descriptionLivraison", "VARCHAR(500) NULL");
+            ensureColumnExists(conn, "commande", "adresse_detail", "VARCHAR(500) NULL");
             ensureColumnExists(conn, "lignecommande", "commandeId", "INT NOT NULL");
             ensureColumnExists(conn, "lignecommande", "produitId", "INT NOT NULL");
             ensureColumnExists(conn, "lignecommande", "quantite", "INT NOT NULL");

@@ -9,6 +9,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 
 import java.awt.Desktop;
 import java.awt.image.BufferedImage;
@@ -47,6 +48,7 @@ public class InvoicePdfService {
             document.addPage(page);
 
             try (PDPageContentStream content = new PDPageContentStream(document, page)) {
+                drawLogoWatermark(document, content);
                 float currentY = drawHeader(document, content, commande);
                 currentY = drawClientBlock(content, commande, currentY);
                 currentY = drawOrderDetails(content, articles, total, currentY);
@@ -101,6 +103,28 @@ public class InvoicePdfService {
         float y = PAGE_HEIGHT - logoHeight - 24f;
         content.drawImage(logo, x, y, logoWidth, logoHeight);
         return true;
+    }
+
+    private void drawLogoWatermark(PDDocument document, PDPageContentStream content) throws IOException {
+        BufferedImage image = loadLogoImage();
+        if (image == null) {
+            return;
+        }
+
+        image = cropLogoImage(image);
+        PDImageXObject logo = JPEGFactory.createFromImage(document, image);
+        float logoWidth = 330f;
+        float scale = logoWidth / image.getWidth();
+        float logoHeight = image.getHeight() * scale;
+        float x = (PAGE_WIDTH - logoWidth) / 2;
+        float y = 235f;
+
+        content.saveGraphicsState();
+        PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+        graphicsState.setNonStrokingAlphaConstant(0.09f);
+        content.setGraphicsStateParameters(graphicsState);
+        content.drawImage(logo, x, y, logoWidth, logoHeight);
+        content.restoreGraphicsState();
     }
 
     private BufferedImage loadLogoImage() throws IOException {

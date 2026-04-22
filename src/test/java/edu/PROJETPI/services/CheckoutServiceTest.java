@@ -193,14 +193,14 @@ class CheckoutServiceTest extends ServiceTestSupport {
             String description
     ) throws SQLException {
         try (var rs = connection.createStatement().executeQuery(
-                "SELECT paysLivraison, gouvernoratLivraison, codePostalLivraison, adresseLivraison, descriptionLivraison FROM commande WHERE id = " + commandeId
+                "SELECT pays, gouvernerat, code_postal, adresseLivraison, adresse_detail FROM commande WHERE id = " + commandeId
         )) {
             rs.next();
-            assertEquals(pays, rs.getString("paysLivraison"));
-            assertEquals(gouvernorat, rs.getString("gouvernoratLivraison"));
-            assertEquals(codePostal, rs.getString("codePostalLivraison"));
+            assertEquals(pays, rs.getString("pays"));
+            assertEquals(gouvernorat, rs.getString("gouvernerat"));
+            assertEquals(codePostal, rs.getString("code_postal"));
             assertEquals(adresse, rs.getString("adresseLivraison"));
-            assertEquals(description, rs.getString("descriptionLivraison"));
+            assertEquals(description, rs.getString("adresse_detail"));
         }
     }
 

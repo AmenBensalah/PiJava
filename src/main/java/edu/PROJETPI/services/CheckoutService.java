@@ -48,8 +48,8 @@ public class CheckoutService {
         }
         normalizeLegacyDeliveryFields(draft);
 
-        String insertCommande = "INSERT INTO commande (dateCommande, total, clientId, statut, nom, prenom, telephone, adresse, paysLivraison, gouvernoratLivraison, codePostalLivraison, adresseLivraison, descriptionLivraison) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String updateCommande = "UPDATE commande SET dateCommande = ?, total = ?, clientId = ?, statut = ?, nom = ?, prenom = ?, telephone = ?, adresse = ?, paysLivraison = ?, gouvernoratLivraison = ?, codePostalLivraison = ?, adresseLivraison = ?, descriptionLivraison = ? WHERE id = ?";
+        String insertCommande = "INSERT INTO commande (dateCommande, total, clientId, statut, nom, prenom, numtel, adresse, pays, gouvernerat, code_postal, adresseLivraison, adresse_detail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String updateCommande = "UPDATE commande SET dateCommande = ?, total = ?, clientId = ?, statut = ?, nom = ?, prenom = ?, numtel = ?, adresse = ?, pays = ?, gouvernerat = ?, code_postal = ?, adresseLivraison = ?, adresse_detail = ? WHERE id = ?";
         String insertLigne = "INSERT INTO lignecommande (commandeId, produitId, quantite, prixUnitaire) VALUES (?, ?, ?, ?)";
         String insertPayment = "INSERT INTO payment (commandeId, montant, datePayment) VALUES (?, ?, ?)";
         String deleteExistingLignes = "DELETE FROM lignecommande WHERE commandeId = ?";

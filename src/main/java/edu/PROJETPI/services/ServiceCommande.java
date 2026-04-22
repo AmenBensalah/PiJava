@@ -18,7 +18,7 @@ public class ServiceCommande implements IServiceCommande {
 
     @Override
     public void add(Commande commande) throws SQLException {
-        String query = "INSERT INTO commande (dateCommande, total, clientId, statut, nom, prenom, telephone, adresse, paysLivraison, gouvernoratLivraison, codePostalLivraison, adresseLivraison, descriptionLivraison) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO commande (dateCommande, total, clientId, statut, nom, prenom, numtel, adresse, pays, gouvernerat, code_postal, adresseLivraison, adresse_detail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             fillCommandeStatement(pst, commande);
             pst.executeUpdate();
@@ -26,7 +26,7 @@ public class ServiceCommande implements IServiceCommande {
     }
 
     public int addAndReturnId(Commande commande) throws SQLException {
-        String query = "INSERT INTO commande (dateCommande, total, clientId, statut, nom, prenom, telephone, adresse, paysLivraison, gouvernoratLivraison, codePostalLivraison, adresseLivraison, descriptionLivraison) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO commande (dateCommande, total, clientId, statut, nom, prenom, numtel, adresse, pays, gouvernerat, code_postal, adresseLivraison, adresse_detail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = cnx.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             fillCommandeStatement(pst, commande);
             pst.executeUpdate();
@@ -42,7 +42,7 @@ public class ServiceCommande implements IServiceCommande {
 
     @Override
     public void update(Commande commande) throws SQLException {
-        String query = "UPDATE commande SET dateCommande = ?, total = ?, clientId = ?, statut = ?, nom = ?, prenom = ?, telephone = ?, adresse = ?, paysLivraison = ?, gouvernoratLivraison = ?, codePostalLivraison = ?, adresseLivraison = ?, descriptionLivraison = ? WHERE id = ?";
+        String query = "UPDATE commande SET dateCommande = ?, total = ?, clientId = ?, statut = ?, nom = ?, prenom = ?, numtel = ?, adresse = ?, pays = ?, gouvernerat = ?, code_postal = ?, adresseLivraison = ?, adresse_detail = ? WHERE id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             fillCommandeStatement(pst, commande);
             pst.setInt(14, commande.getId());
@@ -97,14 +97,14 @@ public class ServiceCommande implements IServiceCommande {
                         rs.getString("statut"),
                         rs.getString("nom"),
                         rs.getString("prenom"),
-                        rs.getString("telephone"),
+                        rs.getString("numtel"),
                         rs.getString("adresse")
                 );
-                commande.setPaysLivraison(rs.getString("paysLivraison"));
-                commande.setGouvernoratLivraison(rs.getString("gouvernoratLivraison"));
-                commande.setCodePostalLivraison(rs.getString("codePostalLivraison"));
+                commande.setPaysLivraison(rs.getString("pays"));
+                commande.setGouvernoratLivraison(rs.getString("gouvernerat"));
+                commande.setCodePostalLivraison(rs.getString("code_postal"));
                 commande.setAdresseLivraison(rs.getString("adresseLivraison"));
-                commande.setDescriptionLivraison(rs.getString("descriptionLivraison"));
+                commande.setDescriptionLivraison(rs.getString("adresse_detail"));
                 commandes.add(commande);
             }
         }

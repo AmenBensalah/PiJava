@@ -25,8 +25,6 @@ public class CommandeController implements Initializable {
     @FXML
     private Label clientIdAutoLabel;
     @FXML
-    private Label dateCommandeAutoLabel;
-    @FXML
     private TextArea adresseArea;
     @FXML
     private Label totalField;
@@ -51,6 +49,7 @@ public class CommandeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ensureFxmlInjected();
         loadSessionData();
     }
 
@@ -108,11 +107,9 @@ public class CommandeController implements Initializable {
 
     private void loadSessionData() {
         Commande draft = OrderSession.getInstance().getDraftCommande();
-        java.time.LocalDate today = java.time.LocalDate.now();
         if (clientIdAutoLabel != null) {
             clientIdAutoLabel.setText("Genere apres integration");
         }
-        dateCommandeAutoLabel.setText(today.toString());
         nomField.setText(draft != null ? emptyIfNull(draft.getNom()) : "");
         prenomField.setText(draft != null ? emptyIfNull(draft.getPrenom()) : "");
         telephoneField.setText(draft != null ? emptyIfNull(draft.getTelephone()) : "");
@@ -120,6 +117,24 @@ public class CommandeController implements Initializable {
         totalField.setText(String.format("%.2f TND", OrderSession.getInstance().getCartTotal()));
         articlesField.setText(String.valueOf(OrderSession.getInstance().getTotalItems()));
         refreshCartPreview();
+    }
+
+    private void ensureFxmlInjected() {
+        if (nomField == null
+                || prenomField == null
+                || telephoneField == null
+                || adresseArea == null
+                || totalField == null
+                || articlesField == null
+                || cartCountTopLabel == null
+                || panierProductNameLabel == null
+                || panierUnitPriceLabel == null
+                || panierQuantityLabel == null
+                || panierLineTotalLabel == null
+                || subtotalLabel == null
+                || totalSummaryLabel == null) {
+            throw new IllegalStateException("commande-view.fxml n'est pas synchronise avec CommandeController.");
+        }
     }
 
     private Commande readForm() {

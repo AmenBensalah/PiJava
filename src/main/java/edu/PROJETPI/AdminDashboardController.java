@@ -5,8 +5,8 @@ import edu.PROJETPI.entites.LigneCommande;
 import edu.PROJETPI.entites.Payment;
 import edu.PROJETPI.entites.Produit;
 import edu.PROJETPI.services.CatalogueProduitService;
-import edu.PROJETPI.services.PaymentPredictionService;
 import edu.PROJETPI.services.PaymentReportPdfService;
+import edu.PROJETPI.services.RevenueForecastService;
 import edu.PROJETPI.services.ServiceCommande;
 import edu.PROJETPI.services.ServiceLigneCommande;
 import edu.PROJETPI.services.ServicePayment;
@@ -14,14 +14,18 @@ import edu.PROJETPI.tools.AlertUtils;
 import edu.PROJETPI.tools.SceneNavigator;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -41,6 +45,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -120,11 +125,19 @@ public class AdminDashboardController implements Initializable {
     @FXML
     private Label pageTitleLabel;
     @FXML
+    private Label pageSubtitleLabel;
+    @FXML
+    private Label pageAiIconLabel;
+    @FXML
     private Label sectionTitleLabel;
     @FXML
     private Button commandesButton;
     @FXML
     private Button paiementsButton;
+    @FXML
+    private Button paymentListButton;
+    @FXML
+    private Button paymentForecastButton;
     @FXML
     private VBox predictionPanel;
     @FXML
@@ -165,12 +178,14 @@ public class AdminDashboardController implements Initializable {
     private final ServiceLigneCommande serviceLigneCommande = new ServiceLigneCommande();
     private final CatalogueProduitService catalogueProduitService = new CatalogueProduitService();
     private final PaymentReportPdfService paymentReportPdfService = new PaymentReportPdfService();
-    private final PaymentPredictionService paymentPredictionService = new PaymentPredictionService();
+    private final RevenueForecastService revenueForecastService = new RevenueForecastService();
     private final ObservableList<Commande> commandes = FXCollections.observableArrayList();
     private final FilteredList<Commande> filteredCommandes = new FilteredList<>(commandes, item -> true);
     private final SortedList<Commande> sortedCommandes = new SortedList<>(filteredCommandes);
     private final ObservableList<PaymentRow> payments = FXCollections.observableArrayList();
+    private Timeline paymentAutoRefreshTimeline;
     private boolean paymentMode;
+    private boolean paymentForecastMode;
     private SortMode currentSortMode = SortMode.ID_DESC;
 
     @Override
@@ -192,12 +207,14 @@ public class AdminDashboardController implements Initializable {
 
         commandeTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         paymentTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        configurePaymentTableLayout();
         initializeCommandFilters();
         configureCommandeStatusColumn();
         configureModifierColumn();
         configureSupprimerColumn();
         configurePaymentStatusColumn();
         configurePaymentActionsColumn();
+        startPaymentAutoRefresh();
         showCommandes();
     }
 
@@ -232,9 +249,12 @@ public class AdminDashboardController implements Initializable {
     @FXML
     private void showCommandes() {
         paymentMode = false;
+        paymentForecastMode = false;
         pageTitleLabel.setText("Liste des commandes");
+        setPredictionTitleMode(false);
         sectionTitleLabel.setText("Liste des commandes");
-        setActiveMenuButton(commandesButton, paiementsButton);
+        setPaymentSubmenuVisible(false);
+        setActiveMenuButton(commandesButton, paiementsButton, paymentListButton, paymentForecastButton);
         commandeFilterCard.setManaged(true);
         commandeFilterCard.setVisible(true);
         paymentFilterCard.setManaged(false);
@@ -251,21 +271,54 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     private void showPaiements() {
+        setPaymentSubmenuVisible(true);
+        showPaymentList();
+    }
+
+    @FXML
+    private void showPaymentList() {
         paymentMode = true;
+        paymentForecastMode = false;
         pageTitleLabel.setText("Liste des paiements");
+        setPredictionTitleMode(false);
         sectionTitleLabel.setText("Liste des paiements");
-        setActiveMenuButton(paiementsButton, commandesButton);
+        setPaymentSubmenuVisible(true);
+        setActiveMenuButton(paymentListButton, commandesButton, paiementsButton, paymentForecastButton);
+        setParentPaymentButtonActive();
         commandeFilterCard.setManaged(false);
         commandeFilterCard.setVisible(false);
         paymentFilterCard.setManaged(true);
         paymentFilterCard.setVisible(true);
-        predictionPanel.setManaged(true);
-        predictionPanel.setVisible(true);
+        predictionPanel.setManaged(false);
+        predictionPanel.setVisible(false);
         commandeTableView.setManaged(false);
         commandeTableView.setVisible(false);
         paymentTableView.setManaged(true);
         paymentTableView.setVisible(true);
         paymentTableView.setPrefHeight(280.0);
+        refreshData();
+    }
+
+    @FXML
+    private void showPaymentForecast() {
+        paymentMode = true;
+        paymentForecastMode = true;
+        pageTitleLabel.setText("Prediction chiffre d'affaires");
+        setPredictionTitleMode(true);
+        sectionTitleLabel.setText("Prediction chiffre d'affaires");
+        setPaymentSubmenuVisible(true);
+        setActiveMenuButton(paymentForecastButton, commandesButton, paiementsButton, paymentListButton);
+        setParentPaymentButtonActive();
+        commandeFilterCard.setManaged(false);
+        commandeFilterCard.setVisible(false);
+        paymentFilterCard.setManaged(false);
+        paymentFilterCard.setVisible(false);
+        predictionPanel.setManaged(true);
+        predictionPanel.setVisible(true);
+        commandeTableView.setManaged(false);
+        commandeTableView.setVisible(false);
+        paymentTableView.setManaged(false);
+        paymentTableView.setVisible(false);
         refreshData();
     }
 
@@ -296,11 +349,57 @@ public class AdminDashboardController implements Initializable {
         generatePaymentReport(true);
     }
 
-    private void setActiveMenuButton(Button activeButton, Button inactiveButton) {
+    @FXML
+    private void trainPaymentForecast() {
+        Task<PaymentForecastTrainCommand.TrainingResult> task = new Task<>() {
+            @Override
+            protected PaymentForecastTrainCommand.TrainingResult call() throws Exception {
+                return PaymentForecastTrainCommand.train();
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            PaymentForecastTrainCommand.TrainingResult result = task.getValue();
+            refreshPaymentPredictions();
+            AlertUtils.showSuccess("Modele IA entraine avec " + result.exportedRows() + " lignes temporelles.");
+        });
+        task.setOnFailed(event -> AlertUtils.showError(
+                "Impossible d'entrainer le modele IA : " + task.getException().getMessage()
+        ));
+
+        Thread thread = new Thread(task, "payment-forecast-training");
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void setActiveMenuButton(Button activeButton, Button... inactiveButtons) {
         if (!activeButton.getStyleClass().contains(MENU_ACTIVE_CLASS)) {
             activeButton.getStyleClass().add(MENU_ACTIVE_CLASS);
         }
-        inactiveButton.getStyleClass().remove(MENU_ACTIVE_CLASS);
+        for (Button inactiveButton : inactiveButtons) {
+            inactiveButton.getStyleClass().remove(MENU_ACTIVE_CLASS);
+        }
+    }
+
+    private void setPaymentSubmenuVisible(boolean visible) {
+        paymentListButton.setManaged(visible);
+        paymentListButton.setVisible(visible);
+        paymentForecastButton.setManaged(visible);
+        paymentForecastButton.setVisible(visible);
+    }
+
+    private void setPredictionTitleMode(boolean enabled) {
+        pageAiIconLabel.setManaged(enabled);
+        pageAiIconLabel.setVisible(enabled);
+        pageSubtitleLabel.setManaged(enabled);
+        pageSubtitleLabel.setVisible(enabled);
+        pageSubtitleLabel.setText("Analyse IA des revenus, paiements prevus et tendances");
+    }
+
+    private void setParentPaymentButtonActive() {
+        if (!paiementsButton.getStyleClass().contains(MENU_ACTIVE_CLASS)) {
+            paiementsButton.getStyleClass().add(MENU_ACTIVE_CLASS);
+        }
     }
 
     private void initializeCommandFilters() {
@@ -477,8 +576,8 @@ public class AdminDashboardController implements Initializable {
     private void configurePaymentActionsColumn() {
         paymentColActions.setCellFactory(column -> new TableCell<>() {
             private final Button viewButton = new Button("...");
-            private final Button deleteButton = new Button("Suppr.");
-            private final HBox actionsBox = new HBox(6, viewButton, deleteButton);
+            private final Button deleteButton = new Button("Suppr");
+            private final HBox actionsBox = new HBox(5, viewButton, deleteButton);
 
             {
                 viewButton.getStyleClass().add("table-action-view");
@@ -515,6 +614,35 @@ public class AdminDashboardController implements Initializable {
                 setText(null);
             }
         });
+    }
+
+    private void configurePaymentTableLayout() {
+        if (!paymentTableView.getStyleClass().contains("payment-data-table")) {
+            paymentTableView.getStyleClass().add("payment-data-table");
+        }
+        paymentColId.setMinWidth(56);
+        paymentColCommandeId.setMinWidth(88);
+        paymentColMontant.setMinWidth(118);
+        paymentColStatut.setMinWidth(106);
+        paymentColDate.setMinWidth(116);
+        paymentColActions.setMinWidth(112);
+        paymentColActions.setMaxWidth(132);
+        paymentTableView.widthProperty().addListener((obs, oldWidth, newWidth) -> resizePaymentColumns(newWidth.doubleValue()));
+        resizePaymentColumns(paymentTableView.getWidth());
+    }
+
+    private void resizePaymentColumns(double tableWidth) {
+        if (tableWidth <= 0) {
+            return;
+        }
+
+        double width = Math.max(680, tableWidth - 28);
+        paymentColId.setPrefWidth(width * 0.08);
+        paymentColCommandeId.setPrefWidth(width * 0.16);
+        paymentColMontant.setPrefWidth(width * 0.17);
+        paymentColStatut.setPrefWidth(width * 0.16);
+        paymentColDate.setPrefWidth(width * 0.23);
+        paymentColActions.setPrefWidth(width * 0.20);
     }
 
     private ObservableList<PaymentRow> buildPaymentRows() throws SQLException {
@@ -618,66 +746,74 @@ public class AdminDashboardController implements Initializable {
     }
 
     private void refreshPaymentPredictions() {
-        PaymentPredictionService.PredictionSnapshot snapshot = paymentPredictionService.analyze(List.copyOf(payments));
-        predictedRevenueLabel.setText(paymentPredictionService.formatMoney(snapshot.predictedNextDayRevenue()));
-        predictedRevenueWeekLabel.setText(paymentPredictionService.formatMoney(snapshot.predictedWeekRevenue()));
-        predictedRevenueMonthLabel.setText(paymentPredictionService.formatMoney(snapshot.predictedMonthRevenue()));
-        predictedTrendLabel.setText("Tendance 7j: " + paymentPredictionService.formatTrend(snapshot.trend7Days()));
+        RevenueForecastService.PredictionSnapshot snapshot = revenueForecastService.analyze(List.copyOf(payments));
+        predictedRevenueLabel.setText(revenueForecastService.formatMoney(snapshot.predictedNextDayRevenue()));
+        predictedRevenueWeekLabel.setText(revenueForecastService.formatMoney(snapshot.predictedWeekRevenue()));
+        predictedRevenueMonthLabel.setText(revenueForecastService.formatMoney(snapshot.predictedMonthRevenue()));
+        predictedTrendLabel.setText("Tendance 7j: " + revenueForecastService.formatTrend(snapshot.trend7Days()));
         predictedOrdersLabel.setText(String.valueOf(snapshot.predictedNextDayOrders()));
         predictedOrdersWeekLabel.setText(String.valueOf(snapshot.predictedWeekOrders()));
         predictedOrdersMonthLabel.setText(String.valueOf(snapshot.predictedMonthOrders()));
-        averageTicketLabel.setText(paymentPredictionService.formatMoney(snapshot.averageTicket()));
-        snapshotTodayRevenueLabel.setText(paymentPredictionService.formatMoney(snapshot.todayRevenue()));
-        snapshotWeekRevenueLabel.setText(paymentPredictionService.formatMoney(snapshot.last7DaysRevenue()));
-        snapshotMonthRevenueLabel.setText(paymentPredictionService.formatMoney(snapshot.last30DaysRevenue()));
+        averageTicketLabel.setText(revenueForecastService.formatMoney(snapshot.averageTicket()));
+        snapshotTodayRevenueLabel.setText(revenueForecastService.formatMoney(snapshot.todayRevenue()));
+        snapshotWeekRevenueLabel.setText(revenueForecastService.formatMoney(snapshot.last7DaysRevenue()));
+        snapshotMonthRevenueLabel.setText(revenueForecastService.formatMoney(snapshot.last30DaysRevenue()));
         snapshotPaidCountLabel.setText(String.valueOf(snapshot.totalPaidPayments()));
-        predictionModeLabel.setText(snapshot.totalPaidPayments() > 0
-                ? "Mode prediction: analyse historique des paiements"
-                : "Mode prediction: donnees insuffisantes, projection prudente");
+        predictionModeLabel.setText(snapshot.sourceLabel());
 
         populateDailyEvolution(snapshot.dailyPoints());
         populateWeeklyEvolution(snapshot.weeklyPoints());
         populateDistribution(snapshot.distributionPoints());
     }
 
-    private void populateDailyEvolution(List<PaymentPredictionService.DailyPoint> points) {
-        double maxRevenue = points.stream().mapToDouble(PaymentPredictionService.DailyPoint::revenue).max().orElse(1);
+    private void startPaymentAutoRefresh() {
+        paymentAutoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+            if (paymentMode) {
+                refreshData();
+            }
+        }));
+        paymentAutoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
+        paymentAutoRefreshTimeline.play();
+    }
+
+    private void populateDailyEvolution(List<RevenueForecastService.DailyPoint> points) {
+        double maxRevenue = points.stream().mapToDouble(RevenueForecastService.DailyPoint::revenue).max().orElse(1);
         dailyEvolutionContainer.getChildren().clear();
-        for (PaymentPredictionService.DailyPoint point : points) {
+        for (RevenueForecastService.DailyPoint point : points) {
             String label = String.format("%1$td/%1$tm", java.sql.Date.valueOf(point.date()));
             dailyEvolutionContainer.getChildren().add(createAnalyticsRow(
                     label,
                     point.revenue(),
                     maxRevenue,
-                    paymentPredictionService.formatMoney(point.revenue()),
+                    revenueForecastService.formatMoney(point.revenue()),
                     point.count() + " pmt"
             ));
         }
     }
 
-    private void populateWeeklyEvolution(List<PaymentPredictionService.WeeklyPoint> points) {
-        double maxRevenue = points.stream().mapToDouble(PaymentPredictionService.WeeklyPoint::revenue).max().orElse(1);
+    private void populateWeeklyEvolution(List<RevenueForecastService.WeeklyPoint> points) {
+        double maxRevenue = points.stream().mapToDouble(RevenueForecastService.WeeklyPoint::revenue).max().orElse(1);
         weeklyEvolutionContainer.getChildren().clear();
-        for (PaymentPredictionService.WeeklyPoint point : points) {
+        for (RevenueForecastService.WeeklyPoint point : points) {
             weeklyEvolutionContainer.getChildren().add(createAnalyticsRow(
                     point.label(),
                     point.revenue(),
                     maxRevenue,
-                    paymentPredictionService.formatMoney(point.revenue()),
+                    revenueForecastService.formatMoney(point.revenue()),
                     point.count() + " pmt"
             ));
         }
     }
 
-    private void populateDistribution(List<PaymentPredictionService.DistributionPoint> points) {
-        double maxRevenue = points.stream().mapToDouble(PaymentPredictionService.DistributionPoint::revenue).max().orElse(1);
+    private void populateDistribution(List<RevenueForecastService.DistributionPoint> points) {
+        double maxRevenue = points.stream().mapToDouble(RevenueForecastService.DistributionPoint::revenue).max().orElse(1);
         distributionContainer.getChildren().clear();
-        for (PaymentPredictionService.DistributionPoint point : points) {
+        for (RevenueForecastService.DistributionPoint point : points) {
             distributionContainer.getChildren().add(createAnalyticsRow(
                     point.label(),
                     point.revenue(),
                     maxRevenue,
-                    paymentPredictionService.formatMoney(point.revenue()),
+                    revenueForecastService.formatMoney(point.revenue()),
                     point.count() + " pmt"
             ));
         }
@@ -686,12 +822,18 @@ public class AdminDashboardController implements Initializable {
     private HBox createAnalyticsRow(String labelText, double value, double maxValue, String valueText, String secondaryText) {
         Label label = new Label(labelText);
         label.getStyleClass().add("analytics-row-label");
+        label.setMinWidth(72);
+        label.setPrefWidth(72);
 
         ProgressBar progressBar = new ProgressBar(maxValue <= 0 ? 0 : Math.min(1.0, value / maxValue));
         progressBar.getStyleClass().add("analytics-progress");
-        progressBar.setPrefWidth(160);
+        progressBar.setMinWidth(120);
+        progressBar.setMaxWidth(Double.MAX_VALUE);
 
         VBox valueBox = new VBox(2);
+        valueBox.setAlignment(Pos.CENTER_RIGHT);
+        valueBox.setMinWidth(118);
+        valueBox.setPrefWidth(118);
         Label mainValue = new Label(valueText);
         mainValue.getStyleClass().add("analytics-row-value");
         Label secondaryValue = new Label(secondaryText);
@@ -700,10 +842,10 @@ public class AdminDashboardController implements Initializable {
 
         HBox row = new HBox(12);
         row.getStyleClass().add("analytics-row");
-        row.setPadding(new Insets(4, 0, 4, 0));
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        row.getChildren().addAll(label, progressBar, spacer, valueBox);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setPadding(new Insets(7, 10, 7, 10));
+        HBox.setHgrow(progressBar, Priority.ALWAYS);
+        row.getChildren().addAll(label, progressBar, valueBox);
         return row;
     }
 
