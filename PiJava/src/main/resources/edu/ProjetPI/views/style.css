@@ -118,3 +118,86 @@
     -fx-border-color: rgba(236, 94, 151, 0.78);
     -fx-text-fill: #ffd2e4;
 }
+
+.stats-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #9fd3ff;
+}
+
+.stats-box {
+    -fx-background-color: rgba(34, 51, 98, 0.42);
+    -fx-border-color: rgba(117, 145, 212, 0.35);
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 12 14 12 14;
+}
+
+.stats-line {
+    -fx-font-size: 13px;
+    -fx-text-fill: #e7f1ff;
+}
+
+.stats-chip-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #8fc7ff;
+}
+
+.stats-highlight {
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #ffd08c;
+}
+
+.stats-inner-card {
+    -fx-background-color: rgba(16, 30, 69, 0.75);
+    -fx-border-color: rgba(98, 129, 206, 0.45);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 10 12 10 12;
+}
+
+.combo-box {
+    -fx-background-color: rgba(36, 56, 106, 0.70);
+    -fx-border-color: rgba(118, 152, 228, 0.65);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-text-fill: #eef5ff;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #eaf3ff;
+}
+
+.list-view {
+    -fx-background-color: rgba(22, 36, 80, 0.8);
+    -fx-control-inner-background: rgba(22, 36, 80, 0.8);
+    -fx-border-color: rgba(107, 141, 214, 0.4);
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #dfeeff;
+    -fx-font-size: 12px;
+}
+
+.progress-bar {
+    -fx-accent: #49b2ff;
+}
+
+.progress-bar .track {
+    -fx-background-color: rgba(56, 79, 136, 0.55);
+    -fx-background-radius: 8;
+}
+
+.profile-scroll {
+    -fx-background-color: transparent;
+    -fx-padding: 10 0 10 0;
+}
+
+.profile-scroll > .viewport {
+    -fx-background-color: transparent;
+}

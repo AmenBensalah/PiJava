@@ -1,0 +1,13 @@
+user_id,match_id,tournoi_id,tournoi_name,type_game,type_tournoi,timestamp,date,result,points,side_points,placement_points,placement,matched_by,generated_at
+42,42,39,AI Duel FPS Score Cup,FPS,solo,2026-02-14T04:15:52+00:00,2026-02-14,W,0.0,0.0,0.0,,player_link,2026-04-24T19:04:46+00:00
+42,43,40,AI Duel Sports Score Cup,Sports,solo,2026-02-16T04:15:52+00:00,2026-02-16,L,0.0,0.0,0.0,,player_link,2026-04-24T19:04:46+00:00
+42,44,41,AI Duel Battle Royale Cup,Battle_royale,solo,2026-02-18T04:15:52+00:00,2026-02-18,,1.0,0.0,1.0,second,player_link,2026-04-24T19:04:46+00:00
+42,36,24,Solo Sports Test Cup,Sports,solo,2026-02-20T10:30:00+00:00,2026-02-20,W,0.0,0.0,0.0,,player_link,2026-04-24T19:04:46+00:00
+42,38,26,Solo FPS Test Cup,FPS,solo,2026-02-21T14:30:00+00:00,2026-02-21,L,0.0,0.0,0.0,,player_link,2026-04-24T19:04:46+00:00
+42,37,25,Solo Mind Test Cup,Mind,solo,2026-02-22T18:30:00+00:00,2026-02-22,D,0.0,0.0,0.0,,player_link,2026-04-24T19:04:46+00:00
+43,42,39,AI Duel FPS Score Cup,FPS,solo,2026-02-14T04:15:52+00:00,2026-02-14,L,0.0,0.0,0.0,,player_link,2026-04-24T19:04:46+00:00
+43,43,40,AI Duel Sports Score Cup,Sports,solo,2026-02-16T04:15:52+00:00,2026-02-16,W,0.0,0.0,0.0,,player_link,2026-04-24T19:04:46+00:00
+43,44,41,AI Duel Battle Royale Cup,Battle_royale,solo,2026-02-18T04:15:52+00:00,2026-02-18,,3.0,0.0,3.0,first,player_link,2026-04-24T19:04:46+00:00
+43,36,24,Solo Sports Test Cup,Sports,solo,2026-02-20T10:30:00+00:00,2026-02-20,L,0.0,0.0,0.0,,player_link,2026-04-24T19:04:46+00:00
+43,38,26,Solo FPS Test Cup,FPS,solo,2026-02-21T14:30:00+00:00,2026-02-21,W,0.0,0.0,0.0,,player_link,2026-04-24T19:04:46+00:00
+43,37,25,Solo Mind Test Cup,Mind,solo,2026-02-22T18:30:00+00:00,2026-02-22,D,0.0,0.0,0.0,,player_link,2026-04-24T19:04:46+00:00
