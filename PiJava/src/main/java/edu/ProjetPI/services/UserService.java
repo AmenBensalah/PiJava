@@ -10,6 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class UserService implements IService<User> {
 
@@ -122,6 +123,37 @@ public class UserService implements IService<User> {
         return Optional.empty();
     }
 
+    public User findOrCreateGoogleUser(String email, String fullName) {
+        return findOrCreateOauthUser(email, fullName);
+    }
+
+    public User findOrCreateDiscordUser(String email, String fullName) {
+        return findOrCreateOauthUser(email, fullName);
+    }
+
+    private User findOrCreateOauthUser(String email, String fullName) {
+        String normalizedEmail = UserValidationRules.normalizeEmail(email);
+        Optional<User> existing = findByEmail(normalizedEmail);
+        if (existing.isPresent()) {
+            return existing.get();
+        }
+
+        String safeName = sanitizeFullName(fullName, normalizedEmail);
+        String pseudo = sanitizePseudo(normalizedEmail);
+        String generatedPassword = "G-" + UUID.randomUUID();
+
+        add(new User(
+                safeName,
+                pseudo,
+                normalizedEmail,
+                generatedPassword,
+                "ROLE_JOUEUR",
+                null
+        ));
+        return findByEmail(normalizedEmail)
+                .orElseThrow(() -> new IllegalStateException("Unable to load OAuth user after creation."));
+    }
+
     public void updatePasswordByEmail(String email, String newRawPassword) {
         String normalizedEmail = UserValidationRules.normalizeEmail(email);
         String sql = "UPDATE user SET password = ? WHERE email = ?";
@@ -231,5 +263,33 @@ public class UserService implements IService<User> {
         } catch (SQLException e) {
             throw new IllegalStateException("Impossible de verifier l'unicite de l'email: " + e.getMessage(), e);
         }
+    }
+
+    private static String sanitizeFullName(String fullName, String email) {
+        String value = fullName == null ? "" : fullName.trim();
+        if (value.length() >= 3) {
+            return value;
+        }
+        String localPart = email == null ? "" : email.split("@")[0];
+        localPart = localPart == null ? "" : localPart.trim();
+        if (localPart.length() >= 3) {
+            return localPart;
+        }
+        return "Google User";
+    }
+
+    private static String sanitizePseudo(String email) {
+        String localPart = email == null ? "" : email.split("@")[0];
+        String pseudo = localPart.replaceAll("[^A-Za-z0-9_]", "");
+        if (pseudo.length() >= 3) {
+            return pseudo;
+        }
+        if (pseudo.isBlank()) {
+            pseudo = "usr";
+        }
+        while (pseudo.length() < 3) {
+            pseudo += "x";
+        }
+        return pseudo;
     }
 }
