@@ -6,16 +6,19 @@ import java.sql.SQLException;
 
 public class MyConnection {
 
-    private String url="jdbc:mysql://localhost:3306/pijava";
-    private String login="root";
-    private String pwd="";
+    private String url = System.getenv().getOrDefault(
+            "PIJAVA_DB_URL",
+            "jdbc:mysql://localhost:3306/esportify?serverTimezone=UTC"
+    );
+    private String login = System.getenv().getOrDefault("PIJAVA_DB_USER", "root");
+    private String pwd = System.getenv().getOrDefault("PIJAVA_DB_PASSWORD", "");
 
     private Connection cnx;
     public static MyConnection instance;
 
     private MyConnection(){
         try {
-            cnx = DriverManager.getConnection(url,login,pwd);
+            cnx = DriverManager.getConnection(url, login, pwd);
             System.out.println("Connexion établie!");
 
         } catch (SQLException e) {

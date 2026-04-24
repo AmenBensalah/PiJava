@@ -170,6 +170,33 @@
     -fx-text-alignment: center;
 }
 
+.message-box {
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-padding: 10 14 10 14;
+    -fx-font-weight: 700;
+}
+
+.message-error {
+    -fx-text-fill: #ffd8df;
+    -fx-background-color: rgba(129, 29, 58, 0.45);
+    -fx-border-color: rgba(255, 107, 145, 0.85);
+    -fx-border-width: 1;
+}
+
+.message-success {
+    -fx-text-fill: #d8ffea;
+    -fx-background-color: rgba(16, 110, 84, 0.46);
+    -fx-border-color: rgba(77, 224, 180, 0.88);
+    -fx-border-width: 1;
+}
+
+.input-shell.field-invalid {
+    -fx-background-color: rgba(122, 36, 60, 0.42);
+    -fx-border-color: rgba(255, 122, 158, 0.95);
+    -fx-border-width: 1.4;
+}
+
 .login-separator .line {
     -fx-border-color: rgba(255, 255, 255, 0.08);
 }

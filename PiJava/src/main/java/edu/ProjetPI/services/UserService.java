@@ -13,17 +13,19 @@ import java.util.Optional;
 
 public class UserService implements IService<User> {
 
+    private static volatile boolean schemaChecked = false;
     private final Connection connection;
 
     public UserService() {
         this.connection = MyConnection.getInstance().getCnx();
+        ensureFaceDescriptorColumnExists();
     }
 
     @Override
     public void add(User user) {
         validate(user, false);
         ensureUniqueEmailForCreate(user.getEmail());
-        String sql = "INSERT INTO users(full_name, pseudo, email, password, role) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO user(nom, pseudo, email, password, role, face_descriptor_json) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, user.getFullName());
@@ -31,6 +33,7 @@ public class UserService implements IService<User> {
             ps.setString(3, UserValidationRules.normalizeEmail(user.getEmail()));
             ps.setString(4, PasswordUtils.hash(user.getPassword()));
             ps.setString(5, user.getRole());
+            ps.setString(6, user.getFaceDescriptorJson());
             ps.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new IllegalArgumentException("Cet email existe deja. Veuillez en choisir un autre.");
@@ -43,8 +46,8 @@ public class UserService implements IService<User> {
     public void update(User user) {
         validate(user, true);
         ensureUniqueEmailForUpdate(user.getId(), user.getEmail());
-        String sqlWithPassword = "UPDATE users SET full_name = ?, pseudo = ?, email = ?, password = ?, role = ? WHERE id = ?";
-        String sqlWithoutPassword = "UPDATE users SET full_name = ?, pseudo = ?, email = ?, role = ? WHERE id = ?";
+        String sqlWithPassword = "UPDATE user SET nom = ?, pseudo = ?, email = ?, password = ?, role = ?, face_descriptor_json = ? WHERE id = ?";
+        String sqlWithoutPassword = "UPDATE user SET nom = ?, pseudo = ?, email = ?, role = ?, face_descriptor_json = ? WHERE id = ?";
         boolean updatePassword = user.getPassword() != null && !user.getPassword().isBlank();
 
         try (PreparedStatement ps = connection.prepareStatement(updatePassword ? sqlWithPassword : sqlWithoutPassword)) {
@@ -54,10 +57,12 @@ public class UserService implements IService<User> {
             if (updatePassword) {
                 ps.setString(4, PasswordUtils.hash(user.getPassword()));
                 ps.setString(5, user.getRole());
-                ps.setInt(6, user.getId());
+                ps.setString(6, user.getFaceDescriptorJson());
+                ps.setInt(7, user.getId());
             } else {
                 ps.setString(4, user.getRole());
-                ps.setInt(5, user.getId());
+                ps.setString(5, user.getFaceDescriptorJson());
+                ps.setInt(6, user.getId());
             }
             ps.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException e) {
@@ -69,7 +74,7 @@ public class UserService implements IService<User> {
 
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM users WHERE id = ?";
+        String sql = "DELETE FROM user WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -81,7 +86,7 @@ public class UserService implements IService<User> {
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT id, full_name, pseudo, email, password, role FROM users ORDER BY id";
+        String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json FROM user ORDER BY id";
 
         try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
@@ -102,7 +107,7 @@ public class UserService implements IService<User> {
     }
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT id, full_name, pseudo, email, password, role FROM users WHERE email = ?";
+        String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json FROM user WHERE email = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, UserValidationRules.normalizeEmail(email));
@@ -117,6 +122,21 @@ public class UserService implements IService<User> {
         return Optional.empty();
     }
 
+    public void updatePasswordByEmail(String email, String newRawPassword) {
+        String normalizedEmail = UserValidationRules.normalizeEmail(email);
+        String sql = "UPDATE user SET password = ? WHERE email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, PasswordUtils.hash(newRawPassword));
+            ps.setString(2, normalizedEmail);
+            int updated = ps.executeUpdate();
+            if (updated == 0) {
+                throw new IllegalArgumentException("Aucun utilisateur trouve pour cet email.");
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to update password: " + e.getMessage(), e);
+        }
+    }
+
     private User mapResultSet(ResultSet rs) throws SQLException {
         return new User(
                 rs.getInt("id"),
@@ -124,8 +144,44 @@ public class UserService implements IService<User> {
                 rs.getString("pseudo"),
                 rs.getString("email"),
                 rs.getString("password"),
-                rs.getString("role")
+                rs.getString("role"),
+                rs.getString("face_descriptor_json")
         );
+    }
+
+    public List<User> findUsersWithFaceDescriptor() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json "
+                + "FROM user WHERE face_descriptor_json IS NOT NULL AND TRIM(face_descriptor_json) <> ''";
+        try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                users.add(mapResultSet(rs));
+            }
+            return users;
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to fetch users with face descriptor: " + e.getMessage(), e);
+        }
+    }
+
+    private void ensureFaceDescriptorColumnExists() {
+        if (schemaChecked) {
+            return;
+        }
+        synchronized (UserService.class) {
+            if (schemaChecked) {
+                return;
+            }
+            String sql = "ALTER TABLE user ADD COLUMN face_descriptor_json LONGTEXT NULL";
+            try (Statement st = connection.createStatement()) {
+                st.executeUpdate(sql);
+            } catch (SQLException e) {
+                String msg = e.getMessage() == null ? "" : e.getMessage().toLowerCase();
+                if (!msg.contains("duplicate column") && !msg.contains("already exists")) {
+                    throw new IllegalStateException("Unable to initialize face descriptor column: " + e.getMessage(), e);
+                }
+            }
+            schemaChecked = true;
+        }
     }
 
     private void validate(User user, boolean update) {
@@ -149,7 +205,7 @@ public class UserService implements IService<User> {
     }
 
     private void ensureUniqueEmailForCreate(String email) {
-        String sql = "SELECT id FROM users WHERE email = ?";
+        String sql = "SELECT id FROM user WHERE email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, UserValidationRules.normalizeEmail(email));
             try (ResultSet rs = ps.executeQuery()) {
@@ -163,7 +219,7 @@ public class UserService implements IService<User> {
     }
 
     private void ensureUniqueEmailForUpdate(int userId, String email) {
-        String sql = "SELECT id FROM users WHERE email = ? AND id <> ?";
+        String sql = "SELECT id FROM user WHERE email = ? AND id <> ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, UserValidationRules.normalizeEmail(email));
             ps.setInt(2, userId);
