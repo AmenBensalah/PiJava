@@ -48,10 +48,10 @@ public class CheckoutService {
         }
         normalizeLegacyDeliveryFields(draft);
 
-        String insertCommande = "INSERT INTO commande (dateCommande, total, clientId, statut, nom, prenom, numtel, adresse, pays, gouvernerat, code_postal, adresseLivraison, adresse_detail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String updateCommande = "UPDATE commande SET dateCommande = ?, total = ?, clientId = ?, statut = ?, nom = ?, prenom = ?, numtel = ?, adresse = ?, pays = ?, gouvernerat = ?, code_postal = ?, adresseLivraison = ?, adresse_detail = ? WHERE id = ?";
+        String insertCommande = "INSERT INTO commande (nom, prenom, adresse, quantite, numtel, statut, pays, gouvernerat, code_postal, adresse_detail, user_id, identity_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String updateCommande = "UPDATE commande SET nom = ?, prenom = ?, adresse = ?, quantite = ?, numtel = ?, statut = ?, pays = ?, gouvernerat = ?, code_postal = ?, adresse_detail = ?, user_id = ?, identity_key = ? WHERE id = ?";
         String insertLigne = "INSERT INTO lignecommande (commandeId, produitId, quantite, prixUnitaire) VALUES (?, ?, ?, ?)";
-        String insertPayment = "INSERT INTO payment (commandeId, montant, datePayment) VALUES (?, ?, ?)";
+        String insertPayment = "INSERT INTO payment (amount, created_at, status, commande_id) VALUES (?, ?, ?, ?)";
         String deleteExistingLignes = "DELETE FROM lignecommande WHERE commandeId = ?";
 
         try {
@@ -61,13 +61,13 @@ public class CheckoutService {
             if (draft.getId() > 0) {
                 commandeId = draft.getId();
                 try (PreparedStatement pstCommande = cnx.prepareStatement(updateCommande)) {
-                    fillCommandeStatement(pstCommande, draft, session.getCartTotal(), commandeStatut);
-                    pstCommande.setInt(14, commandeId);
+                    fillCommandeStatement(pstCommande, draft, session.getCartTotal(), session.getTotalItems(), commandeStatut);
+                    pstCommande.setInt(13, commandeId);
                     pstCommande.executeUpdate();
                 }
             } else {
                 try (PreparedStatement pstCommande = cnx.prepareStatement(insertCommande, Statement.RETURN_GENERATED_KEYS)) {
-                    fillCommandeStatement(pstCommande, draft, session.getCartTotal(), commandeStatut);
+                    fillCommandeStatement(pstCommande, draft, session.getCartTotal(), session.getTotalItems(), commandeStatut);
                     pstCommande.executeUpdate();
 
                     try (ResultSet generatedKeys = pstCommande.getGeneratedKeys()) {
@@ -98,9 +98,10 @@ public class CheckoutService {
 
             if (registerPayment) {
                 try (PreparedStatement pstPayment = cnx.prepareStatement(insertPayment)) {
-                    pstPayment.setInt(1, commandeId);
-                    pstPayment.setDouble(2, session.getCartTotal());
-                    pstPayment.setDate(3, paymentDate);
+                    pstPayment.setDouble(1, session.getCartTotal());
+                    pstPayment.setTimestamp(2, new java.sql.Timestamp(paymentDate.getTime()));
+                    pstPayment.setString(3, "PAYEE");
+                    pstPayment.setInt(4, commandeId);
                     pstPayment.executeUpdate();
                 }
             }
@@ -120,20 +121,25 @@ public class CheckoutService {
         }
     }
 
-    private void fillCommandeStatement(PreparedStatement pstCommande, Commande draft, double total, String statut) throws SQLException {
-        pstCommande.setDate(1, new Date(draft.getDateCommande().getTime()));
-        pstCommande.setDouble(2, total);
-        pstCommande.setInt(3, draft.getClientId());
-        pstCommande.setString(4, statut);
-        pstCommande.setString(5, draft.getNom());
-        pstCommande.setString(6, draft.getPrenom());
-        pstCommande.setString(7, draft.getTelephone());
-        pstCommande.setString(8, draft.getAdresse());
-        pstCommande.setString(9, draft.getPaysLivraison());
-        pstCommande.setString(10, draft.getGouvernoratLivraison());
-        pstCommande.setString(11, draft.getCodePostalLivraison());
-        pstCommande.setString(12, draft.getAdresseLivraison());
-        pstCommande.setString(13, draft.getDescriptionLivraison());
+    private void fillCommandeStatement(
+            PreparedStatement pstCommande,
+            Commande draft,
+            double total,
+            int quantite,
+            String statut
+    ) throws SQLException {
+        pstCommande.setString(1, draft.getNom());
+        pstCommande.setString(2, draft.getPrenom());
+        pstCommande.setString(3, draft.getAdresse());
+        pstCommande.setInt(4, CommandeDatabaseMapper.resolveCommandeQuantite(draft, quantite));
+        pstCommande.setObject(5, CommandeDatabaseMapper.toDatabaseTelephone(draft.getTelephone()));
+        pstCommande.setString(6, statut);
+        pstCommande.setString(7, draft.getPaysLivraison());
+        pstCommande.setString(8, draft.getGouvernoratLivraison());
+        pstCommande.setString(9, draft.getCodePostalLivraison());
+        pstCommande.setString(10, CommandeDatabaseMapper.buildAdresseDetail(draft));
+        pstCommande.setObject(11, CommandeDatabaseMapper.normalizeUserId(draft.getClientId()));
+        pstCommande.setString(12, CommandeDatabaseMapper.buildIdentityKey(draft, total));
     }
 
     private void normalizeLegacyDeliveryFields(Commande draft) {

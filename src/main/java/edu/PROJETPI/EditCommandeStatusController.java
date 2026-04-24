@@ -2,6 +2,7 @@ package edu.PROJETPI;
 
 import edu.PROJETPI.entites.Commande;
 import edu.PROJETPI.services.ServiceCommande;
+import edu.PROJETPI.services.ServicePayment;
 import edu.PROJETPI.tools.AlertUtils;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -19,6 +20,7 @@ public class EditCommandeStatusController {
     private ComboBox<String> statutComboBox;
 
     private final ServiceCommande serviceCommande = new ServiceCommande();
+    private final ServicePayment servicePayment = new ServicePayment();
     private Commande commande;
     private Runnable onSaved;
 
@@ -49,8 +51,10 @@ public class EditCommandeStatusController {
         }
 
         try {
-            commande.setStatut(statutComboBox.getValue() == null ? "EN_ATTENTE" : statutComboBox.getValue());
+            String nouveauStatut = statutComboBox.getValue() == null ? "EN_ATTENTE" : statutComboBox.getValue();
+            commande.setStatut(nouveauStatut);
             serviceCommande.update(commande);
+            ensurePaymentRecordIfCommandeIsPaid(nouveauStatut);
             if (onSaved != null) {
                 onSaved.run();
             }
@@ -69,5 +73,26 @@ public class EditCommandeStatusController {
 
     private String safe(String value) {
         return value == null ? "" : value;
+    }
+
+    private void ensurePaymentRecordIfCommandeIsPaid(String statut) throws SQLException {
+        if (!isPaidStatus(statut)) {
+            return;
+        }
+
+        java.util.Date paymentDate = commande.getDateCommande() != null
+                ? commande.getDateCommande()
+                : new java.util.Date();
+        double montant = commande.getTotal();
+        servicePayment.addIfMissingForCommande(commande.getId(), montant, paymentDate, "paid");
+    }
+
+    private boolean isPaidStatus(String statut) {
+        if (statut == null) {
+            return false;
+        }
+
+        String normalized = statut.trim();
+        return "PAYEE".equalsIgnoreCase(normalized) || "PAID".equalsIgnoreCase(normalized);
     }
 }

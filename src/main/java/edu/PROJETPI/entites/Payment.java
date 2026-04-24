@@ -7,6 +7,7 @@ public class Payment {
     private int commandeId;
     private double montant;
     private Date datePayment;
+    private String status;
 
     public Payment() {}
 
@@ -15,6 +16,11 @@ public class Payment {
         this.commandeId = commandeId;
         this.montant = montant;
         this.datePayment = datePayment;
+    }
+
+    public Payment(int id, int commandeId, double montant, Date datePayment, String status) {
+        this(id, commandeId, montant, datePayment);
+        this.status = status;
     }
 
     public Payment(int commandeId, double montant, Date datePayment) {
@@ -55,6 +61,14 @@ public class Payment {
         this.datePayment = datePayment;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Payment{" +
@@ -62,6 +76,7 @@ public class Payment {
                 ", commandeId=" + commandeId +
                 ", montant=" + montant +
                 ", datePayment=" + datePayment +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

@@ -34,16 +34,16 @@ abstract class ServiceTestSupport {
     }
 
     protected int insertCommande(Commande commande) throws SQLException {
-        String query = "INSERT INTO commande (dateCommande, total, clientId, statut, nom, prenom, numtel, adresse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO commande (nom, prenom, adresse, quantite, numtel, statut, user_id, identity_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            pst.setDate(1, new java.sql.Date(commande.getDateCommande().getTime()));
-            pst.setDouble(2, commande.getTotal());
-            pst.setInt(3, commande.getClientId());
-            pst.setString(4, commande.getStatut());
-            pst.setString(5, commande.getNom());
-            pst.setString(6, commande.getPrenom());
-            pst.setString(7, commande.getTelephone());
-            pst.setString(8, commande.getAdresse());
+            pst.setString(1, commande.getNom());
+            pst.setString(2, commande.getPrenom());
+            pst.setString(3, commande.getAdresse());
+            pst.setInt(4, 0);
+            pst.setObject(5, CommandeDatabaseMapper.toDatabaseTelephone(commande.getTelephone()));
+            pst.setString(6, commande.getStatut());
+            pst.setObject(7, CommandeDatabaseMapper.normalizeUserId(commande.getClientId()));
+            pst.setString(8, CommandeDatabaseMapper.buildIdentityKey(commande, commande.getTotal()));
             pst.executeUpdate();
             try (var generatedKeys = pst.getGeneratedKeys()) {
                 generatedKeys.next();

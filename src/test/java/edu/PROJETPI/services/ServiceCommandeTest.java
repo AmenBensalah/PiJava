@@ -60,7 +60,7 @@ class ServiceCommandeTest extends ServiceTestSupport {
                 "INSERT INTO lignecommande (commandeId, produitId, quantite, prixUnitaire) VALUES (" + commandeId + ", 1, 2, 10.0)"
         );
         connection.createStatement().executeUpdate(
-                "INSERT INTO payment (commandeId, montant, datePayment) VALUES (" + commandeId + ", 20.0, '2026-04-11')"
+                "INSERT INTO payment (amount, created_at, status, commande_id) VALUES (20.0, '2026-04-11 00:00:00', 'PAYEE', " + commandeId + ")"
         );
 
         serviceCommande.delete(commandeId);

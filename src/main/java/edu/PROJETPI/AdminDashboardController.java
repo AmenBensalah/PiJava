@@ -502,7 +502,9 @@ public class AdminDashboardController implements Initializable {
         if (selectedStatus == null || FILTER_ALL.equalsIgnoreCase(selectedStatus)) {
             return true;
         }
-        return selectedStatus.equalsIgnoreCase(safe(commande.getStatut()));
+        String normalizedSelected = normalizeCommandeStatus(selectedStatus);
+        String normalizedCommande = normalizeCommandeStatus(commande.getStatut());
+        return normalizedSelected.equalsIgnoreCase(normalizedCommande);
     }
 
     private String safe(String value) {
@@ -536,10 +538,11 @@ public class AdminDashboardController implements Initializable {
                     return;
                 }
 
-                Label badge = new Label(item);
+                String normalizedLabel = normalizeCommandeStatus(item);
+                Label badge = new Label(normalizedLabel);
                 badge.getStyleClass().add("commande-status-badge");
 
-                String normalized = item.trim().toUpperCase();
+                String normalized = normalizedLabel.trim().toUpperCase();
                 switch (normalized) {
                     case "PAYEE" -> badge.getStyleClass().add("commande-status-paid");
                     case "ANNULEE" -> badge.getStyleClass().add("commande-status-cancelled");
@@ -646,42 +649,44 @@ public class AdminDashboardController implements Initializable {
     }
 
     private ObservableList<PaymentRow> buildPaymentRows() throws SQLException {
-        boolean filteredByPeriod =
-                (paymentDateDebutPicker != null && paymentDateDebutPicker.getValue() != null)
-                        || (paymentDateFinPicker != null && paymentDateFinPicker.getValue() != null);
-        Map<Integer, Payment> paymentsByCommandeId = new HashMap<>();
-        for (Payment payment : loadPaymentsForCurrentPeriod()) {
-            paymentsByCommandeId.put(payment.getCommandeId(), payment);
-        }
-
+        Map<Integer, Commande> commandesById = serviceCommande.readAll().stream()
+                .collect(Collectors.toMap(Commande::getId, commande -> commande, (first, second) -> first));
         ObservableList<PaymentRow> rows = FXCollections.observableArrayList();
-        for (Commande commande : serviceCommande.readAll()) {
-            String statut = commande.getStatut();
-            if (statut == null || !"PAYEE".equalsIgnoreCase(statut.trim())) {
-                continue;
-            }
-
-            Payment payment = paymentsByCommandeId.get(commande.getId());
-            if (filteredByPeriod && payment == null) {
-                continue;
-            }
-            int displayId = payment != null ? payment.getId() : commande.getId();
-            double montant = payment != null ? payment.getMontant() : commande.getTotal();
-            Date displayDate = payment != null ? payment.getDatePayment() : commande.getDateCommande();
+        for (Payment payment : loadPaymentsForCurrentPeriod()) {
+            Commande commande = commandesById.get(payment.getCommandeId());
+            Date displayDate = payment.getDatePayment();
             String dateLabel = displayDate == null ? "-" : PAYMENT_DATE_FORMAT.format(displayDate);
+            String statut = payment.getStatus();
+            if (statut == null || statut.isBlank()) {
+                statut = commande != null ? commande.getStatut() : "PAYEE";
+            }
+            statut = normalizeCommandeStatus(statut);
 
             rows.add(new PaymentRow(
-                    displayId,
-                    commande.getId(),
-                    montant,
-                    "Valide",
+                    payment.getId(),
+                    payment.getCommandeId(),
+                    payment.getMontant(),
+                    statut,
                     dateLabel,
                     displayDate == null ? null : new java.sql.Date(displayDate.getTime()).toLocalDate(),
-                    payment != null ? payment.getId() : null
+                    payment.getId()
             ));
         }
 
         return rows;
+    }
+
+    private String normalizeCommandeStatus(String status) {
+        if (status == null || status.isBlank()) {
+            return "";
+        }
+
+        String normalized = status.trim().toUpperCase();
+        return switch (normalized) {
+            case "PAID" -> "PAYEE";
+            case "CANCELLED", "CANCELED" -> "ANNULEE";
+            default -> normalized;
+        };
     }
 
     private List<Payment> loadPaymentsForCurrentPeriod() throws SQLException {

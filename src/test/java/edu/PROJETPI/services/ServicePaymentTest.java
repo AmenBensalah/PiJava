@@ -31,7 +31,7 @@ class ServicePaymentTest extends ServiceTestSupport {
     void updateShouldModifyExistingPayment() throws SQLException {
         int commandeId = insertCommande(sampleCommande());
         connection.createStatement().executeUpdate(
-                "INSERT INTO payment (commandeId, montant, datePayment) VALUES (" + commandeId + ", 500.0, '2026-04-11')"
+                "INSERT INTO payment (amount, created_at, status, commande_id) VALUES (500.0, '2026-04-11 00:00:00', 'PAYEE', " + commandeId + ")"
         );
 
         Payment existing = servicePayment.readAll().get(0);
@@ -48,7 +48,7 @@ class ServicePaymentTest extends ServiceTestSupport {
     void deleteShouldRemovePayment() throws SQLException {
         int commandeId = insertCommande(sampleCommande());
         connection.createStatement().executeUpdate(
-                "INSERT INTO payment (commandeId, montant, datePayment) VALUES (" + commandeId + ", 120.0, '2026-04-11')"
+                "INSERT INTO payment (amount, created_at, status, commande_id) VALUES (120.0, '2026-04-11 00:00:00', 'PAYEE', " + commandeId + ")"
         );
 
         int paymentId = servicePayment.readAll().get(0).getId();
@@ -65,10 +65,10 @@ class ServicePaymentTest extends ServiceTestSupport {
         int commandeId2 = insertCommande(commande2);
 
         connection.createStatement().executeUpdate(
-                "INSERT INTO payment (commandeId, montant, datePayment) VALUES (" + commandeId1 + ", 120.0, '2026-04-11')"
+                "INSERT INTO payment (amount, created_at, status, commande_id) VALUES (120.0, '2026-04-11 00:00:00', 'PAYEE', " + commandeId1 + ")"
         );
         connection.createStatement().executeUpdate(
-                "INSERT INTO payment (commandeId, montant, datePayment) VALUES (" + commandeId2 + ", 220.0, '2026-04-15')"
+                "INSERT INTO payment (amount, created_at, status, commande_id) VALUES (220.0, '2026-04-15 00:00:00', 'PAYEE', " + commandeId2 + ")"
         );
 
         List<Payment> payments = servicePayment.readByPeriod(

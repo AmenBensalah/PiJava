@@ -2,7 +2,6 @@ package edu.PROJETPI.tools;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,94 +38,96 @@ public class MyConexion {
     }
 
     public static void initDatabase() {
+        createDatabaseIfMissing();
+
+        if ("esportify".equalsIgnoreCase(DB_NAME)) {
+            ensureProductionSchema();
+            return;
+        }
+
+        resetTestDatabase();
+    }
+
+    private static void createDatabaseIfMissing() {
         try (Connection conn = DriverManager.getConnection(ROOT_URL, LOGIN, PASSWORD);
              Statement st = conn.createStatement()) {
             st.executeUpdate("CREATE DATABASE IF NOT EXISTS " + DB_NAME);
         } catch (SQLException e) {
             throw new IllegalStateException("Impossible de creer la base de donnees projetpi.", e);
         }
+    }
 
+    private static void resetTestDatabase() {
         try (Connection conn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
              Statement st = conn.createStatement()) {
-            st.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS commande (" +
-                            "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                            "dateCommande DATE NOT NULL, " +
-                            "total DOUBLE NOT NULL, " +
-                            "clientId INT NOT NULL, " +
-                            "statut VARCHAR(40) NOT NULL DEFAULT 'EN_ATTENTE', " +
-                            "nom VARCHAR(120) NULL, " +
-                            "prenom VARCHAR(120) NULL, " +
-                            "numtel VARCHAR(40) NULL, " +
-                            "adresse VARCHAR(255) NULL, " +
-                            "pays VARCHAR(120) NULL, " +
-                            "gouvernerat VARCHAR(120) NULL, " +
-                            "code_postal VARCHAR(40) NULL, " +
-                            "adresseLivraison VARCHAR(255) NULL, " +
-                            "adresse_detail VARCHAR(500) NULL)"
-            );
-
-            st.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS lignecommande (" +
-                            "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                            "commandeId INT NOT NULL, " +
-                            "produitId INT NOT NULL, " +
-                            "quantite INT NOT NULL, " +
-                            "prixUnitaire DOUBLE NOT NULL)"
-            );
-
-            st.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS payment (" +
-                            "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                            "commandeId INT NOT NULL, " +
-                            "montant DOUBLE NOT NULL, " +
-                            "datePayment DATE NOT NULL)"
-            );
-
-            ensureColumnExists(conn, "commande", "dateCommande", "DATE NOT NULL");
-            ensureColumnExists(conn, "commande", "total", "DOUBLE NOT NULL");
-            ensureColumnExists(conn, "commande", "clientId", "INT NOT NULL");
-            ensureColumnExists(conn, "commande", "statut", "VARCHAR(40) NOT NULL DEFAULT 'EN_ATTENTE'");
-            ensureColumnExists(conn, "commande", "nom", "VARCHAR(120) NULL");
-            ensureColumnExists(conn, "commande", "prenom", "VARCHAR(120) NULL");
-            ensureColumnExists(conn, "commande", "numtel", "VARCHAR(40) NULL");
-            ensureColumnExists(conn, "commande", "adresse", "VARCHAR(255) NULL");
-            ensureColumnExists(conn, "commande", "pays", "VARCHAR(120) NULL");
-            ensureColumnExists(conn, "commande", "gouvernerat", "VARCHAR(120) NULL");
-            ensureColumnExists(conn, "commande", "code_postal", "VARCHAR(40) NULL");
-            ensureColumnExists(conn, "commande", "adresseLivraison", "VARCHAR(255) NULL");
-            ensureColumnExists(conn, "commande", "adresse_detail", "VARCHAR(500) NULL");
-            ensureColumnExists(conn, "lignecommande", "commandeId", "INT NOT NULL");
-            ensureColumnExists(conn, "lignecommande", "produitId", "INT NOT NULL");
-            ensureColumnExists(conn, "lignecommande", "quantite", "INT NOT NULL");
-            ensureColumnExists(conn, "lignecommande", "prixUnitaire", "DOUBLE NOT NULL");
-            ensureColumnExists(conn, "payment", "commandeId", "INT NOT NULL");
-            ensureColumnExists(conn, "payment", "montant", "DOUBLE NOT NULL");
-            ensureColumnExists(conn, "payment", "datePayment", "DATE NOT NULL");
+            st.executeUpdate("DROP TABLE IF EXISTS payment");
+            st.executeUpdate("DROP TABLE IF EXISTS lignecommande");
+            st.executeUpdate("DROP TABLE IF EXISTS commande");
+            createSchemaTables(st);
         } catch (SQLException e) {
             throw new IllegalStateException("Impossible d'initialiser les tables projetpi.", e);
         }
     }
 
-    private static void ensureColumnExists(Connection conn, String tableName, String columnName, String definition)
-            throws SQLException {
-        String query = "SELECT COUNT(*) FROM information_schema.COLUMNS " +
-                "WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?";
+    private static void ensureProductionSchema() {
+        try (Connection conn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
+             Statement st = conn.createStatement()) {
+            createSchemaTables(st);
 
-        try (PreparedStatement pst = conn.prepareStatement(query)) {
-            pst.setString(1, DB_NAME);
-            pst.setString(2, tableName);
-            pst.setString(3, columnName);
-
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next() && rs.getInt(1) == 0) {
-                    try (Statement st = conn.createStatement()) {
-                        st.executeUpdate(
-                                "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + definition
-                        );
-                    }
-                }
+            if (!columnExists(conn, "payment", "status")) {
+                st.executeUpdate("ALTER TABLE payment ADD COLUMN status VARCHAR(255) NOT NULL DEFAULT 'paid'");
             }
+            st.executeUpdate("UPDATE payment SET status = 'paid' WHERE status IS NULL OR TRIM(status) = ''");
+        } catch (SQLException e) {
+            throw new IllegalStateException("Impossible de verifier la table payment.", e);
+        }
+    }
+
+    private static void createSchemaTables(Statement st) throws SQLException {
+        st.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS commande (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                        "nom VARCHAR(255) NULL, " +
+                        "prenom VARCHAR(255) NULL, " +
+                        "adresse VARCHAR(255) NULL, " +
+                        "quantite INT NULL, " +
+                        "numtel INT NULL, " +
+                        "statut VARCHAR(40) NOT NULL DEFAULT 'EN_ATTENTE', " +
+                        "pays VARCHAR(120) NULL, " +
+                        "gouvernerat VARCHAR(120) NULL, " +
+                        "code_postal VARCHAR(40) NULL, " +
+                        "adresse_detail VARCHAR(500) NULL, " +
+                        "user_id INT NULL, " +
+                        "identity_key VARCHAR(190) NULL, " +
+                        "ai_blocked TINYINT(1) NOT NULL DEFAULT 0, " +
+                        "ai_risk_score DOUBLE NULL, " +
+                        "ai_block_reason VARCHAR(500) NULL, " +
+                        "ai_blocked_at DATETIME NULL, " +
+                        "ai_block_until DATETIME NULL)"
+        );
+
+        st.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS lignecommande (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                        "commandeId INT NOT NULL, " +
+                        "produitId INT NOT NULL, " +
+                        "quantite INT NOT NULL, " +
+                        "prixUnitaire DOUBLE NOT NULL)"
+        );
+
+        st.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS payment (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                        "amount DOUBLE NOT NULL, " +
+                        "created_at DATETIME NOT NULL, " +
+                        "status VARCHAR(255) NOT NULL DEFAULT 'paid', " +
+                        "commande_id INT NOT NULL)"
+        );
+    }
+
+    private static boolean columnExists(Connection conn, String tableName, String columnName) throws SQLException {
+        try (ResultSet rs = conn.getMetaData().getColumns(null, null, tableName, columnName)) {
+            return rs.next();
         }
     }
 
@@ -141,6 +142,6 @@ public class MyConexion {
             return envValue.trim();
         }
 
-        return "projetpi";
+        return "esportify";
     }
 }

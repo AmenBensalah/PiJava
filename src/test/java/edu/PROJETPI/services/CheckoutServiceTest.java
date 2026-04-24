@@ -193,14 +193,16 @@ class CheckoutServiceTest extends ServiceTestSupport {
             String description
     ) throws SQLException {
         try (var rs = connection.createStatement().executeQuery(
-                "SELECT pays, gouvernerat, code_postal, adresseLivraison, adresse_detail FROM commande WHERE id = " + commandeId
+                "SELECT pays, gouvernerat, code_postal, adresse_detail FROM commande WHERE id = " + commandeId
         )) {
             rs.next();
             assertEquals(pays, rs.getString("pays"));
             assertEquals(gouvernorat, rs.getString("gouvernerat"));
             assertEquals(codePostal, rs.getString("code_postal"));
-            assertEquals(adresse, rs.getString("adresseLivraison"));
-            assertEquals(description, rs.getString("adresse_detail"));
+            Commande commande = new Commande();
+            edu.PROJETPI.services.CommandeDatabaseMapper.populateDeliveryFields(commande, rs.getString("adresse_detail"));
+            assertEquals(adresse, commande.getAdresseLivraison());
+            assertEquals(description, commande.getDescriptionLivraison());
         }
     }
 
