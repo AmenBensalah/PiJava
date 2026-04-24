@@ -63,8 +63,8 @@
                             <Label styleClass="continue-text" text="Ou continuer avec" />
                             <HBox alignment="CENTER" spacing="18.0">
                                 <children>
-                                    <Button mnemonicParsing="false" styleClass="social-button" text="G" />
-                                    <Button mnemonicParsing="false" styleClass="social-button" text="O" />
+                                    <Button mnemonicParsing="false" onAction="#handleGoogleLogin" styleClass="social-button" text="G" />
+                                    <Button mnemonicParsing="false" onAction="#handleDiscordLogin" styleClass="social-button" text="O" />
                                 </children>
                             </HBox>
                             <Label styleClass="admin-hint" text="Compte admin pret : admin@admin.com / admin123" />

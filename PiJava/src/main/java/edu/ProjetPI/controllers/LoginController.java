@@ -1,9 +1,12 @@
 package edu.ProjetPI.controllers;
 
 import edu.ProjetPI.entities.User;
+import edu.ProjetPI.services.DiscordOAuthService;
 import edu.ProjetPI.services.FaceIdAuthService;
+import edu.ProjetPI.services.GoogleOAuthService;
 import edu.ProjetPI.services.UserService;
 import edu.ProjetPI.tools.UserValidationRules;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -11,11 +14,14 @@ import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class LoginController {
 
     private final UserService userService = new UserService();
     private final FaceIdAuthService faceIdAuthService = new FaceIdAuthService(userService);
+    private final GoogleOAuthService googleOAuthService = new GoogleOAuthService();
+    private final DiscordOAuthService discordOAuthService = new DiscordOAuthService();
 
     @FXML
     private TextField emailField;
@@ -84,6 +90,52 @@ public class LoginController {
     }
 
     @FXML
+    public void handleGoogleLogin() {
+        FormFeedback.clearMessage(messageLabel);
+        FormFeedback.showSuccess(messageLabel, "Opening Google login in browser...");
+
+        CompletableFuture.supplyAsync(() -> {
+            GoogleOAuthService.GoogleProfile profile = googleOAuthService.authenticate();
+            return userService.findOrCreateGoogleUser(profile.email(), profile.name());
+        }).whenComplete((user, error) -> Platform.runLater(() -> {
+            if (error != null) {
+                FormFeedback.showError(messageLabel, unwrapMessage(error));
+                return;
+            }
+            DashboardSession.setCurrentUser(user);
+            String role = user.getRole();
+            if ("ROLE_ADMIN".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
+                SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Admin Dashboard");
+            } else {
+                SceneManager.switchScene("/edu/ProjetPI/views/user-dashboard.fxml", "Front Office");
+            }
+        }));
+    }
+
+    @FXML
+    public void handleDiscordLogin() {
+        FormFeedback.clearMessage(messageLabel);
+        FormFeedback.showSuccess(messageLabel, "Opening Discord login in browser...");
+
+        CompletableFuture.supplyAsync(() -> {
+            DiscordOAuthService.DiscordProfile profile = discordOAuthService.authenticate();
+            return userService.findOrCreateDiscordUser(profile.email(), profile.displayName());
+        }).whenComplete((user, error) -> Platform.runLater(() -> {
+            if (error != null) {
+                FormFeedback.showError(messageLabel, unwrapMessage(error));
+                return;
+            }
+            DashboardSession.setCurrentUser(user);
+            String role = user.getRole();
+            if ("ROLE_ADMIN".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
+                SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Admin Dashboard");
+            } else {
+                SceneManager.switchScene("/edu/ProjetPI/views/user-dashboard.fxml", "Front Office");
+            }
+        }));
+    }
+
+    @FXML
     public void handleFaceLogin() {
         FormFeedback.clearMessage(messageLabel);
         FormFeedback.clearInvalid(emailField);
@@ -113,5 +165,14 @@ public class LoginController {
         } catch (Exception e) {
             FormFeedback.showError(messageLabel, "Face capture failed: " + e.getMessage());
         }
+    }
+
+    private static String unwrapMessage(Throwable error) {
+        Throwable cursor = error;
+        while (cursor.getCause() != null) {
+            cursor = cursor.getCause();
+        }
+        String msg = cursor.getMessage();
+        return msg == null || msg.isBlank() ? "Social login failed." : msg;
     }
 }
