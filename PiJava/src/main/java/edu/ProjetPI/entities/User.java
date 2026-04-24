@@ -7,25 +7,36 @@ public class User {
     private String email;
     private String password;
     private String role;
+    private String faceDescriptorJson;
 
     public User() {
     }
 
     public User(int id, String fullName, String pseudo, String email, String password, String role) {
+        this(id, fullName, pseudo, email, password, role, null);
+    }
+
+    public User(int id, String fullName, String pseudo, String email, String password, String role, String faceDescriptorJson) {
         this.id = id;
         this.fullName = fullName;
         this.pseudo = pseudo;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.faceDescriptorJson = faceDescriptorJson;
     }
 
     public User(String fullName, String pseudo, String email, String password, String role) {
+        this(fullName, pseudo, email, password, role, null);
+    }
+
+    public User(String fullName, String pseudo, String email, String password, String role, String faceDescriptorJson) {
         this.fullName = fullName;
         this.pseudo = pseudo;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.faceDescriptorJson = faceDescriptorJson;
     }
 
     public int getId() {
@@ -74,5 +85,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getFaceDescriptorJson() {
+        return faceDescriptorJson;
+    }
+
+    public void setFaceDescriptorJson(String faceDescriptorJson) {
+        this.faceDescriptorJson = faceDescriptorJson;
     }
 }

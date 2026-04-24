@@ -33,6 +33,7 @@
 
                 <HBox alignment="CENTER" spacing="10.0">
                     <children>
+                        <Button onAction="#handleCaptureFaceId" styleClass="secondary-button" text="Capture Face ID" />
                         <Button fx:id="saveButton" onAction="#handleSave" text="Creer le compte" />
                         <Button onAction="#handleCancel" styleClass="secondary-button" text="Retour" />
                     </children>

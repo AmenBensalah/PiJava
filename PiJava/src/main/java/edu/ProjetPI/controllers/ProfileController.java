@@ -2,6 +2,7 @@ package edu.ProjetPI.controllers;
 
 import edu.ProjetPI.entities.User;
 import edu.ProjetPI.services.UserService;
+import edu.ProjetPI.tools.UserValidationRules;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -34,6 +35,9 @@ public class ProfileController {
 
     @FXML
     public void initialize() {
+        FormFeedback.clearMessage(messageLabel);
+        FormFeedback.installResetOnInput(messageLabel, fullNameField, pseudoField, emailField, passwordField);
+
         User currentUser = DashboardSession.getCurrentUser();
         if (currentUser != null) {
             titleLabel.setText("Mon Profil - " + currentUser.getFullName());
@@ -48,7 +52,45 @@ public class ProfileController {
     public void handleUpdateProfile() {
         User currentUser = DashboardSession.getCurrentUser();
         if (currentUser == null) {
-            messageLabel.setText("No connected user found.");
+            FormFeedback.showError(messageLabel, "No connected user found.");
+            return;
+        }
+
+        FormFeedback.clearMessage(messageLabel);
+        FormFeedback.clearInvalid(fullNameField);
+        FormFeedback.clearInvalid(pseudoField);
+        FormFeedback.clearInvalid(emailField);
+        FormFeedback.clearInvalid(passwordField);
+
+        try {
+            UserValidationRules.validateFullName(fullNameField.getText());
+        } catch (IllegalArgumentException e) {
+            FormFeedback.markInvalid(fullNameField);
+            FormFeedback.showError(messageLabel, e.getMessage());
+            return;
+        }
+
+        try {
+            UserValidationRules.validatePseudo(pseudoField.getText());
+        } catch (IllegalArgumentException e) {
+            FormFeedback.markInvalid(pseudoField);
+            FormFeedback.showError(messageLabel, e.getMessage());
+            return;
+        }
+
+        try {
+            UserValidationRules.validateEmail(emailField.getText());
+        } catch (IllegalArgumentException e) {
+            FormFeedback.markInvalid(emailField);
+            FormFeedback.showError(messageLabel, e.getMessage());
+            return;
+        }
+
+        try {
+            UserValidationRules.validatePasswordForUpdate(passwordField.getText());
+        } catch (IllegalArgumentException e) {
+            FormFeedback.markInvalid(passwordField);
+            FormFeedback.showError(messageLabel, e.getMessage());
             return;
         }
 
@@ -74,9 +116,15 @@ public class ProfileController {
             titleLabel.setText("Mon Profil - " + currentUser.getFullName());
             roleLabel.setText("Role: " + currentUser.getRole());
             passwordField.clear();
-            messageLabel.setText("Profile updated successfully.");
+            FormFeedback.showSuccess(messageLabel, "Profile updated successfully.");
+        } catch (IllegalArgumentException e) {
+            String message = e.getMessage() == null ? "" : e.getMessage();
+            if (message.toLowerCase().contains("email")) {
+                FormFeedback.markInvalid(emailField);
+            }
+            FormFeedback.showError(messageLabel, message);
         } catch (Exception e) {
-            messageLabel.setText(e.getMessage());
+            FormFeedback.showError(messageLabel, e.getMessage());
         }
     }
 
@@ -84,7 +132,7 @@ public class ProfileController {
     public void handleDeleteAccount() {
         User currentUser = DashboardSession.getCurrentUser();
         if (currentUser == null) {
-            messageLabel.setText("No connected user found.");
+            FormFeedback.showError(messageLabel, "No connected user found.");
             return;
         }
 
@@ -93,7 +141,7 @@ public class ProfileController {
             DashboardSession.clear();
             SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "Login");
         } catch (Exception e) {
-            messageLabel.setText(e.getMessage());
+            FormFeedback.showError(messageLabel, e.getMessage());
         }
     }
 

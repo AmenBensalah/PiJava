@@ -1,7 +1,6 @@
 package edu.ProjetPI.tests;
 
 import edu.ProjetPI.controllers.SceneManager;
-import edu.ProjetPI.tools.DatabaseInitializer;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -10,7 +9,6 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        DatabaseInitializer.initialize();
         stage.initStyle(StageStyle.DECORATED);
         stage.setResizable(true);
         stage.setFullScreen(false);
