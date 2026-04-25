@@ -3,10 +3,15 @@ package edu.connexion3a77.entities;
 import java.util.Objects;
 
 public class DemandeParticipation {
+    public static final String STATUT_EN_ATTENTE = "EN_ATTENTE";
+    public static final String STATUT_ACCEPTEE = "ACCEPTEE";
+    public static final String STATUT_REFUSEE = "REFUSEE";
+
     private int id;
     private int tournoiId;
     private String description;
     private String niveau;
+    private String statut;
 
     public DemandeParticipation() {
     }
@@ -15,6 +20,7 @@ public class DemandeParticipation {
         this.tournoiId = tournoiId;
         this.description = description;
         this.niveau = niveau;
+        this.statut = STATUT_EN_ATTENTE;
     }
 
     public DemandeParticipation(int id, int tournoiId, String description, String niveau) {
@@ -22,6 +28,22 @@ public class DemandeParticipation {
         this.tournoiId = tournoiId;
         this.description = description;
         this.niveau = niveau;
+        this.statut = STATUT_EN_ATTENTE;
+    }
+
+    public DemandeParticipation(int tournoiId, String description, String niveau, String statut) {
+        this.tournoiId = tournoiId;
+        this.description = description;
+        this.niveau = niveau;
+        this.statut = statut;
+    }
+
+    public DemandeParticipation(int id, int tournoiId, String description, String niveau, String statut) {
+        this.id = id;
+        this.tournoiId = tournoiId;
+        this.description = description;
+        this.niveau = niveau;
+        this.statut = statut;
     }
 
     public int getId() {
@@ -56,6 +78,14 @@ public class DemandeParticipation {
         this.niveau = niveau;
     }
 
+    public String getStatut() {
+        return statut;
+    }
+
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
     @Override
     public String toString() {
         return "DemandeParticipation{" +
@@ -63,6 +93,7 @@ public class DemandeParticipation {
                 ", tournoiId=" + tournoiId +
                 ", description='" + description + '\'' +
                 ", niveau='" + niveau + '\'' +
+                ", statut='" + statut + '\'' +
                 '}';
     }
 

@@ -25,6 +25,10 @@ public final class SceneNavigator {
         show("/fxml/tournoi-user-view.fxml", "/css/tournoi-user.css", "E-Sportify User - Tournois");
     }
 
+    public static void showRawgGamesView() {
+        show("/fxml/rawg-games-view.fxml", "/css/rawg-games.css", "E-Sportify Admin - Consulter Jeux");
+    }
+
     private static void show(String fxmlPath, String cssPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneNavigator.class.getResource(fxmlPath));

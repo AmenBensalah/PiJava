@@ -5,17 +5,23 @@ import edu.connexion3a77.entities.Tournoi;
 import edu.connexion3a77.services.DemandeParticipationService;
 import edu.connexion3a77.services.TournoiService;
 import edu.connexion3a77.ui.SceneNavigator;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -46,6 +52,24 @@ public class TournoiAdminController {
     private TextField tfNombreParticipants;
     @FXML
     private Label statusLabel;
+    @FXML
+    private Label lblTotalTournois;
+    @FXML
+    private Label lblTypesTournoiActifs;
+    @FXML
+    private Label lblTypesJeuActifs;
+    @FXML
+    private BarChart<String, Number> barTypeTournoiChart;
+    @FXML
+    private CategoryAxis xTypeTournoiAxis;
+    @FXML
+    private NumberAxis yTypeTournoiAxis;
+    @FXML
+    private BarChart<String, Number> barTypeJeuChart;
+    @FXML
+    private CategoryAxis xTypeJeuAxis;
+    @FXML
+    private NumberAxis yTypeJeuAxis;
 
     @FXML
     private TableView<Tournoi> tournoiTable;
@@ -104,6 +128,7 @@ public class TournoiAdminController {
         cbTypeJeu.setItems(FXCollections.observableArrayList("FPS", "SPORTS", "MIND", "BATTLE ROYALE"));
 
         configureColumns();
+        configureDashboardCharts();
         configureParticipationAdminTable();
         loadTournois();
         loadParticipationsRequests();
@@ -227,7 +252,7 @@ public class TournoiAdminController {
     }
 
     private void loadParticipationsRequests() {
-        participationRequestList.setAll(demandeParticipationService.afficher());
+        participationRequestList.setAll(demandeParticipationService.afficherParStatut(DemandeParticipation.STATUT_EN_ATTENTE));
     }
 
     private void acceptParticipation(DemandeParticipation demande) {
@@ -243,14 +268,14 @@ public class TournoiAdminController {
 
         tournoi.setNombreParticipants(tournoi.getNombreParticipants() - 1);
         tournoiService.updateEntity(tournoi.getId(), tournoi);
-        demandeParticipationService.supprimer(demande.getId());
+        demandeParticipationService.updateStatut(demande.getId(), DemandeParticipation.STATUT_ACCEPTEE);
         loadParticipationsRequests();
         loadTournois();
         participationAdminStatusLabel.setText("Demande acceptee et place decrementee.");
     }
 
     private void rejectParticipation(DemandeParticipation demande) {
-        demandeParticipationService.supprimer(demande.getId());
+        demandeParticipationService.updateStatut(demande.getId(), DemandeParticipation.STATUT_REFUSEE);
         loadParticipationsRequests();
         participationAdminStatusLabel.setText("Demande refusee.");
     }
@@ -281,6 +306,11 @@ public class TournoiAdminController {
     @FXML
     private void onGoToUserView() {
         SceneNavigator.showUserView();
+    }
+
+    @FXML
+    private void onConsultJeux() {
+        SceneNavigator.showRawgGamesView();
     }
 
     @FXML
@@ -413,6 +443,81 @@ public class TournoiAdminController {
         for (Tournoi tournoi : tournoiList) {
             tournoiById.put(tournoi.getId(), tournoi);
         }
+        refreshDashboard();
+    }
+
+    private void configureDashboardCharts() {
+        xTypeTournoiAxis.setCategories(FXCollections.observableArrayList("SOLO", "DUO", "SQUAD", "LIGUE"));
+        xTypeJeuAxis.setCategories(FXCollections.observableArrayList("FPS", "SPORTS", "MIND", "BATTLE ROYALE"));
+        yTypeTournoiAxis.setAutoRanging(true);
+        yTypeJeuAxis.setAutoRanging(true);
+    }
+
+    private void refreshDashboard() {
+        Map<String, Integer> typeTournoiCounts = new LinkedHashMap<>();
+        typeTournoiCounts.put("SOLO", 0);
+        typeTournoiCounts.put("DUO", 0);
+        typeTournoiCounts.put("SQUAD", 0);
+        typeTournoiCounts.put("LIGUE", 0);
+
+        Map<String, Integer> typeJeuCounts = new LinkedHashMap<>();
+        typeJeuCounts.put("FPS", 0);
+        typeJeuCounts.put("SPORTS", 0);
+        typeJeuCounts.put("MIND", 0);
+        typeJeuCounts.put("BATTLE ROYALE", 0);
+
+        for (Tournoi tournoi : tournoiList) {
+            String typeTournoi = normalizeTypeTournoi(tournoi.getTypeTournoi());
+            typeTournoiCounts.computeIfPresent(typeTournoi, (k, v) -> v + 1);
+
+            String typeJeu = inferTypeJeu(tournoi.getNomJeu());
+            typeJeuCounts.computeIfPresent(typeJeu, (k, v) -> v + 1);
+        }
+
+        lblTotalTournois.setText(String.valueOf(tournoiList.size()));
+        lblTypesTournoiActifs.setText(String.valueOf(countActiveCategories(typeTournoiCounts.values().stream().toList())));
+        lblTypesJeuActifs.setText(String.valueOf(countActiveCategories(typeJeuCounts.values().stream().toList())));
+
+        XYChart.Series<String, Number> tournoiSeries = new XYChart.Series<>();
+        typeTournoiCounts.forEach((key, value) -> tournoiSeries.getData().add(new XYChart.Data<>(key, value)));
+        barTypeTournoiChart.getData().setAll(tournoiSeries);
+
+        XYChart.Series<String, Number> jeuSeries = new XYChart.Series<>();
+        typeJeuCounts.forEach((key, value) -> jeuSeries.getData().add(new XYChart.Data<>(key, value)));
+        barTypeJeuChart.getData().setAll(jeuSeries);
+    }
+
+    private int countActiveCategories(List<Integer> values) {
+        int active = 0;
+        for (Integer value : values) {
+            if (value != null && value > 0) {
+                active++;
+            }
+        }
+        return active;
+    }
+
+    private String normalizeTypeTournoi(String typeTournoi) {
+        if (typeTournoi == null || typeTournoi.trim().isEmpty()) {
+            return "SOLO";
+        }
+        String normalized = typeTournoi.trim().toUpperCase();
+        if ("LEAGUE".equals(normalized)) {
+            return "LIGUE";
+        }
+        if (normalized.startsWith("LIG")) {
+            return "LIGUE";
+        }
+        if (normalized.contains("SQUAD")) {
+            return "SQUAD";
+        }
+        if (normalized.contains("DUO")) {
+            return "DUO";
+        }
+        if (normalized.contains("SOLO")) {
+            return "SOLO";
+        }
+        return "SOLO";
     }
 
     private void showFormForCreate() {

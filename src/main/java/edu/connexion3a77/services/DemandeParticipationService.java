@@ -23,7 +23,8 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
                 "id INT PRIMARY KEY AUTO_INCREMENT, " +
                 "tournoi_id INT NOT NULL, " +
                 "description VARCHAR(255) NOT NULL, " +
-                "niveau VARCHAR(100) NOT NULL" +
+                "niveau VARCHAR(100) NOT NULL, " +
+                "statut VARCHAR(30) NOT NULL DEFAULT 'EN_ATTENTE'" +
                 ")";
 
         try {
@@ -34,6 +35,11 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
                 st.executeUpdate("ALTER TABLE " + TABLE_NAME + " DROP INDEX uq_demande_tournoi");
             } catch (SQLException ignored) {
                 // Index may not exist, ignore.
+            }
+            try {
+                st.executeUpdate("ALTER TABLE " + TABLE_NAME + " ADD COLUMN statut VARCHAR(30) NOT NULL DEFAULT 'EN_ATTENTE'");
+            } catch (SQLException ignored) {
+                // Column may already exist, ignore.
             }
         } catch (SQLException e) {
             System.out.println("Erreur creation table demande_participation : " + e.getMessage());
@@ -51,13 +57,14 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
             return;
         }
 
-        String requete = "INSERT INTO " + TABLE_NAME + " (tournoi_id, description, niveau) VALUES (?, ?, ?)";
+        String requete = "INSERT INTO " + TABLE_NAME + " (tournoi_id, description, niveau, statut) VALUES (?, ?, ?, ?)";
 
         try {
             PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
             pst.setInt(1, demandeParticipation.getTournoiId());
             pst.setString(2, demandeParticipation.getDescription());
             pst.setString(3, demandeParticipation.getNiveau());
+            pst.setString(4, normalizedStatut(demandeParticipation.getStatut()));
             pst.executeUpdate();
             System.out.println("Demande de participation ajoutee avec succes !");
         } catch (SQLException e) {
@@ -100,14 +107,15 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
             return;
         }
 
-        String requete = "UPDATE " + TABLE_NAME + " SET tournoi_id = ?, description = ?, niveau = ? WHERE id = ?";
+        String requete = "UPDATE " + TABLE_NAME + " SET tournoi_id = ?, description = ?, niveau = ?, statut = ? WHERE id = ?";
 
         try {
             PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
             pst.setInt(1, demandeParticipation.getTournoiId());
             pst.setString(2, demandeParticipation.getDescription());
             pst.setString(3, demandeParticipation.getNiveau());
-            pst.setInt(4, id);
+            pst.setString(4, normalizedStatut(demandeParticipation.getStatut()));
+            pst.setInt(5, id);
             pst.executeUpdate();
             System.out.println("Demande de participation modifiee avec succes !");
         } catch (SQLException e) {
@@ -134,6 +142,7 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
                 demandeParticipation.setTournoiId(rs.getInt("tournoi_id"));
                 demandeParticipation.setDescription(rs.getString("description"));
                 demandeParticipation.setNiveau(rs.getString("niveau"));
+                demandeParticipation.setStatut(normalizedStatut(rs.getString("statut")));
                 data.add(demandeParticipation);
             }
         } catch (SQLException e) {
@@ -144,6 +153,53 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
 
     public List<DemandeParticipation> afficher() {
         return getData();
+    }
+
+    public List<DemandeParticipation> afficherParStatut(String statut) {
+        String statutNormalise = normalizedStatut(statut);
+        if (statutNormalise == null) {
+            return getData();
+        }
+
+        List<DemandeParticipation> data = new ArrayList<>();
+        String requete = "SELECT * FROM " + TABLE_NAME + " WHERE statut = ?";
+
+        try {
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
+            pst.setString(1, statutNormalise);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                DemandeParticipation demandeParticipation = new DemandeParticipation();
+                demandeParticipation.setId(rs.getInt("id"));
+                demandeParticipation.setTournoiId(rs.getInt("tournoi_id"));
+                demandeParticipation.setDescription(rs.getString("description"));
+                demandeParticipation.setNiveau(rs.getString("niveau"));
+                demandeParticipation.setStatut(normalizedStatut(rs.getString("statut")));
+                data.add(demandeParticipation);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return data;
+    }
+
+    public void updateStatut(int id, String statut) {
+        String statutNormalise = normalizedStatut(statut);
+        if (statutNormalise == null) {
+            System.out.println("Controle saisie: statut invalide.");
+            return;
+        }
+
+        String requete = "UPDATE " + TABLE_NAME + " SET statut = ? WHERE id = ?";
+        try {
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
+            pst.setString(1, statutNormalise);
+            pst.setInt(2, id);
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private boolean isDemandeValide(DemandeParticipation demandeParticipation) {
@@ -164,6 +220,11 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
 
         if (demandeParticipation.getNiveau() == null || demandeParticipation.getNiveau().trim().isEmpty()) {
             System.out.println("Controle saisie: le niveau ne doit pas etre vide.");
+            return false;
+        }
+
+        if (normalizedStatut(demandeParticipation.getStatut()) == null) {
+            System.out.println("Controle saisie: statut invalide.");
             return false;
         }
 
@@ -190,6 +251,19 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
             System.out.println(e.getMessage());
             return false;
         }
+    }
+
+    private String normalizedStatut(String statut) {
+        if (statut == null || statut.trim().isEmpty()) {
+            return DemandeParticipation.STATUT_EN_ATTENTE;
+        }
+        String normalized = statut.trim().toUpperCase();
+        if (DemandeParticipation.STATUT_EN_ATTENTE.equals(normalized)
+                || DemandeParticipation.STATUT_ACCEPTEE.equals(normalized)
+                || DemandeParticipation.STATUT_REFUSEE.equals(normalized)) {
+            return normalized;
+        }
+        return null;
     }
 
 }

@@ -1,5 +1,9 @@
 package edu.connexion3a77.controllers;
 
+import com.calendarfx.model.Calendar;
+import com.calendarfx.model.CalendarSource;
+import com.calendarfx.model.Entry;
+import com.calendarfx.view.CalendarView;
 import edu.connexion3a77.entities.DemandeParticipation;
 import edu.connexion3a77.entities.Tournoi;
 import edu.connexion3a77.services.DemandeParticipationService;
@@ -14,8 +18,10 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +37,8 @@ public class TournoiUserController {
     private FlowPane tournoiCardsPane;
     @FXML
     private Label userStatusLabel;
+    @FXML
+    private StackPane calendarContainer;
 
     @FXML
     private TextField tfPartTournoiId;
@@ -58,6 +66,8 @@ public class TournoiUserController {
     private final ObservableList<Tournoi> tournoiList = FXCollections.observableArrayList();
     private final ObservableList<DemandeParticipation> participationList = FXCollections.observableArrayList();
     private final Map<Integer, Tournoi> tournoiById = new HashMap<>();
+    private CalendarView calendarView;
+    private Calendar userTournamentsCalendar;
 
     private DemandeParticipation selectedParticipation;
 
@@ -68,10 +78,12 @@ public class TournoiUserController {
         cbPartNiveau.setItems(FXCollections.observableArrayList("Amateur", "Medium", "Pro"));
         cbPartNiveau.setValue("Amateur");
 
+        initCalendarView();
         configureParticipationTable();
         loadTournois();
         loadParticipations();
         renderTournoiCards();
+        refreshCalendarFromParticipations();
     }
 
     @FXML
@@ -84,6 +96,7 @@ public class TournoiUserController {
         loadTournois();
         loadParticipations();
         renderTournoiCards();
+        refreshCalendarFromParticipations();
         userStatusLabel.setText("Tournois et participations rafraichis.");
     }
 
@@ -124,6 +137,7 @@ public class TournoiUserController {
         clearParticipationForm();
         loadParticipations();
         renderTournoiCards();
+        refreshCalendarFromParticipations();
     }
 
     @FXML
@@ -265,6 +279,7 @@ public class TournoiUserController {
         demandeParticipationService.ajouter(demande);
         loadParticipations();
         renderTournoiCards();
+        refreshCalendarFromParticipations();
         tfPartTournoiId.setText(String.valueOf(tournoi.getId()));
         userStatusLabel.setText("Demande de participation envoyee pour " + tournoi.getNomTournoi() + ".");
     }
@@ -279,7 +294,56 @@ public class TournoiUserController {
             demandeParticipationService.supprimer(demande.getId());
             loadParticipations();
             renderTournoiCards();
+            refreshCalendarFromParticipations();
             userStatusLabel.setText("Participation supprimee.");
+        }
+    }
+
+    private void initCalendarView() {
+        userTournamentsCalendar = new Calendar("Mes tournois");
+        userTournamentsCalendar.setStyle(Calendar.Style.STYLE3);
+
+        CalendarSource source = new CalendarSource("Tournois");
+        source.getCalendars().add(userTournamentsCalendar);
+
+        calendarView = new CalendarView();
+        calendarView.getCalendarSources().setAll(source);
+        calendarView.showMonthPage();
+        calendarView.setShowAddCalendarButton(false);
+        calendarView.setShowSourceTray(false);
+        calendarView.setShowPrintButton(false);
+        calendarView.setShowPageSwitcher(true);
+        calendarView.setRequestedTime(LocalDate.now().atTime(9, 0).toLocalTime());
+
+        calendarContainer.getChildren().setAll(calendarView);
+    }
+
+    private void refreshCalendarFromParticipations() {
+        if (userTournamentsCalendar == null) {
+            return;
+        }
+
+        userTournamentsCalendar.clear();
+
+        for (DemandeParticipation participation : participationList) {
+            if (!DemandeParticipation.STATUT_ACCEPTEE.equalsIgnoreCase(participation.getStatut())) {
+                continue;
+            }
+            Tournoi tournoi = tournoiById.get(participation.getTournoiId());
+            if (tournoi == null || tournoi.getDateDebut() == null || tournoi.getDateFin() == null) {
+                continue;
+            }
+
+            LocalDate startDate = tournoi.getDateDebut().toLocalDate();
+            LocalDate endDate = tournoi.getDateFin().toLocalDate();
+
+            Entry<String> entry = new Entry<>(tournoi.getNomTournoi());
+            entry.changeStartDate(startDate);
+            entry.changeEndDate(endDate);
+            entry.setFullDay(true);
+            entry.setLocation(tournoi.getNomJeu());
+            entry.setUserObject("Inscription ID " + participation.getId());
+            userTournamentsCalendar.addEntry(entry);
         }
     }
 
@@ -316,7 +380,9 @@ public class TournoiUserController {
     }
 
     private boolean isAlreadyJoined(int tournoiId) {
-        return participationList.stream().anyMatch(dp -> dp.getTournoiId() == tournoiId);
+        return participationList.stream()
+                .anyMatch(dp -> dp.getTournoiId() == tournoiId
+                        && !DemandeParticipation.STATUT_REFUSEE.equalsIgnoreCase(dp.getStatut()));
     }
 
     private String getTournoiNom(int tournoiId) {

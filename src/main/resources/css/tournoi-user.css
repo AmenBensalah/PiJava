@@ -45,6 +45,16 @@
     -fx-background-color: rgba(5, 10, 27, 0.42);
 }
 
+.content-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.content-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
 .header-card {
     -fx-background-color: linear-gradient(to right, rgba(55, 168, 229, 0.3), rgba(129, 92, 255, 0.32));
     -fx-background-radius: 24;
