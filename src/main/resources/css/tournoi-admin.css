@@ -161,6 +161,40 @@
     -fx-padding: 16;
 }
 
+.prediction-card {
+    -fx-background-color: linear-gradient(to right, rgba(7, 18, 45, 0.92), rgba(15, 22, 56, 0.92));
+    -fx-background-radius: 18;
+    -fx-border-color: rgba(90, 186, 255, 0.42);
+    -fx-border-radius: 18;
+    -fx-padding: 16;
+}
+
+.prediction-subtitle {
+    -fx-text-fill: #abc5ea;
+    -fx-font-size: 14;
+    -fx-font-weight: 600;
+}
+
+.prediction-pill {
+    -fx-background-color: linear-gradient(to right, rgba(50, 169, 244, 0.16), rgba(97, 91, 255, 0.16));
+    -fx-border-color: rgba(101, 189, 255, 0.4);
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 12;
+}
+
+.prediction-pill-title {
+    -fx-text-fill: #b8ceee;
+    -fx-font-size: 12;
+    -fx-font-weight: 700;
+}
+
+.prediction-pill-value {
+    -fx-text-fill: #f5f9ff;
+    -fx-font-size: 24;
+    -fx-font-weight: 800;
+}
+
 .stat-card {
     -fx-background-color: linear-gradient(to right, rgba(34, 164, 235, 0.25), rgba(90, 105, 255, 0.18));
     -fx-background-radius: 14;

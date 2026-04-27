@@ -106,6 +106,33 @@
                     </HBox>
                 </VBox>
 
+                <VBox spacing="12.0" styleClass="prediction-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <Label text="Predictions IA Admin" styleClass="section-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Generer prediction" onAction="#onGeneratePrediction" styleClass="secondary-btn"/>
+                    </HBox>
+
+                    <Label text="Suggere le prochain format de tournoi a privilegier selon les tendances actuelles." styleClass="prediction-subtitle"/>
+
+                    <HBox spacing="12.0">
+                        <VBox spacing="6.0" styleClass="prediction-pill" HBox.hgrow="ALWAYS">
+                            <Label text="Type de tournoi predit" styleClass="prediction-pill-title"/>
+                            <Label fx:id="lblPredictionType" text="-" styleClass="prediction-pill-value"/>
+                        </VBox>
+                        <VBox spacing="6.0" styleClass="prediction-pill" HBox.hgrow="ALWAYS">
+                            <Label text="Jeu recommande" styleClass="prediction-pill-title"/>
+                            <Label fx:id="lblPredictionJeu" text="-" styleClass="prediction-pill-value"/>
+                        </VBox>
+                        <VBox spacing="6.0" styleClass="prediction-pill" HBox.hgrow="ALWAYS">
+                            <Label text="Confiance estimee" styleClass="prediction-pill-title"/>
+                            <Label fx:id="lblPredictionConfidence" text="0%" styleClass="prediction-pill-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <Label fx:id="predictionStatusLabel" text="Pret a generer une prediction." styleClass="status-label"/>
+                </VBox>
+
                 <VBox fx:id="formCard" spacing="14.0" styleClass="form-card">
                     <padding>
                         <Insets top="18" right="18" bottom="18" left="18"/>

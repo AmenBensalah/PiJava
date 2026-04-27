@@ -1,0 +1,4 @@
+nb_tournois,types_tournoi_actifs,types_jeu_actifs,nb_solo,nb_duo,nb_squad,nb_ligue,nb_fps,nb_sports,nb_mind,nb_battle_royale,type_tournoi,jeu
+3,3,2,1,1,1,1,2,1,0,0,Ligue,Valorant
+2,2,1,0,1,1,0,2,0,0,0,SQUAD,cs2
+1,1,1,1,0,0,0,1,0,0,0,DUO,FIFA

@@ -19,9 +19,11 @@ import javafx.scene.layout.VBox;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -58,6 +60,14 @@ public class TournoiAdminController {
     private Label lblTypesTournoiActifs;
     @FXML
     private Label lblTypesJeuActifs;
+    @FXML
+    private Label lblPredictionType;
+    @FXML
+    private Label lblPredictionJeu;
+    @FXML
+    private Label lblPredictionConfidence;
+    @FXML
+    private Label predictionStatusLabel;
     @FXML
     private BarChart<String, Number> barTypeTournoiChart;
     @FXML
@@ -304,6 +314,11 @@ public class TournoiAdminController {
     }
 
     @FXML
+    private void onGeneratePrediction() {
+        refreshPredictionPanel();
+    }
+
+    @FXML
     private void onGoToUserView() {
         SceneNavigator.showUserView();
     }
@@ -444,6 +459,7 @@ public class TournoiAdminController {
             tournoiById.put(tournoi.getId(), tournoi);
         }
         refreshDashboard();
+        refreshPredictionPanel();
     }
 
     private void configureDashboardCharts() {
@@ -562,5 +578,88 @@ public class TournoiAdminController {
             return "BATTLE ROYALE";
         }
         return "MIND";
+    }
+
+    private void refreshPredictionPanel() {
+        PredictionData prediction = buildPrediction();
+        lblPredictionType.setText(prediction.typeTournoi);
+        lblPredictionJeu.setText(prediction.nomJeu);
+        lblPredictionConfidence.setText(String.format(Locale.US, "%.0f%%", prediction.confidence));
+        predictionStatusLabel.setText(prediction.message);
+    }
+
+    private PredictionData buildPrediction() {
+        if (tournoiList.isEmpty()) {
+            return new PredictionData(
+                    "SOLO",
+                    "Valorant",
+                    0,
+                    "Aucune donnee disponible pour predire. Ajoute quelques tournois pour activer l'analyse."
+            );
+        }
+
+        Map<String, Integer> typeTournoiCounts = new LinkedHashMap<>();
+        typeTournoiCounts.put("SOLO", 0);
+        typeTournoiCounts.put("DUO", 0);
+        typeTournoiCounts.put("SQUAD", 0);
+        typeTournoiCounts.put("LIGUE", 0);
+
+        Map<String, Integer> jeuCounts = new LinkedHashMap<>();
+
+        for (Tournoi tournoi : tournoiList) {
+            String typeTournoi = normalizeTypeTournoi(tournoi.getTypeTournoi());
+            typeTournoiCounts.computeIfPresent(typeTournoi, (k, v) -> v + 1);
+
+            String nomJeu = tournoi.getNomJeu() == null ? "" : tournoi.getNomJeu().trim();
+            if (!nomJeu.isEmpty()) {
+                jeuCounts.merge(nomJeu, 1, Integer::sum);
+            }
+        }
+
+        String predictedType = getMaxKey(typeTournoiCounts, "SOLO");
+        String predictedJeu = getMaxKey(jeuCounts, "Valorant");
+        int totalTournois = tournoiList.size();
+        int topTypeCount = typeTournoiCounts.getOrDefault(predictedType, 0);
+        int topJeuCount = jeuCounts.getOrDefault(predictedJeu, 0);
+
+        double typeShare = (double) topTypeCount / totalTournois;
+        double jeuShare = (double) topJeuCount / totalTournois;
+        double confidence = ((typeShare * 0.55) + (jeuShare * 0.45)) * 100;
+        double dataFactor = Math.min(1.0, totalTournois / 8.0);
+        confidence = confidence * (0.65 + (0.35 * dataFactor));
+
+        String message = String.format(
+                Locale.US,
+                "Prediction basee sur %d tournois: priorise %s sur %s (confiance %.0f%%).",
+                totalTournois,
+                predictedType,
+                predictedJeu,
+                confidence
+        );
+
+        return new PredictionData(predictedType, predictedJeu, confidence, message);
+    }
+
+    private String getMaxKey(Map<String, Integer> values, String fallback) {
+        return values.entrySet()
+                .stream()
+                .max(Comparator.comparingInt(Map.Entry::getValue))
+                .filter(entry -> entry.getValue() > 0)
+                .map(Map.Entry::getKey)
+                .orElse(fallback);
+    }
+
+    private static final class PredictionData {
+        private final String typeTournoi;
+        private final String nomJeu;
+        private final double confidence;
+        private final String message;
+
+        private PredictionData(String typeTournoi, String nomJeu, double confidence, String message) {
+            this.typeTournoi = typeTournoi;
+            this.nomJeu = nomJeu;
+            this.confidence = confidence;
+            this.message = message;
+        }
     }
 }
