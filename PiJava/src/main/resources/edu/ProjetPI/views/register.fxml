@@ -58,7 +58,7 @@
                     </VBox>
 
                     <Button maxWidth="1.7976931348623157E308" onAction="#handleRegister" styleClass="primary-login-button" text="CREER LE COMPTE" />
-                    <Button maxWidth="1.7976931348623157E308" onAction="#handleCaptureFaceId" styleClass="faceid-button" text="Capture Face ID (ONNX)" />
+                    <Button maxWidth="1.7976931348623157E308" onAction="#handleCaptureFaceId" styleClass="faceid-button" text="Capture Face ID" />
                     <Button maxWidth="1.7976931348623157E308" onAction="#goToLogin" styleClass="faceid-button" text="Retour a la connexion" />
 
                     <Label fx:id="messageLabel" maxWidth="1.7976931348623157E308" styleClass="message login-message" wrapText="true" />

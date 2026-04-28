@@ -90,7 +90,7 @@ public final class FaceApiCaptureDialog {
 
         Dialog<List<Double>> dialog = new Dialog<>();
         dialog.setTitle("Face ID Capture");
-        dialog.setHeaderText("Native camera capture with ONNX Runtime");
+        // dialog.setHeaderText removed
         if (owner != null) {
             dialog.initOwner(owner);
         }
