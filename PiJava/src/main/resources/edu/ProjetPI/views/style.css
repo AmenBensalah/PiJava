@@ -198,6 +198,81 @@
     -fx-padding: 10 0 10 0;
 }
 
-.profile-scroll > .viewport {
+.profile-scroll>.viewport {
+    -fx-background-color: transparent;
+}
+
+premium-label-cyan {
+    -fx-font-size: 12px;
+    -fx-text-fill: #00d2ff;
+    -fx-font-weight: 800;
+}
+
+.premium-value-cyan {
+    -fx-font-size: 14px;
+    -fx-text-fill: #00d2ff;
+    -fx-font-weight: 900;
+}
+
+.premium-progress-cyan {
+    -fx-accent: #00d2ff;
+    -fx-pref-height: 4px;
+}
+
+.premium-progress-cyan .track {
+    -fx-background-color: rgba(0, 210, 255, 0.1);
+    -fx-background-radius: 2;
+}
+
+.premium-progress-cyan .bar {
+    -fx-background-radius: 2;
+    -fx-effect: dropshadow(gaussian, rgba(0, 210, 255, 0.8), 5, 0, 0, 0);
+}
+
+.premium-label-purple {
+    -fx-font-size: 12px;
+    -fx-text-fill: #b549ff;
+    -fx-font-weight: 800;
+}
+
+.premium-value-purple {
+    -fx-font-size: 14px;
+    -fx-text-fill: #b549ff;
+    -fx-font-weight: 900;
+}
+
+.premium-progress-purple {
+    -fx-accent: #b549ff;
+    -fx-pref-height: 4px;
+}
+
+.premium-progress-purple .track {
+    -fx-background-color: rgba(181, 73, 255, 0.1);
+    -fx-background-radius: 2;
+}
+
+.premium-progress-purple .bar {
+    -fx-background-radius: 2;
+    -fx-effect: dropshadow(gaussian, rgba(181, 73, 255, 0.8), 5, 0, 0, 0);
+}
+
+.premium-list {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-radius: 4;
+}
+
+.premium-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #7a8ba3;
+    -fx-font-size: 11px;
+}
+
+.profile-scroll {
+    -fx-background-color: transparent;
+    -fx-padding: 10 0 10 0;
+}
+
+.profile-scroll>.viewport {
     -fx-background-color: transparent;
 }

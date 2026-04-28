@@ -80,10 +80,12 @@
                                         <TableColumn fx:id="idColumn" prefWidth="80.0" text="ID" />
                                         <TableColumn fx:id="nameColumn" prefWidth="240.0" text="Nom" />
                                         <TableColumn fx:id="pseudoColumn" prefWidth="0.0" text="Pseudo" visible="false" />
-                                        <TableColumn fx:id="emailColumn" prefWidth="340.0" text="Email" />
-                                        <TableColumn fx:id="roleColumn" prefWidth="170.0" text="Role" />
-                                        <TableColumn fx:id="editColumn" prefWidth="150.0" text="Modifier" />
-                                        <TableColumn fx:id="deleteColumn" prefWidth="170.0" text="Supprimer" />
+                                        <TableColumn fx:id="emailColumn" prefWidth="300.0" text="Email" />
+                                        <TableColumn fx:id="roleColumn" prefWidth="120.0" text="Role" />
+                                        <TableColumn fx:id="statusColumn" prefWidth="120.0" text="Statut" />
+                                        <TableColumn fx:id="warnColumn" prefWidth="120.0" text="Avertissement" />
+                                        <TableColumn fx:id="editColumn" prefWidth="120.0" text="Modifier" />
+                                        <TableColumn fx:id="deleteColumn" prefWidth="120.0" text="Supprimer" />
                                     </columns>
                                 </TableView>
                             </children>

@@ -66,10 +66,18 @@ public class AdminDashboardController {
     private TableColumn<User, String> roleColumn;
 
     @FXML
+    private TableColumn<User, User> statusColumn;
+
+    @FXML
+    private TableColumn<User, User> warnColumn;
+
+    @FXML
     private TableColumn<User, Void> editColumn;
 
     @FXML
     private TableColumn<User, Void> deleteColumn;
+
+    private javafx.animation.Timeline autoRefreshTimeline;
 
     @FXML
     public void initialize() {
@@ -112,6 +120,123 @@ public class AdminDashboardController {
                     }
                 }
                 setGraphic(wrapper);
+            }
+        });
+
+        statusColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue()));
+        statusColumn.setCellFactory(column -> new TableCell<>() {
+            private final Label statusLabel = new Label();
+            private final StackPane wrapper = new StackPane(statusLabel);
+
+            {
+                wrapper.setAlignment(Pos.CENTER_LEFT);
+            }
+
+            @Override
+            protected void updateItem(User item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                statusLabel.getStyleClass().removeAll("role-pill", "role-admin", "role-manager", "role-joueur");
+                statusLabel.getStyleClass().add("role-pill");
+
+                if (item.getWarningSentAt() != null) {
+                    java.time.Duration diff = java.time.Duration.between(item.getWarningSentAt(), java.time.LocalDateTime.now());
+                    if (diff.toMinutes() > 2) {
+                        statusLabel.setText("Banni");
+                        statusLabel.setStyle("-fx-background-color: rgba(255, 0, 0, 0.2); -fx-text-fill: #ff0000;");
+                    } else {
+                        statusLabel.setText("En Sursis");
+                        statusLabel.setStyle("-fx-background-color: rgba(255, 165, 2, 0.2); -fx-text-fill: #ffa502;");
+                    }
+                } else {
+                    boolean isActive = false;
+                    if (item.getLastLogin() != null) {
+                        java.time.Duration diff = java.time.Duration.between(item.getLastLogin(), java.time.LocalDateTime.now());
+                        if (diff.toMinutes() <= 60) {
+                            isActive = true;
+                        }
+                    }
+
+                    if (isActive) {
+                        statusLabel.setText("Actif");
+                        statusLabel.setStyle("-fx-background-color: rgba(46, 213, 115, 0.2); -fx-text-fill: #2ed573;");
+                    } else {
+                        statusLabel.setText("Inactif");
+                        statusLabel.setStyle("-fx-background-color: rgba(255, 71, 87, 0.2); -fx-text-fill: #ff4757;");
+                    }
+                }
+                setGraphic(wrapper);
+            }
+        });
+
+        warnColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue()));
+        warnColumn.setCellFactory(column -> new TableCell<>() {
+            private final Button actionButton = new Button();
+
+            {
+                actionButton.getStyleClass().add("action-edit-pill");
+                actionButton.setOnAction(event -> {
+                    User user = getTableView().getItems().get(getIndex());
+                    if (actionButton.getText().startsWith("Avertir")) {
+                        handleWarnUser(user);
+                    } else if (actionButton.getText().startsWith("Debannir") || actionButton.getText().startsWith("Annuler")) {
+                        handleUnbanUser(user);
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(User item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                User currentUser = DashboardSession.getCurrentUser();
+                if (currentUser != null && currentUser.getId() == item.getId()) {
+                    actionButton.setText("Avertir");
+                    actionButton.setDisable(true);
+                    actionButton.setStyle("-fx-background-color: rgba(200, 200, 200, 0.2); -fx-text-fill: #aaaaaa;");
+                    setGraphic(actionButton);
+                    return;
+                }
+
+                if (item.getWarningSentAt() != null) {
+                    java.time.Duration diff = java.time.Duration.between(item.getWarningSentAt(), java.time.LocalDateTime.now());
+                    if (diff.toMinutes() > 2) {
+                        actionButton.setText("Debannir (" + diff.toMinutes() + "m)");
+                        actionButton.setDisable(false);
+                        actionButton.setStyle("-fx-background-color: rgba(46, 213, 115, 0.2); -fx-text-fill: #2ed573;");
+                    } else {
+                        actionButton.setText("Annuler (" + diff.toMinutes() + "m)");
+                        actionButton.setDisable(false);
+                        actionButton.setStyle("-fx-background-color: rgba(164, 176, 190, 0.2); -fx-text-fill: #a4b0be;");
+                    }
+                } else {
+                    boolean isActive = false;
+                    if (item.getLastLogin() != null) {
+                        java.time.Duration diff = java.time.Duration.between(item.getLastLogin(), java.time.LocalDateTime.now());
+                        if (diff.toMinutes() <= 60) {
+                            isActive = true;
+                        }
+                    }
+
+                    if (isActive) {
+                        actionButton.setText("Avertir");
+                        actionButton.setDisable(true);
+                        actionButton.setStyle("-fx-background-color: rgba(200, 200, 200, 0.2); -fx-text-fill: #aaaaaa;");
+                    } else {
+                        actionButton.setText("Avertir");
+                        actionButton.setDisable(false);
+                        actionButton.setStyle("-fx-background-color: rgba(255, 165, 2, 0.2); -fx-text-fill: #ffa502;");
+                    }
+                }
+                setGraphic(actionButton);
             }
         });
 
@@ -186,6 +311,28 @@ public class AdminDashboardController {
         SceneManager.switchScene("/edu/ProjetPI/views/user-form.fxml", "Modifier compte");
     }
 
+    private void handleWarnUser(User user) {
+        try {
+            edu.ProjetPI.services.BrevoEmailService brevoService = new edu.ProjetPI.services.BrevoEmailService();
+            brevoService.sendInactivityWarning(user.getEmail(), user.getPseudo());
+            userService.setWarningSentAt(user.getId());
+            messageLabel.setText("Avertissement envoye a " + user.getEmail() + ". Le compte a rebours est lance.");
+            refreshTable();
+        } catch (Exception e) {
+            messageLabel.setText("Erreur d'envoi: " + e.getMessage());
+        }
+    }
+
+    private void handleUnbanUser(User user) {
+        try {
+            userService.clearWarningSentAt(user.getId());
+            messageLabel.setText("Le compte de " + user.getPseudo() + " a ete debanni.");
+            refreshTable();
+        } catch (Exception e) {
+            messageLabel.setText("Erreur de debannissement: " + e.getMessage());
+        }
+    }
+
     @FXML
     public void handleDelete() {
         User selectedUser = userTable.getSelectionModel().getSelectedItem();
@@ -234,6 +381,13 @@ public class AdminDashboardController {
         sortDirectionCombo.getSelectionModel().select("Ascendant");
 
         searchField.textProperty().addListener((obs, oldValue, newValue) -> applyFiltersAndSort());
+
+        autoRefreshTimeline = new javafx.animation.Timeline(new javafx.animation.KeyFrame(javafx.util.Duration.seconds(5), ev -> {
+            userTable.refresh();
+        }));
+        autoRefreshTimeline.setCycleCount(javafx.animation.Timeline.INDEFINITE);
+        autoRefreshTimeline.play();
+
         sortByCombo.valueProperty().addListener((obs, oldValue, newValue) -> applyFiltersAndSort());
         sortDirectionCombo.valueProperty().addListener((obs, oldValue, newValue) -> applyFiltersAndSort());
         filteredUsers.addListener((ListChangeListener<User>) change -> updateTotalCount());
