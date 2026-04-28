@@ -1,5 +1,7 @@
 package edu.ProjetPI.entities;
 
+import java.time.LocalDateTime;
+
 public class User {
     private int id;
     private String fullName;
@@ -8,6 +10,8 @@ public class User {
     private String password;
     private String role;
     private String faceDescriptorJson;
+    private LocalDateTime lastLogin;
+    private LocalDateTime warningSentAt;
 
     public User() {
     }
@@ -93,5 +97,21 @@ public class User {
 
     public void setFaceDescriptorJson(String faceDescriptorJson) {
         this.faceDescriptorJson = faceDescriptorJson;
+    }
+
+    public LocalDateTime getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(LocalDateTime lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public LocalDateTime getWarningSentAt() {
+        return warningSentAt;
+    }
+
+    public void setWarningSentAt(LocalDateTime warningSentAt) {
+        this.warningSentAt = warningSentAt;
     }
 }

@@ -20,6 +20,8 @@ public class UserService implements IService<User> {
     public UserService() {
         this.connection = MyConnection.getInstance().getCnx();
         ensureFaceDescriptorColumnExists();
+        ensureLastLoginColumnExists();
+        ensureWarningSentAtColumnExists();
     }
 
     @Override
@@ -87,7 +89,7 @@ public class UserService implements IService<User> {
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json FROM user ORDER BY id";
+        String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json, last_login, warning_sent_at FROM user ORDER BY id";
 
         try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
@@ -108,7 +110,7 @@ public class UserService implements IService<User> {
     }
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json FROM user WHERE email = ?";
+        String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json, last_login, warning_sent_at FROM user WHERE email = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, UserValidationRules.normalizeEmail(email));
@@ -170,7 +172,7 @@ public class UserService implements IService<User> {
     }
 
     private User mapResultSet(ResultSet rs) throws SQLException {
-        return new User(
+        User u = new User(
                 rs.getInt("id"),
                 rs.getString("full_name"),
                 rs.getString("pseudo"),
@@ -179,11 +181,22 @@ public class UserService implements IService<User> {
                 rs.getString("role"),
                 rs.getString("face_descriptor_json")
         );
+        String lastLoginStr = rs.getString("last_login");
+        if (lastLoginStr != null) {
+            if (lastLoginStr.contains(".")) lastLoginStr = lastLoginStr.substring(0, lastLoginStr.indexOf('.'));
+            u.setLastLogin(java.time.LocalDateTime.parse(lastLoginStr, java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        String warningStr = rs.getString("warning_sent_at");
+        if (warningStr != null) {
+            if (warningStr.contains(".")) warningStr = warningStr.substring(0, warningStr.indexOf('.'));
+            u.setWarningSentAt(java.time.LocalDateTime.parse(warningStr, java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        return u;
     }
 
     public List<User> findUsersWithFaceDescriptor() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json "
+        String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json, last_login, warning_sent_at "
                 + "FROM user WHERE face_descriptor_json IS NOT NULL AND TRIM(face_descriptor_json) <> ''";
         try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
@@ -213,6 +226,74 @@ public class UserService implements IService<User> {
                 }
             }
             schemaChecked = true;
+        }
+    }
+
+    private void ensureLastLoginColumnExists() {
+        String sql = "ALTER TABLE user ADD COLUMN last_login DATETIME NULL";
+        try (Statement st = connection.createStatement()) {
+            st.executeUpdate(sql);
+        } catch (SQLException e) {
+            String msg = e.getMessage() == null ? "" : e.getMessage().toLowerCase();
+            if (!msg.contains("duplicate column") && !msg.contains("already exists")) {
+                throw new IllegalStateException("Unable to initialize last_login column: " + e.getMessage(), e);
+            }
+        }
+    }
+
+    public void updateLastLogin(int userId) {
+        String sql = "UPDATE user SET last_login = ? WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to update last_login: " + e.getMessage(), e);
+        }
+    }
+
+    private void ensureWarningSentAtColumnExists() {
+        String sql = "ALTER TABLE user ADD COLUMN warning_sent_at DATETIME NULL";
+        try (Statement st = connection.createStatement()) {
+            st.executeUpdate(sql);
+        } catch (SQLException e) {
+            String msg = e.getMessage() == null ? "" : e.getMessage().toLowerCase();
+            if (!msg.contains("duplicate column") && !msg.contains("already exists")) {
+                throw new IllegalStateException("Unable to initialize warning_sent_at column: " + e.getMessage(), e);
+            }
+        }
+    }
+
+    public void setWarningSentAt(int userId) {
+        String sql = "UPDATE user SET warning_sent_at = ? WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to update warning_sent_at: " + e.getMessage(), e);
+        }
+    }
+
+    public void clearWarningSentAt(int userId) {
+        String sql = "UPDATE user SET warning_sent_at = NULL WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to clear warning_sent_at: " + e.getMessage(), e);
+        }
+    }
+
+    public void checkAndClearBanStatus(User user) {
+        if (user.getWarningSentAt() != null) {
+            java.time.Duration diff = java.time.Duration.between(user.getWarningSentAt(), java.time.LocalDateTime.now());
+            if (diff.toMinutes() > 2) {
+                throw new IllegalStateException("Votre compte a ete banni automatiquement pour inactivite. Veuillez envoyer un ticket a l'administrateur.");
+            } else {
+                clearWarningSentAt(user.getId());
+                user.setWarningSentAt(null);
+            }
         }
     }
 

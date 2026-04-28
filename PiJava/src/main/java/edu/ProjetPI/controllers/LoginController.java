@@ -67,7 +67,10 @@ public class LoginController {
                 return;
             }
 
+            userService.checkAndClearBanStatus(user.get());
+
             DashboardSession.setCurrentUser(user.get());
+            userService.updateLastLogin(user.get().getId());
             String role = user.get().getRole();
             if ("ROLE_ADMIN".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
                 SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Admin Dashboard");
@@ -96,13 +99,16 @@ public class LoginController {
 
         CompletableFuture.supplyAsync(() -> {
             GoogleOAuthService.GoogleProfile profile = googleOAuthService.authenticate();
-            return userService.findOrCreateGoogleUser(profile.email(), profile.name());
+            User user = userService.findOrCreateGoogleUser(profile.email(), profile.name());
+            userService.checkAndClearBanStatus(user);
+            return user;
         }).whenComplete((user, error) -> Platform.runLater(() -> {
             if (error != null) {
                 FormFeedback.showError(messageLabel, unwrapMessage(error));
                 return;
             }
             DashboardSession.setCurrentUser(user);
+            userService.updateLastLogin(user.getId());
             String role = user.getRole();
             if ("ROLE_ADMIN".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
                 SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Admin Dashboard");
@@ -119,13 +125,16 @@ public class LoginController {
 
         CompletableFuture.supplyAsync(() -> {
             DiscordOAuthService.DiscordProfile profile = discordOAuthService.authenticate();
-            return userService.findOrCreateDiscordUser(profile.email(), profile.displayName());
+            User user = userService.findOrCreateDiscordUser(profile.email(), profile.displayName());
+            userService.checkAndClearBanStatus(user);
+            return user;
         }).whenComplete((user, error) -> Platform.runLater(() -> {
             if (error != null) {
                 FormFeedback.showError(messageLabel, unwrapMessage(error));
                 return;
             }
             DashboardSession.setCurrentUser(user);
+            userService.updateLastLogin(user.getId());
             String role = user.getRole();
             if ("ROLE_ADMIN".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
                 SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Admin Dashboard");
@@ -152,7 +161,9 @@ public class LoginController {
                     return;
                 }
                 User user = match.get().user();
+                userService.checkAndClearBanStatus(user);
                 DashboardSession.setCurrentUser(user);
+                userService.updateLastLogin(user.getId());
                 String role = user.getRole();
                 if ("ROLE_ADMIN".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
                     SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Admin Dashboard");

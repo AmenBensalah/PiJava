@@ -66,6 +66,52 @@ public class BrevoEmailService {
         }
     }
 
+    public void sendInactivityWarning(String toEmail, String pseudo) {
+        String apiKey = settingRequired("PIJAVA_BREVO_API_KEY");
+        String senderEmail = setting("PIJAVA_BREVO_SENDER_EMAIL", "").trim();
+        String senderName = setting("PIJAVA_BREVO_SENDER_NAME", "PI Java").trim();
+
+        if (senderEmail.isBlank()) {
+            throw new IllegalStateException("PIJAVA_BREVO_SENDER_EMAIL is required.");
+        }
+
+        String subject = "Avertissement d'inactivite - Action requise";
+        String html = "<p>Bonjour <b>" + escapeHtml(pseudo) + "</b>,</p>"
+                + "<p>Nous avons constate que vous n'avez pas ete actif sur notre plateforme <b>E-SPORTIFY</b> depuis un certain temps.</p>"
+                + "<p><b style=\"color:red;\">Attention :</b> Votre compte sera automatiquement banni dans <b>2 minutes</b> si vous ne vous connectez pas.</p>"
+                + "<p>Si cela se produit, vous devrez envoyer un ticket a l'administrateur pour demander le debannissement de votre compte.</p>"
+                + "<p>Merci de vous connecter au plus vite pour eviter cette sanction.</p>"
+                + "<p>Cordialement,<br>L'equipe E-SPORTIFY</p>";
+
+        String payload = "{"
+                + "\"sender\":{\"name\":\"" + jsonEscape(senderName) + "\",\"email\":\"" + jsonEscape(senderEmail) + "\"},"
+                + "\"to\":[{\"email\":\"" + jsonEscape(toEmail) + "\"}],"
+                + "\"subject\":\"" + jsonEscape(subject) + "\","
+                + "\"htmlContent\":\"" + jsonEscape(html) + "\""
+                + "}";
+
+        HttpRequest request = HttpRequest.newBuilder(URI.create(BREVO_API_URL))
+                .timeout(Duration.ofSeconds(20))
+                .header("accept", "application/json")
+                .header("content-type", "application/json")
+                .header("api-key", apiKey)
+                .POST(HttpRequest.BodyPublishers.ofString(payload, StandardCharsets.UTF_8))
+                .build();
+
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            int status = response.statusCode();
+            if (status < 200 || status >= 300) {
+                throw new IllegalStateException("Brevo send failed (HTTP " + status + "): " + trimBody(response.body()));
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Email sending interrupted.", e);
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to send inactivity warning email: " + e.getMessage(), e);
+        }
+    }
+
     private static String settingRequired(String key) {
         String value = setting(key, "").trim();
         if (value.isBlank()) {
