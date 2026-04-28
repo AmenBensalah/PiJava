@@ -46,7 +46,7 @@
                     </VBox>
 
                     <Button maxWidth="1.7976931348623157E308" onAction="#handleLogin" styleClass="primary-login-button" text="SE CONNECTER" />
-                    <Button maxWidth="1.7976931348623157E308" onAction="#handleFaceLogin" styleClass="faceid-button" text="Login with Face ID (ONNX)" />
+                    <Button maxWidth="1.7976931348623157E308" onAction="#handleFaceLogin" styleClass="faceid-button" text="Login with Face ID" />
                     <HBox alignment="CENTER" spacing="30.0" styleClass="links-row">
                         <children>
                             <Hyperlink onAction="#goToRegister" styleClass="text-link" text="Creer un compte" />
