@@ -110,6 +110,9 @@ public class CheckoutService {
             draft.setTotal(session.getCartTotal());
             draft.setStatut(commandeStatut);
             if (resetAfterSave) {
+                session.rememberConfirmedOrder(draft, session.getCartItems(), session.getCartTotal(), commandeId);
+            }
+            if (resetAfterSave) {
                 session.resetAfterCheckout();
             }
             return commandeId;

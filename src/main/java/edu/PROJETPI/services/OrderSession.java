@@ -18,6 +18,10 @@ public class OrderSession {
     private final List<CartItem> cartItems = new ArrayList<>();
     private final CartStorageService cartStorageService = new CartStorageService();
     private Commande draftCommande;
+    private Commande confirmedCommande;
+    private List<CartItem> confirmedCartItems = new ArrayList<>();
+    private double confirmedCartTotal;
+    private int confirmedCommandeId;
     private CheckoutMode checkoutMode = CheckoutMode.STRIPE;
 
     private OrderSession() {
@@ -97,6 +101,29 @@ public class OrderSession {
 
     public void resetAfterCheckout() {
         clearCart();
+    }
+
+    public void rememberConfirmedOrder(Commande commande, List<CartItem> items, double total, int commandeId) {
+        confirmedCommande = commande;
+        confirmedCartItems = items == null ? new ArrayList<>() : new ArrayList<>(items);
+        confirmedCartTotal = total;
+        confirmedCommandeId = commandeId;
+    }
+
+    public Commande getConfirmedCommande() {
+        return confirmedCommande;
+    }
+
+    public List<CartItem> getConfirmedCartItems() {
+        return new ArrayList<>(confirmedCartItems);
+    }
+
+    public double getConfirmedCartTotal() {
+        return confirmedCartTotal;
+    }
+
+    public int getConfirmedCommandeId() {
+        return confirmedCommandeId;
     }
 
     private CartItem findItem(int produitId) {

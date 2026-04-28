@@ -18,12 +18,22 @@ public class CartStorageService {
             "cart-items.ser"
     );
 
+    private final Path storagePath;
+
+    public CartStorageService() {
+        this(STORAGE_PATH);
+    }
+
+    CartStorageService(Path storagePath) {
+        this.storagePath = storagePath;
+    }
+
     public List<CartItem> loadCartItems() {
-        if (!Files.exists(STORAGE_PATH)) {
+        if (!Files.exists(storagePath)) {
             return new ArrayList<>();
         }
 
-        try (ObjectInputStream inputStream = new ObjectInputStream(Files.newInputStream(STORAGE_PATH))) {
+        try (ObjectInputStream inputStream = new ObjectInputStream(Files.newInputStream(storagePath))) {
             Object savedData = inputStream.readObject();
             if (savedData instanceof List<?> savedList) {
                 List<CartItem> items = new ArrayList<>();
@@ -43,8 +53,8 @@ public class CartStorageService {
 
     public void saveCartItems(List<CartItem> cartItems) {
         try {
-            Files.createDirectories(STORAGE_PATH.getParent());
-            try (ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(STORAGE_PATH))) {
+            Files.createDirectories(storagePath.getParent());
+            try (ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(storagePath))) {
                 outputStream.writeObject(new ArrayList<>(cartItems));
             }
         } catch (IOException e) {
@@ -58,7 +68,7 @@ public class CartStorageService {
 
     private void deleteStorageQuietly() {
         try {
-            Files.deleteIfExists(STORAGE_PATH);
+            Files.deleteIfExists(storagePath);
         } catch (IOException ignored) {
         }
     }

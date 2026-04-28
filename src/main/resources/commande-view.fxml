@@ -20,28 +20,6 @@
             stylesheets="@styles/esportify-theme.css"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.PROJETPI.CommandeController">
-    <left>
-        <VBox prefWidth="250.0" styleClass="command-sidebar">
-            <padding>
-                <Insets bottom="24.0" left="20.0" right="20.0" top="26.0"/>
-            </padding>
-            <children>
-                <Label styleClass="brand-label" text="E-SPORTIFY"/>
-                <Label styleClass="brand-subtitle" text="Dashboard admin commandes"/>
-                <VBox spacing="12.0" styleClass="side-menu">
-                    <children>
-                        <Label styleClass="menu-heading" text="Navigation"/>
-                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="command-menu-item" text="Catalogue" onAction="#continueShopping"/>
-                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="command-menu-item" text="Panier" onAction="#goBackToCart"/>
-                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="command-menu-active" text="Commandes"/>
-                        <Button mnemonicParsing="false" prefWidth="200.0" styleClass="command-menu-item" text="Paiement Stripe" onAction="#continueToPayment"/>
-                    </children>
-                </VBox>
-                <Region VBox.vgrow="ALWAYS"/>
-                <Label styleClass="sidebar-footer" text="Suivez, modifiez et annulez les commandes clients"/>
-            </children>
-        </VBox>
-    </left>
     <center>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" pannable="true" styleClass="page-scroll" vbarPolicy="AS_NEEDED">
             <content>
@@ -50,10 +28,12 @@
                         <Insets bottom="24.0" left="24.0" right="24.0" top="24.0"/>
                     </padding>
                     <children>
-                        <HBox alignment="CENTER_LEFT" styleClass="command-screen-top">
+                        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="command-screen-top">
                             <children>
                                 <Label styleClass="page-title" text="Dashboard commandes"/>
                                 <Region HBox.hgrow="ALWAYS"/>
+                                <Button mnemonicParsing="false" onAction="#continueShopping" prefWidth="150.0" styleClass="command-ghost-button" text="Catalogue"/>
+                                <Button mnemonicParsing="false" onAction="#goBackToCart" prefWidth="130.0" styleClass="command-ghost-button" text="Panier"/>
                             </children>
                         </HBox>
                         <HBox spacing="14.0" styleClass="command-steps">

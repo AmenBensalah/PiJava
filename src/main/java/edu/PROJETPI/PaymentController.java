@@ -4,7 +4,6 @@ import com.stripe.exception.StripeException;
 import edu.PROJETPI.entites.CartItem;
 import edu.PROJETPI.entites.Commande;
 import edu.PROJETPI.services.CheckoutService;
-import edu.PROJETPI.services.InvoicePdfService;
 import edu.PROJETPI.services.OrderSession;
 import edu.PROJETPI.services.StripeCheckoutService;
 import edu.PROJETPI.tools.AlertUtils;
@@ -43,7 +42,6 @@ public class PaymentController implements Initializable {
     private Button confirmPaymentSummaryButton;
 
     private final CheckoutService checkoutService = new CheckoutService();
-    private final InvoicePdfService invoicePdfService = new InvoicePdfService();
     private final StripeCheckoutService stripeCheckoutService = new StripeCheckoutService();
 
     @Override
@@ -81,30 +79,6 @@ public class PaymentController implements Initializable {
         } catch (IllegalStateException | IOException | StripeException e) {
             setPaymentInProgress(false);
             AlertUtils.showError("Impossible de lancer Stripe : " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void printInvoice() {
-        Commande draft = OrderSession.getInstance().getDraftCommande();
-        if (draft == null) {
-            AlertUtils.showError("Les informations client sont manquantes.");
-            return;
-        }
-        if (OrderSession.getInstance().isCartEmpty()) {
-            AlertUtils.showError("Aucun article a imprimer dans la facture.");
-            return;
-        }
-
-        try {
-            var pdfPath = invoicePdfService.generateInvoice(
-                    draft,
-                    OrderSession.getInstance().getCartItems(),
-                    OrderSession.getInstance().getCartTotal()
-            );
-            invoicePdfService.openInvoice(pdfPath);
-        } catch (IOException e) {
-            AlertUtils.showError("Impossible de generer la facture PDF : " + e.getMessage());
         }
     }
 
@@ -220,8 +194,7 @@ public class PaymentController implements Initializable {
             );
             Platform.runLater(() -> {
                 setPaymentInProgress(false);
-                AlertUtils.showSuccess("Paiement Stripe confirme. Commande enregistree avec succes. ID commande : " + commandeId);
-                SceneNavigator.switchScene(nomLabel, "/main-view.fxml", "Catalogue produits");
+                SceneNavigator.switchScene(nomLabel, "/payment-confirmation-view.fxml", "Confirmation paiement");
             });
         } catch (SQLException e) {
             Platform.runLater(() -> {

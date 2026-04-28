@@ -1,7 +1,7 @@
 {
   "trained": false,
   "algorithm": "heuristic_fallback",
-  "trained_at": "2026-04-24T15:20:01",
+  "trained_at": "2026-04-28T21:14:43",
   "sample_count": 0,
   "feature_windows_days": [
     1,
@@ -12,10 +12,10 @@
   ],
   "model_path": "var\\payment_forecast_ai\\payment_forecast_model.pkl",
   "dataset_path": "var\\payment_forecast_ai\\payment_forecast_dataset.csv",
-  "next_day_revenue": 673.72,
-  "next_7_days_revenue": 4716.04,
-  "next_30_days_revenue": 20211.6,
-  "next_day_orders": 4,
-  "next_7_days_orders": 28,
-  "next_30_days_orders": 120
+  "next_day_revenue": 982.03,
+  "next_7_days_revenue": 6874.2,
+  "next_30_days_revenue": 29460.84,
+  "next_day_orders": 2,
+  "next_7_days_orders": 14,
+  "next_30_days_orders": 60
 }

@@ -15,7 +15,7 @@
 <BorderPane prefHeight="760.0" prefWidth="1280.0" styleClass="payment-root"
             stylesheets="@styles/esportify-theme.css"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="edu.PROJETPI.PaymentController">
+            fx:controller="edu.PROJETPI.PaymentConfirmationController">
     <center>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" pannable="true" styleClass="page-scroll" vbarPolicy="AS_NEEDED">
             <content>
@@ -28,12 +28,12 @@
                             <children>
                                 <VBox spacing="4.0">
                                     <children>
-                                        <Label styleClass="page-title" text="Paiement"/>
-                                        <Label styleClass="card-text" text="Confirmation et paiement securise Stripe"/>
+                                        <Label styleClass="page-title" text="Confirmation"/>
+                                        <Label styleClass="card-text" text="Paiement confirme par Stripe"/>
                                     </children>
                                 </VBox>
                                 <Region HBox.hgrow="ALWAYS"/>
-                                <Label styleClass="cart-chip" text="Etape 3 - paiement en ligne"/>
+                                <Label styleClass="cart-chip" text="Etape 4 - confirmation"/>
                             </children>
                         </HBox>
 
@@ -51,38 +51,33 @@
                                         <Label styleClass="command-step-title" text="INFORMATIONS"/>
                                     </children>
                                 </HBox>
-                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="command-step-active">
-                                    <children>
-                                        <Label styleClass="command-step-index-active" text="3"/>
-                                        <Label styleClass="command-step-title-active" text="PAIEMENT"/>
-                                    </children>
-                                </HBox>
                                 <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="command-step">
                                     <children>
-                                        <Label styleClass="command-step-index" text="4"/>
-                                        <Label styleClass="command-step-title" text="CONFIRMATION"/>
+                                        <Label styleClass="command-step-index" text="3"/>
+                                        <Label styleClass="command-step-title" text="PAIEMENT"/>
+                                    </children>
+                                </HBox>
+                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="command-step-active">
+                                    <children>
+                                        <Label styleClass="command-step-index-active" text="4"/>
+                                        <Label styleClass="command-step-title-active" text="CONFIRMATION"/>
                                     </children>
                                 </HBox>
                             </children>
                         </HBox>
 
-                        <ProgressBar maxWidth="1.7976931348623157E308" progress="0.75" styleClass="checkout-progress"/>
+                        <ProgressBar maxWidth="1.7976931348623157E308" progress="1.0" styleClass="checkout-progress"/>
 
                         <HBox spacing="20.0">
                             <children>
                                 <VBox HBox.hgrow="ALWAYS" spacing="18.0" styleClass="payment-panel">
                                     <children>
-                                        <HBox alignment="CENTER_LEFT">
+                                        <VBox spacing="10.0">
                                             <children>
-                                                <VBox spacing="4.0">
-                                                    <children>
-                                                        <Label styleClass="section-title" text="Recapitulatif client"/>
-                                                        <Label styleClass="card-text" text="Controlez les informations avant l'ouverture de Stripe." wrapText="true"/>
-                                                    </children>
-                                                </VBox>
-                                                <Region HBox.hgrow="ALWAYS"/>
+                                                <Label styleClass="section-title" text="Paiement confirme"/>
+                                                <Label fx:id="confirmationMessageLabel" styleClass="alert-banner" text="Paiement confirme avec succes." wrapText="true"/>
                                             </children>
-                                        </HBox>
+                                        </VBox>
 
                                         <GridPane hgap="14.0" vgap="14.0">
                                             <columnConstraints>
@@ -92,29 +87,35 @@
                                             <children>
                                                 <VBox spacing="8.0" styleClass="payment-info-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
                                                     <children>
+                                                        <Label styleClass="metric-label" text="Commande"/>
+                                                        <Label fx:id="commandeIdLabel" styleClass="payment-field-value" text="-"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox spacing="8.0" styleClass="payment-info-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                                    <children>
+                                                        <Label styleClass="metric-label" text="Statut paiement"/>
+                                                        <Label styleClass="payment-field-value" text="PAYEE"/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox spacing="8.0" styleClass="payment-info-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                                    <children>
                                                         <Label styleClass="metric-label" text="Nom"/>
                                                         <Label fx:id="nomLabel" styleClass="payment-field-value" text="-"/>
                                                     </children>
                                                 </VBox>
-                                                <VBox spacing="8.0" styleClass="payment-info-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                                <VBox spacing="8.0" styleClass="payment-info-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                     <children>
                                                         <Label styleClass="metric-label" text="Prenom"/>
                                                         <Label fx:id="prenomLabel" styleClass="payment-field-value" text="-"/>
                                                     </children>
                                                 </VBox>
-                                                <VBox spacing="8.0" styleClass="payment-info-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                                <VBox spacing="8.0" styleClass="payment-info-card" GridPane.columnIndex="0" GridPane.rowIndex="2">
                                                     <children>
                                                         <Label styleClass="metric-label" text="Telephone"/>
                                                         <Label fx:id="telephoneLabel" styleClass="payment-field-value" text="-"/>
                                                     </children>
                                                 </VBox>
-                                                <VBox spacing="8.0" styleClass="payment-info-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                                    <children>
-                                                        <Label styleClass="metric-label" text="Mode"/>
-                                                        <Label styleClass="payment-field-value" text="Stripe"/>
-                                                    </children>
-                                                </VBox>
-                                                <VBox spacing="8.0" styleClass="payment-info-card payment-address-card" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                                <VBox spacing="8.0" styleClass="payment-info-card payment-address-card" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                     <children>
                                                         <Label styleClass="metric-label" text="Adresse"/>
                                                         <Label fx:id="adresseLabel" styleClass="payment-field-value" text="-" wrapText="true"/>
@@ -125,8 +126,8 @@
 
                                         <HBox spacing="12.0" styleClass="payment-actions">
                                             <children>
-                                                <Button mnemonicParsing="false" onAction="#goBackToCommande" prefWidth="220.0" styleClass="command-ghost-button" text="Retour aux informations"/>
-                                                <Button fx:id="confirmPaymentButton" mnemonicParsing="false" onAction="#confirmPayment" prefWidth="250.0" styleClass="command-primary-button" text="Payer en ligne Stripe"/>
+                                                <Button mnemonicParsing="false" onAction="#goToCatalogue" prefWidth="220.0" styleClass="command-ghost-button" text="Retour catalogue"/>
+                                                <Button mnemonicParsing="false" onAction="#printInvoice" prefWidth="230.0" styleClass="command-primary-button" text="Imprimer la facture"/>
                                             </children>
                                         </HBox>
                                     </children>
@@ -137,7 +138,7 @@
                                         <VBox spacing="4.0">
                                             <children>
                                                 <Label styleClass="section-title" text="Recapitulatif paiement"/>
-                                                <Label styleClass="card-text" text="Produit, quantite et montant final a payer." wrapText="true"/>
+                                                <Label styleClass="card-text" text="Produit, quantite et montant paye." wrapText="true"/>
                                             </children>
                                         </VBox>
                                         <VBox spacing="14.0" styleClass="payment-summary-box">
@@ -157,7 +158,7 @@
                                                 </HBox>
                                                 <HBox alignment="CENTER_LEFT" styleClass="payment-summary-total-row">
                                                     <children>
-                                                        <Label styleClass="payment-total-label" text="Total a payer"/>
+                                                        <Label styleClass="payment-total-label" text="Total paye"/>
                                                         <Region HBox.hgrow="ALWAYS"/>
                                                         <Label fx:id="totalLabel" styleClass="metric-total" text="0.00 TND"/>
                                                     </children>
