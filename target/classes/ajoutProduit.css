@@ -738,3 +738,82 @@
 .cyber-bar-chart .axis-tick-mark, .cyber-bar-chart .axis-minor-tick-mark {
     -fx-stroke: transparent;
 }
+/* ========================================================
+   ADVANCED 3D SIDEBAR & NAVIGATION
+   ======================================================== */
+.advanced-3d-sidebar {
+    -fx-background-color: linear-gradient(to bottom, #090e17, #06080c, #0d1117);
+    -fx-border-width: 0 3px 0 0;
+    -fx-border-color: linear-gradient(to bottom, #00e5ff, #bd00ff, #ff0055);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.9), 30, 0, 5, 0);
+}
+
+.btn-3d-menu {
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+    -fx-text-fill: #94a3b8;
+    -fx-font-weight: 900;
+    -fx-font-size: 14px;
+    -fx-alignment: center-left;
+    -fx-padding: 15 20;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s;
+}
+
+.btn-3d-menu:hover {
+    -fx-background-color: rgba(0, 229, 255, 0.1);
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #00e5ff;
+    -fx-translate-x: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 229, 255, 0.4), 15, 0, 0, 0);
+}
+
+.menu-active {
+    -fx-background-color: linear-gradient(to right, rgba(0, 229, 255, 0.2), transparent);
+    -fx-text-fill: #00e5ff !important;
+    -fx-border-color: transparent transparent transparent #00e5ff;
+    -fx-border-width: 0 0 0 5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 229, 255, 0.6), 20, 0, 0, 0);
+}
+
+.btn-3d-menu-alt {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94a3b8;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+}
+
+.btn-3d-menu-alt:hover {
+    -fx-text-fill: #bd00ff;
+    -fx-translate-x: 5;
+}
+
+.user-mini-card {
+    -fx-background-color: linear-gradient(to bottom right, rgba(139, 92, 246, 0.1), rgba(0, 0, 0, 0.5));
+    -fx-background-radius: 15;
+    -fx-border-color: rgba(189, 0, 255, 0.3);
+    -fx-border-width: 1;
+    -fx-padding: 15;
+    -fx-margin: 20 0 0 0;
+}
+
+.btn-3d-red-small {
+    -fx-background-color: linear-gradient(to bottom, #ff0055, #990033);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-font-size: 11px;
+    -fx-background-radius: 8;
+    -fx-padding: 8 15;
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 85, 0.4), 10, 0, 0, 0);
+    -fx-cursor: hand;
+}
+
+.btn-3d-red-small:hover {
+    -fx-background-color: #ff0055;
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 85, 0.8), 15, 0, 0, 0);
+    -fx-translate-y: -2;
+}

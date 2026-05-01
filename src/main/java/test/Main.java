@@ -10,15 +10,18 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        // On charge la boutique par défaut (Front-office)
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajoutProduit.fxml"));
+        // Initialiser le gestionnaire de scènes
+        edu.ProjetPI.controllers.SceneManager.setStage(stage);
+
+        // Définir la page de Login comme point d'entrée
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/edu/ProjetPI/views/login.fxml"));
         Parent root = loader.load();
         
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("E-SPORTIFY : Boutique Management System");
+        stage.setTitle("E-SPORTIFY : Connexion");
         
-        // On force le mode plein écran pour une meilleure immersion
+        // Mode plein écran pour l'immersion Cyberpunk
         stage.setFullScreen(true);
         stage.show();
     }

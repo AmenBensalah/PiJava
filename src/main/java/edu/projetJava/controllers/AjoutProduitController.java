@@ -29,7 +29,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.controllers.SceneManager;
 
 public class AjoutProduitController implements Initializable {
 
@@ -50,8 +53,14 @@ public class AjoutProduitController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        chargerCategories();
-        chargerProduits();
+        // Chargement asynchrone pour éviter de bloquer l'UI au lancement
+        CompletableFuture.runAsync(() -> {
+            chargerCategories();
+            chargerProduits();
+        }).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
     }
 
     @FXML
@@ -85,14 +94,17 @@ public class AjoutProduitController implements Initializable {
 
     private void chargerCategories() {
         try {
-            searchCat.getItems().clear();
-            searchCat.getItems().addAll(categorieService.recuperer());
-            
-            categoryPillsContainer.getChildren().clear();
-            addPill("Tous", null);
-            for (Categorie c : categorieService.recuperer()) {
-                addPill(c.getNom(), c.getId());
-            }
+            List<Categorie> categories = categorieService.recuperer();
+            javafx.application.Platform.runLater(() -> {
+                searchCat.getItems().clear();
+                searchCat.getItems().addAll(categories);
+                
+                categoryPillsContainer.getChildren().clear();
+                addPill("Tous", null);
+                for (Categorie c : categories) {
+                    addPill(c.getNom(), c.getId());
+                }
+            });
         } catch (Exception e) { e.printStackTrace(); }
     }
 
@@ -128,36 +140,32 @@ public class AjoutProduitController implements Initializable {
 
     @FXML
     void appliquerFiltres() {
-        try {
-            produitsContainer.getChildren().clear();
-            List<Produit> produits = produitService.recuperer();
+        CompletableFuture.runAsync(() -> {
+            try {
+                List<Produit> produits = produitService.recuperer();
+                javafx.application.Platform.runLater(() -> {
+                    produitsContainer.getChildren().clear();
+                    java.util.stream.Stream<Produit> stream = produits.stream().filter(p -> {
+                        boolean match = true;
+                        if (activeCategoryId != null && p.getCategorieId() != activeCategoryId) match = false;
+                        if (searchCat != null && searchCat.getValue() != null && p.getCategorieId() != searchCat.getValue().getId()) match = false;
+                        if (searchNom.getText() != null && !searchNom.getText().isEmpty() && !p.getNom().toLowerCase().contains(searchNom.getText().toLowerCase())) match = false;
+                        return match;
+                    });
 
-            java.util.stream.Stream<Produit> stream = produits.stream().filter(p -> {
-                boolean match = true;
-                // Filtrage par Pilule
-                if (activeCategoryId != null && p.getCategorieId() != activeCategoryId) match = false;
-                
-                // Filtrage par ComboBox (si sélectionné)
-                if (searchCat != null && searchCat.getValue() != null && p.getCategorieId() != searchCat.getValue().getId()) match = false;
-                
-                // Filtrage par Nom
-                if (searchNom.getText() != null && !searchNom.getText().isEmpty() && !p.getNom().toLowerCase().contains(searchNom.getText().toLowerCase())) match = false;
-                return match;
-            });
+                    if (triActuel.equals("prixAsc")) {
+                        stream = stream.sorted((p1, p2) -> Integer.compare(p1.getPrix(), p2.getPrix()));
+                    } else if (triActuel.equals("prixDesc")) {
+                        stream = stream.sorted((p1, p2) -> Integer.compare(p2.getPrix(), p1.getPrix()));
+                    }
 
-            // --- TRI MODERNE ---
-            if (triActuel.equals("prixAsc")) {
-                stream = stream.sorted((p1, p2) -> Integer.compare(p1.getPrix(), p2.getPrix()));
-            } else if (triActuel.equals("prixDesc")) {
-                stream = stream.sorted((p1, p2) -> Integer.compare(p2.getPrix(), p1.getPrix()));
-            }
-
-            List<Produit> filtered = stream.collect(Collectors.toList());
-
-            for (Produit p : filtered) {
-                produitsContainer.getChildren().add(createProductCard(p));
-            }
-        } catch (Exception e) { e.printStackTrace(); }
+                    List<Produit> filtered = stream.collect(Collectors.toList());
+                    for (Produit p : filtered) {
+                        produitsContainer.getChildren().add(createProductCard(p));
+                    }
+                });
+            } catch (Exception e) { e.printStackTrace(); }
+        });
     }
 
     @FXML
@@ -171,14 +179,13 @@ public class AjoutProduitController implements Initializable {
 
     @FXML
     void goToAdmin(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/backListProduit.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.getScene().setRoot(root);
-            if(!stage.isFullScreen()) stage.setFullScreen(true); // Persiste le mode plein écran
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SceneManager.switchScene("/backListProduit.fxml", "Boutique Admin Dashboard");
+    }
+
+    @FXML
+    void handleLogout(ActionEvent event) {
+        DashboardSession.clear();
+        SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "E-SPORTIFY : Connexion");
     }
 
     private VBox createProductCard(Produit p) {

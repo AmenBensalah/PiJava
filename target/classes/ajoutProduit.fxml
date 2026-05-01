@@ -26,9 +26,6 @@
                     <Label style="-fx-text-fill: #00e5ff; -fx-background-color: #001f3f; -fx-padding: 3 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 10px;" text="STORE" translateX="10" />
                 </HBox>
                 <Region HBox.hgrow="ALWAYS" />
-                <HBox spacing="15.0" alignment="CENTER">
-                    <Button onAction="#goToAdmin" text="Panneau Administrateur" styleClass="btn-secondary" />
-                </HBox>
             </children>
         </HBox>
     </top>
@@ -92,6 +89,48 @@
             </content>
         </ScrollPane>
     </center>
+    <!-- LEFT SIDEBAR: ADVANCED 3D DASHBOARD -->
+    <left>
+        <VBox prefWidth="260.0" styleClass="advanced-3d-sidebar" BorderPane.alignment="CENTER">
+            <padding><Insets top="30.0" left="20.0" right="20.0" /></padding>
+            <children>
+                <VBox spacing="8" style="-fx-padding: 0 0 30 0;">
+                    <Label text="MAIN INTERFACE" style="-fx-text-fill: #00e5ff; -fx-font-size: 10px; -fx-font-weight: 900; -fx-letter-spacing: 2;" />
+                    <Label text="DASHBOARD" styleClass="filter-title" style="-fx-font-size: 22px; -fx-text-fill: white;" />
+                    <Region prefHeight="2" style="-fx-background-color: linear-gradient(to right, #00e5ff, transparent); -fx-opacity: 0.5;" />
+                </VBox>
+                
+                <VBox spacing="15.0" VBox.vgrow="ALWAYS">
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu, menu-active" text="🛒 Boutique Core">
+                        <graphic><Region styleClass="icon-glow" /></graphic>
+                    </Button>
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu" text="🏆 Tournois Pro" />
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu" text="🛡️ Équipes Elite" />
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu" text="📰 Flux Réseau" />
+                    
+                    <Region prefHeight="40" />
+                    <Label text="NEURAL SERVICES" styleClass="filter-label" style="-fx-font-size: 10px; -fx-letter-spacing: 1;" />
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu-alt" text="🧠 Coaching IA" />
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu-alt" text="📊 Analytics" />
+                    
+                    <Region VBox.vgrow="ALWAYS" />
+                    
+                    <!-- USER CARD MINI -->
+                    <VBox styleClass="user-mini-card" spacing="10">
+                        <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Region prefWidth="35" prefHeight="35" style="-fx-background-color: #bd00ff; -fx-background-radius: 50%; -fx-effect: dropshadow(gaussian, #bd00ff, 10, 0, 0, 0);" />
+                            <VBox>
+                                <Label text="HACKER_USER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px;" />
+                                <Label text="Rank: Diamond" style="-fx-text-fill: #bd00ff; -fx-font-size: 10px;" />
+                            </VBox>
+                        </HBox>
+                        <Button onAction="#handleLogout" text="DÉCONNEXION" styleClass="btn-3d-red-small" prefWidth="200" />
+                    </VBox>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
     </BorderPane>
 
     <!-- CHATBOT OVERLAY -->

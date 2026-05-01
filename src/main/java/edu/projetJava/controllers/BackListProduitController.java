@@ -396,35 +396,23 @@ public class BackListProduitController implements Initializable {
     }
 
     @FXML
-    void goToCreateForm(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/backAjoutProduit.fxml"));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
-        if(!stage.isFullScreen()) stage.setFullScreen(true);
+    void goToCreateForm(ActionEvent event) {
+        edu.ProjetPI.controllers.SceneManager.switchScene("/backAjoutProduit.fxml", "Boutique Admin - Ajouter Produit");
     }
 
     @FXML
-    void goToFrontOffice(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/ajoutProduit.fxml"));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
-        if(!stage.isFullScreen()) stage.setFullScreen(true);
+    void goToFrontOffice(ActionEvent event) {
+        edu.ProjetPI.controllers.SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
     }
 
     @FXML
-    void goToMailing(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/backMailing.fxml"));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
-        if(!stage.isFullScreen()) stage.setFullScreen(true);
+    void goToMailing(ActionEvent event) {
+        edu.ProjetPI.controllers.SceneManager.switchScene("/backMailing.fxml", "Boutique Admin - Mailing");
     }
 
     @FXML
-    void goToAdminCategorie(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/backListCategorie.fxml"));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
-        if(!stage.isFullScreen()) stage.setFullScreen(true);
+    void goToAdminCategorie(ActionEvent event) {
+        edu.ProjetPI.controllers.SceneManager.switchScene("/backListCategorie.fxml", "Boutique Admin - Catégories");
     }
 
 }
