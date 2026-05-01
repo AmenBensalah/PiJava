@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefHeight="860.0" prefWidth="1380.0" styleClass="page-root" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ProjetPI.controllers.UserDashboardController">
+    <children>
+        <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="page-background" />
+        <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="page-overlay" />
+
+        <VBox alignment="CENTER" maxWidth="620.0" prefWidth="620.0" spacing="14.0" styleClass="page-card">
+            <padding>
+                <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+            </padding>
+
+            <children>
+                <Label fx:id="welcomeLabel" styleClass="title" text="Front Office" />
+                <Label fx:id="detailsLabel" styleClass="subtitle" wrapText="true" />
+                <Label styleClass="hint" text="ROLE_JOUEUR and ROLE_MANAGER arrive here after login." />
+                <Button onAction="#handleViewProfile" text="Voir Mon Profile" />
+                <Button onAction="#handleLogout" styleClass="secondary-button" text="Logout" />
+            </children>
+        </VBox>
+    </children>
+</StackPane>

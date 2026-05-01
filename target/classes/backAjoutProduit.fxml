@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="root-pane" stylesheets="@ajoutProduit.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.projetJava.controllers.BackAjoutProduitController" prefWidth="1280.0" prefHeight="720.0">
+    
+    <!-- TOP NAVBAR -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="50.0" styleClass="top-navbar" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets left="20.0" right="20.0" />
+            </padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                    <Label styleClass="logo-text" text="E-" />
+                    <Label styleClass="logo-text, logo-white" text="SPORTIFY" />
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField prefWidth="300.0" promptText="Rechercher produits, équipements..." styleClass="global-search" />
+                <Region HBox.hgrow="ALWAYS" />
+            </children>
+        </HBox>
+    </top>
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox prefWidth="200.0" styleClass="global-sidebar" BorderPane.alignment="CENTER">
+            <children>
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="≡ Menu">
+                    <VBox.margin><Insets bottom="10.0" top="10.0" /></VBox.margin>
+                </Button>
+                <!-- NAVIGATION BUTTONS -->
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToFrontOffice" styleClass="menu-btn" text="🌍 Client (Front)" textFill="#00e5ff" style="-fx-font-weight: bold;" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn, menu-btn-active" text="📦 Admin Produit" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToAdminCategorie" styleClass="menu-btn" text="📂 Admin Catégorie" />
+            </children>
+        </VBox>
+    </left>
+
+    <!-- MAIN AREA -->
+    <center>
+        <BorderPane styleClass="main-area-bg">
+            <padding>
+                <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+            </padding>
+            <top>
+                <!-- Banner & Advanced Stats -->
+                <VBox spacing="15" BorderPane.alignment="CENTER">
+                    <BorderPane.margin><Insets bottom="30.0"/></BorderPane.margin>
+                    <HBox prefHeight="90.0" styleClass="boutique-banner" alignment="CENTER_LEFT">
+                        <padding><Insets left="30.0" right="30.0" /></padding>
+                        <children>
+                            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                                <Label style="-fx-text-fill: #00e5ff; -fx-font-size: 10px; -fx-font-weight: bold;" text="BACK-OFFICE_PROTOCOL: ACTIVE" />
+                                <Label styleClass="banner-title" text="GESTION DES PRODUITS" />
+                                <Label styleClass="banner-subtitle" text="Interface Administrateur pour ajouter, modifier et supprimer vos produits." />
+                            </VBox>
+                            
+                            <!-- AI Dashboard Numbers -->
+                            <HBox spacing="15" alignment="CENTER_RIGHT">
+                                <VBox style="-fx-background-color: rgba(189, 0, 255, 0.1); -fx-padding: 5 15; -fx-background-radius: 8; -fx-border-color: rgba(189, 0, 255, 0.4); -fx-border-radius: 8;" alignment="CENTER">
+                                    <Label text="WRITE_OPS" style="-fx-text-fill: #94a3b8; -fx-font-size: 9px;"/>
+                                    <Label text="4.2k/s" style="-fx-text-fill: #bd00ff; -fx-font-size: 16px; -fx-font-weight: 900;"/>
+                                </VBox>
+                                <VBox style="-fx-background-color: rgba(0, 229, 255, 0.1); -fx-padding: 5 15; -fx-background-radius: 8; -fx-border-color: rgba(0, 229, 255, 0.4); -fx-border-radius: 8;" alignment="CENTER">
+                                    <Label text="INTEGRITY" style="-fx-text-fill: #94a3b8; -fx-font-size: 9px;"/>
+                                    <Label text="100%" style="-fx-text-fill: #00e5ff; -fx-font-size: 16px; -fx-font-weight: 900;"/>
+                                </VBox>
+                                <Button text="[ FLUSH_CACHE ]" style="-fx-background-color: transparent; -fx-border-color: #ff0055; -fx-border-radius: 4; -fx-text-fill: #ff0055; -fx-font-weight: bold; -fx-font-size: 11px; -fx-cursor: hand; -fx-padding: 8 15;"/>
+                            </HBox>
+                        </children>
+                    </HBox>
+                </VBox>
+            </top>
+
+            <center>
+                <VBox alignment="TOP_CENTER" spacing="25.0" styleClass="glass-panel" BorderPane.alignment="CENTER" maxWidth="850">
+                    <padding>
+                        <Insets bottom="40.0" left="50.0" right="50.0" top="35.0" />
+                    </padding>
+                    
+                    <HBox alignment="CENTER_LEFT">
+                        <Button onAction="#goBackToList" text="⬅ Retour à la liste" styleClass="btn-3d-purple" style="-fx-font-size: 11px; -fx-padding: 5 15;" />
+                    </HBox>
+
+                    <HBox alignment="CENTER" spacing="15">
+                        <Label style="-fx-text-fill: #00e5ff; -fx-font-size: 24px; -fx-font-weight: bold;" text="🛡️" />
+                        <Label style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold; -fx-letter-spacing: 1px;" text="CONFIGURATION PRODUIT" />
+                    </HBox>
+
+                    <GridPane alignment="CENTER" hgap="30.0" vgap="20.0">
+                        <children>
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label styleClass="filter-label" text="ID RÉFÉRENCE" />
+                                <TextField fx:id="tfId" promptText="Auto-généré" styleClass="modern-input" prefWidth="320" editable="false" opacity="0.6" />
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label styleClass="filter-label" text="NOM DU PRODUIT" />
+                                <TextField fx:id="tfNom" promptText="Ex: RTX 4090 SUPER" styleClass="modern-input" prefWidth="320" />
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Label styleClass="filter-label" text="PRIX UNITAIRE (€)" />
+                                <TextField fx:id="tfPrix" promptText="Ex: 1599" styleClass="modern-input" />
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Label styleClass="filter-label" text="UNITÉS EN STOCK" />
+                                <TextField fx:id="tfStock" promptText="Ex: 12" styleClass="modern-input" />
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                                <Label styleClass="filter-label" text="SÉLECTIONNER CATÉGORIE" />
+                                <ComboBox fx:id="cbCategorie" promptText="Choisir..." styleClass="modern-input" prefWidth="320" />
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                <Label styleClass="filter-label" text="STATUT ACTUEL" />
+                                <TextField fx:id="tfStatut" text="disponible" styleClass="modern-input" />
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2">
+                                <Label styleClass="filter-label" text="DESCRIPTION DÉTAILLÉE" />
+                                <TextField fx:id="tfDescription" promptText="Caractéristiques techniques..." styleClass="modern-input" />
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
+                                <Label styleClass="filter-label" text="MÉDIA DU PRODUIT" />
+                                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                    <TextField fx:id="tfImage" promptText="URL ou Chemin local de l'image" styleClass="modern-input" HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false" onAction="#uploadImage" styleClass="btn-3d-purple" text="📂 Parcourir" prefHeight="40" />
+                                </HBox>
+                            </VBox>
+
+                            <HBox alignment="CENTER_LEFT" spacing="15" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                                <CheckBox fx:id="cbActive" selected="true" style="-fx-text-fill: #94a3b8; -fx-font-weight: bold;" text="Rendre ce produit visible en boutique" />
+                            </HBox>
+                        </children>
+                    </GridPane>
+
+                    <HBox alignment="CENTER" spacing="25.0">
+                        <VBox.margin><Insets top="15.0" /></VBox.margin>
+                        <children>
+                            <Button fx:id="btnAjouter" mnemonicParsing="false" onAction="#ajouterProduit" styleClass="btn-3d-cyan" text="+ AJOUTER" prefWidth="180" prefHeight="45" />
+                            <Button fx:id="btnEnregistrer" managed="false" visible="false" mnemonicParsing="false" onAction="#modifierProduit" styleClass="btn-3d-purple" text="💾 ENREGISTRER" prefWidth="180" prefHeight="45" />
+                            <Button fx:id="btnSupprimer" managed="false" visible="false" mnemonicParsing="false" onAction="#supprimerProduit" styleClass="btn-3d-red" text="🗑 SUPPRIMER" prefWidth="180" prefHeight="45" />
+                        </children>
+                    </HBox>
+                </VBox>
+            </center>
+        </BorderPane>
+    </center>
+</BorderPane>

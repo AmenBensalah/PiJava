@@ -1,0 +1,77 @@
+.face-dialog-pane {
+    -fx-background-color:
+        radial-gradient(center 26% 16%, radius 42%, rgba(255, 166, 92, 0.12), transparent 62%),
+        radial-gradient(center 78% 14%, radius 45%, rgba(98, 189, 255, 0.12), transparent 64%),
+        linear-gradient(to right, #0b1530 0%, #121d41 42%, #111736 70%, #100f2a 100%);
+    -fx-padding: 12 14 14 14;
+}
+
+.face-dialog-pane:header .header-panel {
+    -fx-background-color: rgba(13, 24, 52, 0.86);
+    -fx-padding: 12 16 12 16;
+    -fx-background-radius: 14;
+}
+
+.face-dialog-pane:header .header-panel .label {
+    -fx-text-fill: #eef5ff;
+    -fx-font-size: 17px;
+    -fx-font-weight: 800;
+}
+
+.face-dialog-content {
+    -fx-background-color: rgba(19, 34, 67, 0.88);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(117, 145, 212, 0.34);
+    -fx-border-width: 1;
+    -fx-padding: 12;
+}
+
+.face-preview-shell {
+    -fx-background-color: rgba(7, 11, 26, 0.82);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(132, 160, 224, 0.45);
+    -fx-border-width: 1.2;
+    -fx-padding: 6;
+}
+
+.face-capture-button {
+    -fx-background-color: linear-gradient(to right, #2f7ec3, #6350b4);
+    -fx-border-color: rgba(90, 200, 246, 0.9);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-text-fill: #f4f8ff;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-padding: 11 14 11 14;
+}
+
+.face-capture-button:hover {
+    -fx-background-color: linear-gradient(to right, #3a8cd1, #725ec8);
+}
+
+.face-cancel-button {
+    -fx-background-color: rgba(52, 67, 116, 0.56);
+    -fx-border-color: rgba(99, 124, 186, 0.45);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-text-fill: #edf4ff;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-padding: 9 14 9 14;
+}
+
+.face-cancel-button:hover {
+    -fx-background-color: rgba(67, 84, 142, 0.62);
+}
+
+.face-dialog-status {
+    -fx-text-fill: #cfe0ff;
+    -fx-font-size: 13px;
+    -fx-background-color: rgba(10, 18, 40, 0.56);
+    -fx-background-radius: 10;
+    -fx-padding: 8 10 8 10;
+}

@@ -7,7 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Connexion3A377" />
+        <module name="workshoppidev" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Connexion3A377" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
