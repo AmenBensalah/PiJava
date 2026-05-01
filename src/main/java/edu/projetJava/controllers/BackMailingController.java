@@ -64,24 +64,24 @@ public class BackMailingController {
     void goToBackListProduit(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/backListProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setFullScreen(true);
+        stage.getScene().setRoot(root);
+        if(!stage.isFullScreen()) stage.setFullScreen(true);
     }
     
     @FXML
     void goToAdminCategorie(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/backCategorie.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setFullScreen(true);
+        stage.getScene().setRoot(root);
+        if(!stage.isFullScreen()) stage.setFullScreen(true);
     }
     
     @FXML
     void goToFrontOffice(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/ajoutProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setFullScreen(true);
+        stage.getScene().setRoot(root);
+        if(!stage.isFullScreen()) stage.setFullScreen(true);
     }
 
     private void showModernAlert(String title, String message) {

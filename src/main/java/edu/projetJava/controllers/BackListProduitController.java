@@ -274,8 +274,8 @@ public class BackListProduitController implements Initializable {
                 BackAjoutProduitController formController = loader.getController();
                 formController.initData(p);
                 Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setFullScreen(true);
+                stage.getScene().setRoot(root);
+                if(!stage.isFullScreen()) stage.setFullScreen(true);
             } catch (IOException ex) { ex.printStackTrace(); }
         });
 
@@ -399,32 +399,32 @@ public class BackListProduitController implements Initializable {
     void goToCreateForm(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/backAjoutProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setFullScreen(true);
+        stage.getScene().setRoot(root);
+        if(!stage.isFullScreen()) stage.setFullScreen(true);
     }
 
     @FXML
     void goToFrontOffice(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/ajoutProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setFullScreen(true);
+        stage.getScene().setRoot(root);
+        if(!stage.isFullScreen()) stage.setFullScreen(true);
     }
 
     @FXML
     void goToMailing(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/backMailing.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setFullScreen(true);
+        stage.getScene().setRoot(root);
+        if(!stage.isFullScreen()) stage.setFullScreen(true);
     }
 
     @FXML
     void goToAdminCategorie(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/backListCategorie.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setFullScreen(true);
+        stage.getScene().setRoot(root);
+        if(!stage.isFullScreen()) stage.setFullScreen(true);
     }
 
 }

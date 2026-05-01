@@ -4,6 +4,7 @@ test\Main.class
 edu\projetJava\controllers\BackListProduitController.class
 edu\projetJava\controllers\BackListCategorieController.class
 edu\projetJava\services\GeminiAIService.class
+edu\projetJava\services\TestGemini.class
 edu\projetJava\services\RecommandationIAService.class
 edu\projetJava\services\MailService$1.class
 edu\projetJava\services\ProduitService.class
@@ -18,4 +19,5 @@ edu\projetJava\models\Commande.class
 edu\projetJava\models\Produit.class
 edu\projetJava\controllers\AjoutProduitController.class
 edu\projetJava\entities\Categorie.class
+edu\projetJava\services\TestChatbot.class
 edu\projetJava\services\CommandeService.class

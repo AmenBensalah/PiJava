@@ -51,15 +51,32 @@
                 <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
             </padding>
             <top>
-                <!-- Banner -->
-                <VBox prefHeight="80.0" styleClass="boutique-banner" alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
-                    <padding><Insets left="30.0" top="15.0" bottom="15.0" /></padding>
-                    <children>
-                        <Label style="-fx-text-fill: #00e5ff; -fx-font-size: 10px; -fx-font-weight: bold;" text="BACK-OFFICE" />
-                        <Label styleClass="banner-title" text="GESTION DES CATEGORIES" />
-                        <Label styleClass="banner-subtitle" text="Interface Administrateur pour configurer les catégories des produits." />
-                    </children>
+                <!-- Banner & Advanced Stats -->
+                <VBox spacing="15" BorderPane.alignment="CENTER">
                     <BorderPane.margin><Insets bottom="30.0"/></BorderPane.margin>
+                    <HBox prefHeight="90.0" styleClass="boutique-banner" alignment="CENTER_LEFT">
+                        <padding><Insets left="30.0" right="30.0" /></padding>
+                        <children>
+                            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                                <Label style="-fx-text-fill: #00e5ff; -fx-font-size: 10px; -fx-font-weight: bold;" text="BACK-OFFICE_PROTOCOL: ACTIVE" />
+                                <Label styleClass="banner-title" text="GESTION DES CATEGORIES" />
+                                <Label styleClass="banner-subtitle" text="Interface Administrateur pour configurer les catégories des produits." />
+                            </VBox>
+                            
+                            <!-- AI Dashboard Numbers -->
+                            <HBox spacing="15" alignment="CENTER_RIGHT">
+                                <VBox style="-fx-background-color: rgba(189, 0, 255, 0.1); -fx-padding: 5 15; -fx-background-radius: 8; -fx-border-color: rgba(189, 0, 255, 0.4); -fx-border-radius: 8;" alignment="CENTER">
+                                    <Label text="INDEX_RATE" style="-fx-text-fill: #94a3b8; -fx-font-size: 9px;"/>
+                                    <Label text="1.04ms" style="-fx-text-fill: #bd00ff; -fx-font-size: 16px; -fx-font-weight: 900;"/>
+                                </VBox>
+                                <VBox style="-fx-background-color: rgba(0, 229, 255, 0.1); -fx-padding: 5 15; -fx-background-radius: 8; -fx-border-color: rgba(0, 229, 255, 0.4); -fx-border-radius: 8;" alignment="CENTER">
+                                    <Label text="INTEGRITY" style="-fx-text-fill: #94a3b8; -fx-font-size: 9px;"/>
+                                    <Label text="100%" style="-fx-text-fill: #00e5ff; -fx-font-size: 16px; -fx-font-weight: 900;"/>
+                                </VBox>
+                                <Button text="[ FLUSH_CACHE ]" style="-fx-background-color: transparent; -fx-border-color: #ff0055; -fx-border-radius: 4; -fx-text-fill: #ff0055; -fx-font-weight: bold; -fx-font-size: 11px; -fx-cursor: hand; -fx-padding: 8 15;"/>
+                            </HBox>
+                        </children>
+                    </HBox>
                 </VBox>
             </top>
 

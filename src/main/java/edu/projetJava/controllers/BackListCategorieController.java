@@ -114,8 +114,8 @@ public class BackListCategorieController implements Initializable {
                 formController.initData(c); // pre-populate with selected category
 
                 Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setFullScreen(true);
+                stage.getScene().setRoot(root);
+                if(!stage.isFullScreen()) stage.setFullScreen(true);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -144,8 +144,8 @@ public class BackListCategorieController implements Initializable {
     void goToCreateForm(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/backCategorie.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setFullScreen(true);
+        stage.getScene().setRoot(root);
+        if(!stage.isFullScreen()) stage.setFullScreen(true);
     }
 
     // --- NAVIGATION ---
@@ -153,15 +153,15 @@ public class BackListCategorieController implements Initializable {
     void goToFrontOffice(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/ajoutProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setFullScreen(true);
+        stage.getScene().setRoot(root);
+        if(!stage.isFullScreen()) stage.setFullScreen(true);
     }
 
     @FXML
     void goToAdminProduit(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/backListProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setFullScreen(true);
+        stage.getScene().setRoot(root);
+        if(!stage.isFullScreen()) stage.setFullScreen(true);
     }
 }

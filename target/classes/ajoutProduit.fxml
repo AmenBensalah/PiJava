@@ -110,11 +110,28 @@
         </HBox>
     </VBox>
 
-    <!-- RECOMMANDATION OVERLAY -->
+    <!-- RECOMMANDATION OVERLAY - ADVANCED AI INTERFACE -->
     <VBox fx:id="recoOverlay" visible="false" alignment="CENTER" spacing="20" style="-fx-background-color: rgba(5, 5, 15, 0.95); -fx-padding: 50;">
-        <HBox alignment="CENTER_RIGHT" maxWidth="1200">
-            <Button text="✕ Fermer l'IA" onAction="#closeRecommandations" style="-fx-background-color: transparent; -fx-border-color: #ff0055; -fx-border-radius: 8; -fx-text-fill: #ff0055; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 8 20;"/>
+        <HBox alignment="CENTER_RIGHT" maxWidth="1200" spacing="20">
+            <!-- Decorative AI Stats / Numbers -->
+            <HBox spacing="15" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <VBox style="-fx-background-color: rgba(0, 229, 255, 0.1); -fx-padding: 8 15; -fx-background-radius: 8; -fx-border-color: rgba(0, 229, 255, 0.4); -fx-border-radius: 8;" alignment="CENTER">
+                    <Label text="SYS_LOAD" style="-fx-text-fill: #94a3b8; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                    <Label text="42.8%" style="-fx-text-fill: #00e5ff; -fx-font-size: 18px; -fx-font-weight: 900; -fx-effect: dropshadow(gaussian, #00e5ff, 5, 0, 0, 0);"/>
+                </VBox>
+                <VBox style="-fx-background-color: rgba(189, 0, 255, 0.1); -fx-padding: 8 15; -fx-background-radius: 8; -fx-border-color: rgba(189, 0, 255, 0.4); -fx-border-radius: 8;" alignment="CENTER">
+                    <Label text="MATCH_RATE" style="-fx-text-fill: #94a3b8; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                    <Label text="99.9%" style="-fx-text-fill: #bd00ff; -fx-font-size: 18px; -fx-font-weight: 900; -fx-effect: dropshadow(gaussian, #bd00ff, 5, 0, 0, 0);"/>
+                </VBox>
+                <VBox style="-fx-background-color: rgba(255, 0, 85, 0.1); -fx-padding: 8 15; -fx-background-radius: 8; -fx-border-color: rgba(255, 0, 85, 0.4); -fx-border-radius: 8;" alignment="CENTER">
+                    <Label text="NEURAL_NODES" style="-fx-text-fill: #94a3b8; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                    <Label text="14,059" style="-fx-text-fill: #ff0055; -fx-font-size: 18px; -fx-font-weight: 900; -fx-effect: dropshadow(gaussian, #ff0055, 5, 0, 0, 0);"/>
+                </VBox>
+            </HBox>
+            <Button text="[ RELOAD_CORE ]" style="-fx-background-color: transparent; -fx-border-color: #00e5ff; -fx-border-radius: 4; -fx-text-fill: #00e5ff; -fx-font-weight: bold; -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 8 15;"/>
+            <Button text="✕ TERMINATE SESSION" onAction="#closeRecommandations" style="-fx-background-color: rgba(255, 0, 85, 0.2); -fx-border-color: #ff0055; -fx-border-radius: 4; -fx-text-fill: #ff0055; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 8 20; -fx-effect: dropshadow(gaussian, #ff0055, 10, 0, 0, 0);"/>
         </HBox>
+
         <Label text="🤖 SÉLECTION DE L'INTELLIGENCE ARTIFICIELLE" style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: 900; -fx-effect: dropshadow(three-pass-box, #bd00ff, 30, 0, 0, 0);"/>
         <Label text="Notre modèle de Machine Learning a identifié ces produits comme étant les plus pertinents pour vous." style="-fx-text-fill: #00e5ff; -fx-font-size: 16px; -fx-padding: 0 0 30 0;"/>
         

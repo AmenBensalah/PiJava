@@ -177,6 +177,9 @@ public class PaiementController {
 
     private void showAlert(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
+        if (inputNom != null && inputNom.getScene() != null) {
+            alert.initOwner(inputNom.getScene().getWindow());
+        }
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);

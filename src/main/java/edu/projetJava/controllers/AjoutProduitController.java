@@ -174,8 +174,8 @@ public class AjoutProduitController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/backListProduit.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setFullScreen(true); // Persiste le mode plein écran
+            stage.getScene().setRoot(root);
+            if(!stage.isFullScreen()) stage.setFullScreen(true); // Persiste le mode plein écran
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -279,12 +279,23 @@ public class AjoutProduitController implements Initializable {
             }
 
             Stage stage = new Stage();
+            // Lier la fenêtre modale à la fenêtre principale pour qu'elle s'affiche par-dessus
+            if (produitsContainer != null && produitsContainer.getScene() != null) {
+                stage.initOwner(produitsContainer.getScene().getWindow());
+                stage.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            }
+            
             stage.setTitle("Paiement - " + p.getNom());
-            stage.setScene(new Scene(root));
-            stage.setFullScreen(true);
-            stage.setMaximized(true);
-            stage.show();
-        } catch (IOException e) {
+            stage.setScene(new Scene(root)); // Création d'une nouvelle scène (essentiel)
+            // On ne la met pas en plein écran pour la différencier, c'est une modale (popup)
+            stage.showAndWait();
+            
+            // Une fois l'achat terminé et la fenêtre fermée, on actualise les recommandations si elles sont ouvertes
+            if (recoOverlay != null && recoOverlay.isVisible()) {
+                voirRecommandationsIA(null); // Rafraîchit les scores
+            }
+            
+        } catch (Exception e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Impossible d'ouvrir l'interface de paiement : " + e.getMessage());
@@ -344,54 +355,100 @@ public class AjoutProduitController implements Initializable {
 
     @FXML
     void voirRecommandationsIA(ActionEvent event) {
-        try {
-            edu.projetJava.services.RecommandationIAService aiService = new edu.projetJava.services.RecommandationIAService();
-            java.util.Map<Produit, Integer> ventesReelles = aiService.getRecommandationsReelles();
-            
-            // Trier les produits par nombre de ventes décroissant
-            List<Produit> topProduits = ventesReelles.entrySet().stream()
-                .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()))
-                .map(java.util.Map.Entry::getKey)
-                .limit(5)
-                .collect(Collectors.toList());
-            
-            recoCardsContainer.getChildren().clear();
-            
-            int maxVentes = ventesReelles.values().stream().max(Integer::compare).orElse(1);
-            if (maxVentes == 0) maxVentes = 1;
-            
-            for (Produit p : topProduits) {
-                int ventes = ventesReelles.get(p);
+        new Thread(() -> {
+            try {
+                edu.projetJava.services.RecommandationIAService aiService = new edu.projetJava.services.RecommandationIAService();
+                java.util.Map<String, Object> data = aiService.getRecommandationsAvancees();
                 
-                // Calcul des étoiles (sur 5)
-                int nbEtoiles = (int) Math.round(((double) ventes / maxVentes) * 5.0);
-                if (ventes == 0) nbEtoiles = 1; // Minimum 1 étoile même si pas vendu
-                if (nbEtoiles > 5) nbEtoiles = 5;
-                
-                String stars = "⭐".repeat(nbEtoiles);
-                
-                VBox card = createProductCard(p);
-                // 3D Effect : Épaisse bordure brillante avec dégradé et ombres multiples
-                card.setStyle("-fx-background-color: linear-gradient(to bottom, #11111a, #0d0d14); -fx-border-color: linear-gradient(to bottom right, #ff0055, #00e5ff); -fx-border-width: 3px; -fx-border-radius: 15px; -fx-background-radius: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0, 229, 255, 0.6), 25, 0.2, 0, 0);");
-                card.setPrefWidth(260); // Plus large pour l'effet 3D
-                
-                Label statsLabel = new Label(stars + " (" + ventes + " Ventes)");
-                statsLabel.setStyle("-fx-text-fill: #ffd700; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 5 0 0 0;");
-                
-                card.getChildren().add(2, statsLabel); // Insérer sous le titre
-                
-                recoCardsContainer.getChildren().add(card);
+                javafx.application.Platform.runLater(() -> {
+                    try {
+                        @SuppressWarnings("unchecked")
+                        java.util.Map<Produit, java.util.Map<String, String>> rawProduitsStats = 
+                            (java.util.Map<Produit, java.util.Map<String, String>>) data.get("produits");
+                            
+                        final java.util.Map<Produit, java.util.Map<String, String>> produitsStats = 
+                            (rawProduitsStats == null) ? new java.util.HashMap<>() : rawProduitsStats;
+                        
+                        // Trier les produits par nombre de ventes décroissant
+                        List<Produit> topProduits = produitsStats.keySet().stream()
+                            .sorted((p1, p2) -> {
+                                int v1 = Integer.parseInt(produitsStats.get(p1).getOrDefault("ventes", "0"));
+                                int v2 = Integer.parseInt(produitsStats.get(p2).getOrDefault("ventes", "0"));
+                                return Integer.compare(v2, v1);
+                            })
+                            .limit(5)
+                            .collect(Collectors.toList());
+                        
+                        recoCardsContainer.getChildren().clear();
+                        
+                        int maxVentes = produitsStats.values().stream()
+                            .mapToInt(m -> Integer.parseInt(m.getOrDefault("ventes", "0")))
+                            .max().orElse(1);
+                        if (maxVentes == 0) maxVentes = 1;
+                        
+                        for (Produit p : topProduits) {
+                            java.util.Map<String, String> stats = produitsStats.get(p);
+                            int ventes = Integer.parseInt(stats.getOrDefault("ventes", "0"));
+                            String tendance = stats.getOrDefault("tendance", "Stable →");
+                            String prediction = stats.getOrDefault("prediction", "0");
+                            
+                            // Le principe : 
+                            // 10 ventes = 1 étoile
+                            // 100 ventes = 5 étoiles
+                            // Et on n'affiche QUE les étoiles gagnées (pas les étoiles vides)
+                            int nbEtoiles = 0;
+                            if (ventes >= 90) nbEtoiles = 5;
+                            else if (ventes >= 70) nbEtoiles = 4;
+                            else if (ventes >= 50) nbEtoiles = 3;
+                            else if (ventes >= 30) nbEtoiles = 2;
+                            else if (ventes >= 10) nbEtoiles = 1;
+                            
+                            String stars = "";
+                            if (nbEtoiles > 0) {
+                                stars = "⭐".repeat(nbEtoiles);
+                            }
+                            
+                            VBox card = createProductCard(p);
+                            // 3D Effect : Épaisse bordure brillante avec dégradé et ombres multiples
+                            card.setStyle("-fx-background-color: linear-gradient(to bottom, #11111a, #0d0d14); -fx-border-color: linear-gradient(to bottom right, #ff0055, #00e5ff); -fx-border-width: 3px; -fx-border-radius: 15px; -fx-background-radius: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0, 229, 255, 0.6), 25, 0.2, 0, 0);");
+                            card.setPrefWidth(260); // Plus large pour l'effet 3D
+                            
+                            // Ajout des infos IA Avancées
+                            VBox aiInfoBox = new VBox(5);
+                            aiInfoBox.setStyle("-fx-padding: 10 0 5 0; -fx-border-color: #334155; -fx-border-width: 1 0 0 0; -fx-margin-top: 10;");
+                            
+                            int score = ventes;
+                            Label statsLabel = new Label("Score: " + score + " " + stars);
+                            statsLabel.setStyle("-fx-text-fill: #ffd700; -fx-font-weight: bold; -fx-font-size: 13px;");
+                            
+                            Label trendLabel = new Label("Tendance: " + tendance);
+                            trendLabel.setStyle("-fx-text-fill: #00e5ff; -fx-font-size: 11px;");
+                            
+                            Label predLabel = new Label("Prédiction M+1: " + prediction + " unités");
+                            predLabel.setStyle("-fx-text-fill: #bd00ff; -fx-font-weight: bold; -fx-font-size: 11px;");
+                            
+                            aiInfoBox.getChildren().addAll(statsLabel, trendLabel, predLabel);
+                            
+                            card.getChildren().add(2, aiInfoBox); // Insérer sous le titre
+                            
+                            recoCardsContainer.getChildren().add(card);
+                        }
+                        
+                        recoOverlay.setVisible(true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Erreur IA");
+                    alert.setHeaderText("Un problème est survenu");
+                    alert.setContentText("Impossible de charger les recommandations : " + e.getMessage());
+                    alert.showAndWait();
+                });
             }
-            
-            recoOverlay.setVisible(true);
-            
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur IA");
-            alert.setHeaderText("Un problème est survenu");
-            alert.setContentText("Impossible de charger les recommandations : " + e.getMessage());
-            alert.showAndWait();
-        }
+        }).start();
     }
 
     @FXML

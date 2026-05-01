@@ -7,8 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class GeminiAIService {
-    private static final String API_KEY = "AIzaSyA3EWqR210VYy84Z_Y30So0PD4yK1dko-Q";
-    private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + API_KEY;
+    private static final String API_KEY = "AIzaSyBny7McZPfvUKJqlTNj2UW5H_kF5yaQB-w";
+    private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" + API_KEY;
 
     public static String getResponse(String userMessage) {
         try {
@@ -44,13 +44,10 @@ public class GeminiAIService {
 
                 String jsonResponse = response.toString();
                 
-                // Parsing JSON manuel hyper simple pour eviter de rajouter des dependances (Jackson/Gson) a votre projet
-                int textIndex = jsonResponse.indexOf("\"text\": \"");
-                if (textIndex != -1) {
-                    textIndex += 9;
-                    int endIndex = jsonResponse.indexOf("\"", textIndex);
-                    // Remplacer les retours a la ligne et guillemets recu
-                    return jsonResponse.substring(textIndex, endIndex).replace("\\n", "\n").replace("\\\"", "\"");
+                // Parsing JSON amelioré avec regex pour supporter les guillemets échappés
+                java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("\"text\"\\s*:\\s*\"((?:\\\\\"|[^\"])*)\"").matcher(jsonResponse);
+                if (matcher.find()) {
+                    return matcher.group(1).replace("\\n", "\n").replace("\\\"", "\"").replace("\\\\", "\\");
                 }
                 
                 return "Désolé, je n'ai pas compris la réponse de l'IA.";
