@@ -20,18 +20,18 @@
 }
 
 .page-card {
-    -fx-background-color: linear-gradient(to bottom, rgba(18, 37, 73, 0.92), rgba(15, 23, 55, 0.95));
+    -fx-background-color: linear-gradient(to bottom right, rgba(12, 24, 57, 0.97), rgba(13, 18, 48, 0.97));
     -fx-background-radius: 26;
     -fx-border-radius: 26;
-    -fx-border-color: rgba(120, 151, 221, 0.34);
-    -fx-border-width: 1.1;
-    -fx-effect: dropshadow(gaussian, rgba(1, 5, 18, 0.75), 50, 0.24, 0, 20);
+    -fx-border-color: linear-gradient(to bottom right, rgba(0, 229, 255, 0.72), rgba(189, 0, 255, 0.58));
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(0, 229, 255, 0.28), 35, 0.15, 0, 0);
 }
 
 .title {
-    -fx-font-size: 36px;
+    -fx-font-size: 38px;
     -fx-font-weight: 900;
-    -fx-text-fill: #ff9b45;
+    -fx-text-fill: linear-gradient(to right, #00e5ff, #bd00ff);
 }
 
 .subtitle {
@@ -73,14 +73,21 @@
 .text-field,
 .password-field,
 .combo-box {
-    -fx-background-color: rgba(42, 59, 109, 0.42);
+    -fx-background-color: rgba(20, 38, 82, 0.72);
     -fx-background-radius: 16;
     -fx-border-radius: 16;
-    -fx-border-color: rgba(117, 145, 212, 0.38);
+    -fx-border-color: rgba(92, 128, 212, 0.58);
     -fx-border-width: 1;
     -fx-text-fill: #f4f8ff;
     -fx-prompt-text-fill: #9fb4e5;
     -fx-padding: 11 14 11 14;
+}
+
+.text-field:focused,
+.password-field:focused,
+.combo-box:focused {
+    -fx-border-color: #00e5ff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 229, 255, 0.35), 12, 0.05, 0, 0);
 }
 
 .text-field.field-invalid,
@@ -101,6 +108,16 @@
     -fx-font-weight: 800;
     -fx-padding: 11 18 11 18;
     -fx-cursor: hand;
+}
+
+.primary-cta {
+    -fx-background-color: linear-gradient(to right, #00d2ff, #00a8ff);
+    -fx-border-color: rgba(0, 229, 255, 0.85);
+    -fx-text-fill: #04182c;
+}
+
+.primary-cta:hover {
+    -fx-background-color: linear-gradient(to right, #1ee0ff, #18b8ff);
 }
 
 .button:hover {
@@ -126,8 +143,8 @@
 }
 
 .stats-box {
-    -fx-background-color: rgba(34, 51, 98, 0.42);
-    -fx-border-color: rgba(117, 145, 212, 0.35);
+    -fx-background-color: rgba(16, 30, 69, 0.52);
+    -fx-border-color: rgba(99, 139, 230, 0.46);
     -fx-border-radius: 14;
     -fx-background-radius: 14;
     -fx-padding: 12 14 12 14;
@@ -275,4 +292,8 @@ premium-label-cyan {
 
 .profile-scroll>.viewport {
     -fx-background-color: transparent;
+}
+
+.profile-actions {
+    -fx-padding: 6 0 2 0;
 }

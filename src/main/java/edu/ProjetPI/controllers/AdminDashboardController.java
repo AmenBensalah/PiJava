@@ -18,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
+import javafx.event.ActionEvent;
 
 import java.util.Comparator;
 import java.util.Locale;
@@ -357,6 +358,44 @@ public class AdminDashboardController {
     @FXML
     public void handleViewProfile() {
         SceneManager.switchScene("/edu/ProjetPI/views/profile.fxml", "Mon Profil");
+    }
+
+    @FXML
+    public void goToFrontOffice(ActionEvent event) {
+        SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
+    }
+
+    @FXML
+    public void goToMailing(ActionEvent event) {
+        SceneManager.switchScene("/backMailing.fxml", "Boutique Admin - Mailing");
+    }
+
+    @FXML
+    public void goToCatalogue(ActionEvent event) {
+        SceneManager.switchScene("/backListProduit.fxml", "Gestion des produits");
+    }
+
+    @FXML
+    public void goToAdminCategorie(ActionEvent event) {
+        SceneManager.switchScene("/backListCategorie.fxml", "Boutique Admin - Categories");
+    }
+
+    @FXML
+    public void goToPayments(ActionEvent event) {
+        edu.PROJETPI.AdminDashboardController.openOn(edu.PROJETPI.AdminDashboardController.InitialSection.PAIEMENTS);
+        SceneManager.switchScene("/admin-dashboard-view.fxml", "Liste des paiements");
+    }
+
+    @FXML
+    public void goToRevenuePrediction(ActionEvent event) {
+        edu.PROJETPI.AdminDashboardController.openOn(edu.PROJETPI.AdminDashboardController.InitialSection.PREDICTION_CA);
+        SceneManager.switchScene("/admin-dashboard-view.fxml", "Prediction chiffre d'affaires");
+    }
+
+    @FXML
+    public void goToCommandes(ActionEvent event) {
+        edu.PROJETPI.AdminDashboardController.openOn(edu.PROJETPI.AdminDashboardController.InitialSection.COMMANDES);
+        SceneManager.switchScene("/admin-dashboard-view.fxml", "Liste des commandes");
     }
 
     @FXML

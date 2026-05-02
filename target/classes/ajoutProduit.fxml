@@ -26,6 +26,9 @@
                     <Label style="-fx-text-fill: #00e5ff; -fx-background-color: #001f3f; -fx-padding: 3 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 10px;" text="STORE" translateX="10" />
                 </HBox>
                 <Region HBox.hgrow="ALWAYS" />
+                <HBox alignment="CENTER_RIGHT" spacing="12.0">
+                    <Button onAction="#handleViewProfile" text="Mon profil" styleClass="btn-secondary" prefWidth="170.0" prefHeight="45.0" />
+                </HBox>
             </children>
         </HBox>
     </top>
@@ -122,8 +125,8 @@
                         <HBox spacing="10" alignment="CENTER_LEFT">
                             <Region prefWidth="35" prefHeight="35" style="-fx-background-color: #bd00ff; -fx-background-radius: 50%; -fx-effect: dropshadow(gaussian, #bd00ff, 10, 0, 0, 0);" />
                             <VBox>
-                                <Label text="HACKER_USER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px;" />
-                                <Label text="Rank: Diamond" style="-fx-text-fill: #bd00ff; -fx-font-size: 10px;" />
+                                <Label fx:id="currentUserNameLabel" text="PLAYER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px;" />
+                                <Label fx:id="currentUserRankLabel" text="Rank: Member" style="-fx-text-fill: #bd00ff; -fx-font-size: 10px;" />
                             </VBox>
                         </HBox>
                         <Button onAction="#handleLogout" text="DÉCONNEXION" styleClass="btn-3d-red-small" prefWidth="200" />

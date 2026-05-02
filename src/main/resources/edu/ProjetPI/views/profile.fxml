@@ -23,7 +23,7 @@
             <content>
                 <StackPane alignment="TOP_CENTER">
                     <children>
-                        <VBox alignment="CENTER" maxWidth="700.0" prefWidth="700.0" spacing="16.0" styleClass="page-card">
+                        <VBox alignment="TOP_CENTER" maxWidth="950.0" prefWidth="950.0" spacing="16.0" styleClass="page-card">
                     <padding>
                         <Insets bottom="26.0" left="34.0" right="34.0" top="26.0" />
                     </padding>
@@ -37,9 +37,9 @@
                 <TextField fx:id="emailField" promptText="Email" />
                 <PasswordField fx:id="passwordField" promptText="New password (optional)" />
 
-                <HBox alignment="CENTER" spacing="10.0">
+                <HBox alignment="CENTER" spacing="12.0" styleClass="profile-actions">
                     <children>
-                        <Button onAction="#handleUpdateProfile" text="Modifier" />
+                        <Button onAction="#handleUpdateProfile" styleClass="primary-cta" text="Modifier" />
                         <Button onAction="#handleDeleteAccount" styleClass="danger-button" text="Supprimer Mon Compte" />
                         <Button onAction="#handleBack" styleClass="secondary-button" text="Retour" />
                     </children>
