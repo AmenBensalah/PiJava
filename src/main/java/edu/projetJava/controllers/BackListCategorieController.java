@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 import edu.projetJava.entities.Categorie;
 import edu.projetJava.services.CategorieService;
 import edu.projetJava.services.ProduitService;
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.controllers.SceneManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -163,5 +165,16 @@ public class BackListCategorieController implements Initializable {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
         if(!stage.isFullScreen()) stage.setFullScreen(true);
+    }
+
+    @FXML
+    void handleViewProfile(ActionEvent event) {
+        SceneManager.switchScene("/edu/ProjetPI/views/profile.fxml", "Mon Profil");
+    }
+
+    @FXML
+    void handleLogout(ActionEvent event) {
+        DashboardSession.clear();
+        SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "E-SPORTIFY : Connexion");
     }
 }

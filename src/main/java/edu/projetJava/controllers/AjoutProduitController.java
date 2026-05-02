@@ -46,6 +46,8 @@ public class AjoutProduitController implements Initializable {
     @FXML private HBox recoCardsContainer;
     @FXML private TextField inputFideliteEmail;
     @FXML private Label lblGlobalPromo;
+    @FXML private Label currentUserNameLabel;
+    @FXML private Label currentUserRankLabel;
 
     private ProduitService produitService = new ProduitService();
     private CategorieService categorieService = new CategorieService();
@@ -55,7 +57,7 @@ public class AjoutProduitController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Chargement asynchrone pour éviter de bloquer l'UI au lancement
+        bindCurrentUserCard();
         CompletableFuture.runAsync(() -> {
             chargerCategories();
             chargerProduits();
@@ -63,6 +65,37 @@ public class AjoutProduitController implements Initializable {
             ex.printStackTrace();
             return null;
         });
+    }
+
+    private void bindCurrentUserCard() {
+        var currentUser = DashboardSession.getCurrentUser();
+        if (currentUser == null) {
+            return;
+        }
+
+        if (currentUserNameLabel != null) {
+            String displayName = currentUser.getPseudo();
+            if (displayName == null || displayName.isBlank()) {
+                displayName = currentUser.getFullName();
+            }
+            if (displayName == null || displayName.isBlank()) {
+                displayName = currentUser.getEmail();
+            }
+            currentUserNameLabel.setText(displayName == null ? "PLAYER" : displayName);
+        }
+
+        if (currentUserRankLabel != null) {
+            String role = currentUser.getRole();
+            String rank = "Member";
+            if ("ROLE_ADMIN".equalsIgnoreCase(role)) {
+                rank = "Admin";
+            } else if ("ROLE_MANAGER".equalsIgnoreCase(role)) {
+                rank = "Manager";
+            } else if ("ROLE_JOUEUR".equalsIgnoreCase(role) || "ROLE_USER".equalsIgnoreCase(role)) {
+                rank = "Player";
+            }
+            currentUserRankLabel.setText("Rank: " + rank);
+        }
     }
 
     @FXML
@@ -79,16 +112,16 @@ public class AjoutProduitController implements Initializable {
         if (commandeService.aDejaCommande(email)) {
             isGlobalOfferActive = true;
             lblGlobalPromo.setVisible(true);
-            lblGlobalPromo.setText("✓ -10% activés !");
-            chargerProduits(); // Recharge les produits pour afficher les prix remisés
+            lblGlobalPromo.setText("ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ -10% activÃƒÆ’Ã‚Â©s !");
+            chargerProduits(); // Recharge les produits pour afficher les prix remisÃƒÆ’Ã‚Â©s
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Fidélité Récompensée");
-            alert.setContentText("Merci pour votre fidélité !\nTous les prix affichent maintenant -10%.");
+            alert.setHeaderText("FidÃƒÆ’Ã‚Â©litÃƒÆ’Ã‚Â© RÃƒÆ’Ã‚Â©compensÃƒÆ’Ã‚Â©e");
+            alert.setContentText("Merci pour votre fidÃƒÆ’Ã‚Â©litÃƒÆ’Ã‚Â© !\nTous les prix affichent maintenant -10%.");
             alert.show();
         } else {
             isGlobalOfferActive = false;
             lblGlobalPromo.setVisible(true);
-            lblGlobalPromo.setText("❌ Aucune commande passée");
+            lblGlobalPromo.setText("ÃƒÂ¢Ã‚ÂÃ…â€™ Aucune commande passÃƒÆ’Ã‚Â©e");
             lblGlobalPromo.setStyle("-fx-text-fill: #ff0055; -fx-font-weight: bold;");
             chargerProduits();
         }
@@ -118,9 +151,9 @@ public class AjoutProduitController implements Initializable {
         
         pill.setOnAction(e -> {
             activeCategoryId = catId;
-            // On désélectionne le ComboBox pour ne pas créer de conflit
+            // On dÃƒÆ’Ã‚Â©sÃƒÆ’Ã‚Â©lectionne le ComboBox pour ne pas crÃƒÆ’Ã‚Â©er de conflit
             if (searchCat != null) searchCat.setValue(null);
-            chargerCategories(); // Recharge pour mettre à jour les styles des pilules
+            chargerCategories(); // Recharge pour mettre ÃƒÆ’Ã‚Â  jour les styles des pilules
             appliquerFiltres();
         });
         categoryPillsContainer.getChildren().add(pill);
@@ -195,6 +228,11 @@ public class AjoutProduitController implements Initializable {
         SceneManager.switchScene("/lignecommande-view.fxml", "Panier");
     }
 
+    @FXML
+    void handleViewProfile(ActionEvent event) {
+        SceneManager.switchScene("/edu/ProjetPI/views/profile.fxml", "Mon Profil");
+    }
+
     private VBox createProductCard(Produit p) {
         VBox card = new VBox();
         card.setPrefWidth(220.0);
@@ -228,16 +266,16 @@ public class AjoutProduitController implements Initializable {
         
         if (isGlobalOfferActive) {
             double discountedPrice = p.getPrix() * 0.9;
-            Label oldPrice = new Label(p.getPrix() + " €");
+            Label oldPrice = new Label(p.getPrix() + " EUR");
             oldPrice.setStyle("-fx-text-fill: #94a3b8; -fx-strikethrough: true; -fx-font-size: 14px;");
             
-            Label newPrice = new Label(String.format("%.2f €", discountedPrice));
+            Label newPrice = new Label(String.format("%.2f EUR", discountedPrice));
             newPrice.getStyleClass().add("card-price");
             newPrice.setStyle("-fx-text-fill: #00ffaa; -fx-effect: dropshadow(one-pass-box, #00ffaa, 5, 0, 0, 0);");
             
             priceStockBox.getChildren().addAll(newPrice, oldPrice);
         } else {
-            Label price = new Label(p.getPrix() + " €");
+            Label price = new Label(p.getPrix() + " EUR");
             price.getStyleClass().add("card-price");
             priceStockBox.getChildren().add(price);
         }
@@ -255,7 +293,7 @@ public class AjoutProduitController implements Initializable {
         actionBox.setAlignment(Pos.CENTER);
         actionBox.setSpacing(10.0);
         
-        Button youtubeBtn = new Button("▶ Tuto Install");
+        Button youtubeBtn = new Button("Tuto Install");
         youtubeBtn.setStyle("-fx-background-color: #e52d27; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5px; -fx-cursor: hand; -fx-font-size: 10px;");
         youtubeBtn.setOnAction(e -> {
             try {
@@ -320,20 +358,20 @@ public class AjoutProduitController implements Initializable {
             }
 
             Stage stage = new Stage();
-            // Lier la fenêtre modale à la fenêtre principale pour qu'elle s'affiche par-dessus
+            // Lier la fenÃƒÆ’Ã‚Âªtre modale ÃƒÆ’Ã‚Â  la fenÃƒÆ’Ã‚Âªtre principale pour qu'elle s'affiche par-dessus
             if (produitsContainer != null && produitsContainer.getScene() != null) {
                 stage.initOwner(produitsContainer.getScene().getWindow());
                 stage.initModality(javafx.stage.Modality.WINDOW_MODAL);
             }
             
             stage.setTitle("Paiement - " + p.getNom());
-            stage.setScene(new Scene(root)); // Création d'une nouvelle scène (essentiel)
-            // On ne la met pas en plein écran pour la différencier, c'est une modale (popup)
+            stage.setScene(new Scene(root)); // CrÃƒÆ’Ã‚Â©ation d'une nouvelle scÃƒÆ’Ã‚Â¨ne (essentiel)
+            // On ne la met pas en plein ÃƒÆ’Ã‚Â©cran pour la diffÃƒÆ’Ã‚Â©rencier, c'est une modale (popup)
             stage.showAndWait();
             
-            // Une fois l'achat terminé et la fenêtre fermée, on actualise les recommandations si elles sont ouvertes
+            // Une fois l'achat terminÃƒÆ’Ã‚Â© et la fenÃƒÆ’Ã‚Âªtre fermÃƒÆ’Ã‚Â©e, on actualise les recommandations si elles sont ouvertes
             if (recoOverlay != null && recoOverlay.isVisible()) {
-                voirRecommandationsIA(null); // Rafraîchit les scores
+                voirRecommandationsIA(null); // RafraÃƒÆ’Ã‚Â®chit les scores
             }
             
         } catch (Exception e) {
@@ -365,7 +403,7 @@ public class AjoutProduitController implements Initializable {
         addMessageBubble("Vous", text, "-fx-background-color: #0f3443; -fx-border-color: #00e5ff; -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(0,229,255,0.7), 15, 0, 0, 0); -fx-text-fill: white;");
         chatInput.clear();
         
-        // Appeler Gemini API de manière asynchrone pour ne pas bloquer l'interface
+        // Appeler Gemini API de maniÃƒÆ’Ã‚Â¨re asynchrone pour ne pas bloquer l'interface
         new Thread(() -> {
             String response = edu.projetJava.services.GeminiAIService.getResponse(text);
             javafx.application.Platform.runLater(() -> {
@@ -410,7 +448,7 @@ public class AjoutProduitController implements Initializable {
                         final java.util.Map<Produit, java.util.Map<String, String>> produitsStats = 
                             (rawProduitsStats == null) ? new java.util.HashMap<>() : rawProduitsStats;
                         
-                        // Trier les produits par nombre de ventes décroissant
+                        // Trier les produits par nombre de ventes dÃƒÆ’Ã‚Â©croissant
                         List<Produit> topProduits = produitsStats.keySet().stream()
                             .sorted((p1, p2) -> {
                                 int v1 = Integer.parseInt(produitsStats.get(p1).getOrDefault("ventes", "0"));
@@ -430,13 +468,13 @@ public class AjoutProduitController implements Initializable {
                         for (Produit p : topProduits) {
                             java.util.Map<String, String> stats = produitsStats.get(p);
                             int ventes = Integer.parseInt(stats.getOrDefault("ventes", "0"));
-                            String tendance = stats.getOrDefault("tendance", "Stable →");
+                            String tendance = stats.getOrDefault("tendance", "Stable ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢");
                             String prediction = stats.getOrDefault("prediction", "0");
                             
                             // Le principe : 
-                            // 10 ventes = 1 étoile
-                            // 100 ventes = 5 étoiles
-                            // Et on n'affiche QUE les étoiles gagnées (pas les étoiles vides)
+                            // 10 ventes = 1 ÃƒÆ’Ã‚Â©toile
+                            // 100 ventes = 5 ÃƒÆ’Ã‚Â©toiles
+                            // Et on n'affiche QUE les ÃƒÆ’Ã‚Â©toiles gagnÃƒÆ’Ã‚Â©es (pas les ÃƒÆ’Ã‚Â©toiles vides)
                             int nbEtoiles = 0;
                             if (ventes >= 90) nbEtoiles = 5;
                             else if (ventes >= 70) nbEtoiles = 4;
@@ -446,15 +484,15 @@ public class AjoutProduitController implements Initializable {
                             
                             String stars = "";
                             if (nbEtoiles > 0) {
-                                stars = "⭐".repeat(nbEtoiles);
+                                stars = "ÃƒÂ¢Ã‚Â­Ã‚Â".repeat(nbEtoiles);
                             }
                             
                             VBox card = createProductCard(p);
-                            // 3D Effect : Épaisse bordure brillante avec dégradé et ombres multiples
+                            // 3D Effect : ÃƒÆ’Ã¢â‚¬Â°paisse bordure brillante avec dÃƒÆ’Ã‚Â©gradÃƒÆ’Ã‚Â© et ombres multiples
                             card.setStyle("-fx-background-color: linear-gradient(to bottom, #11111a, #0d0d14); -fx-border-color: linear-gradient(to bottom right, #ff0055, #00e5ff); -fx-border-width: 3px; -fx-border-radius: 15px; -fx-background-radius: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0, 229, 255, 0.6), 25, 0.2, 0, 0);");
                             card.setPrefWidth(260); // Plus large pour l'effet 3D
                             
-                            // Ajout des infos IA Avancées
+                            // Ajout des infos IA AvancÃƒÆ’Ã‚Â©es
                             VBox aiInfoBox = new VBox(5);
                             aiInfoBox.setStyle("-fx-padding: 10 0 5 0; -fx-border-color: #334155; -fx-border-width: 1 0 0 0; -fx-margin-top: 10;");
                             
@@ -465,12 +503,12 @@ public class AjoutProduitController implements Initializable {
                             Label trendLabel = new Label("Tendance: " + tendance);
                             trendLabel.setStyle("-fx-text-fill: #00e5ff; -fx-font-size: 11px;");
                             
-                            Label predLabel = new Label("Prédiction M+1: " + prediction + " unités");
+                            Label predLabel = new Label("PrÃƒÆ’Ã‚Â©diction M+1: " + prediction + " unitÃƒÆ’Ã‚Â©s");
                             predLabel.setStyle("-fx-text-fill: #bd00ff; -fx-font-weight: bold; -fx-font-size: 11px;");
                             
                             aiInfoBox.getChildren().addAll(statsLabel, trendLabel, predLabel);
                             
-                            card.getChildren().add(2, aiInfoBox); // Insérer sous le titre
+                            card.getChildren().add(2, aiInfoBox); // InsÃƒÆ’Ã‚Â©rer sous le titre
                             
                             recoCardsContainer.getChildren().add(card);
                         }
@@ -484,7 +522,7 @@ public class AjoutProduitController implements Initializable {
                 javafx.application.Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Erreur IA");
-                    alert.setHeaderText("Un problème est survenu");
+                    alert.setHeaderText("Un problÃƒÆ’Ã‚Â¨me est survenu");
                     alert.setContentText("Impossible de charger les recommandations : " + e.getMessage());
                     alert.showAndWait();
                 });
@@ -500,3 +538,4 @@ public class AjoutProduitController implements Initializable {
     }
 
 }
+

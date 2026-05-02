@@ -233,7 +233,7 @@ public class ProfileController {
         if (currentUser != null && "ROLE_ADMIN".equalsIgnoreCase(currentUser.getRole())) {
             SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Admin Dashboard");
         } else {
-            SceneManager.switchScene("/edu/ProjetPI/views/user-dashboard.fxml", "Front Office");
+            SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
         }
     }
 

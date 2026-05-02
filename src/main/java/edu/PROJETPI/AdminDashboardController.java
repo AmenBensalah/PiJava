@@ -260,6 +260,17 @@ public class AdminDashboardController implements Initializable {
     }
 
     @FXML
+    private void goToGestionComptes() {
+        SceneNavigator.switchScene(commandeTableView, "/edu/ProjetPI/views/admin-dashboard.fxml", "Gestion des comptes");
+    }
+
+    @FXML
+    private void handleLogout() {
+        edu.ProjetPI.controllers.DashboardSession.clear();
+        edu.ProjetPI.controllers.SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "E-SPORTIFY : Connexion");
+    }
+
+    @FXML
     private void refreshData() {
         try {
             if (paymentMode) {

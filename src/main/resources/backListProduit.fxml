@@ -28,7 +28,7 @@
                 <Region HBox.hgrow="ALWAYS" />
                 <HBox spacing="15.0" alignment="CENTER">
                     <Button text="Dashboard" styleClass="btn-primary" />
-                    <Button text="Voir mon profil" styleClass="btn-secondary" />
+                    <Button onAction="#handleViewProfile" text="Voir mon profil" styleClass="btn-secondary" />
                 </HBox>
             </children>
         </HBox>
@@ -57,13 +57,13 @@
                     <Button maxWidth="1.7976931348623157E308" text="📦 Commandes" styleClass="sidebar-submenu-btn" onAction="#goToCommandes" />
                 </VBox>
 
-                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="👤 Gestion comptes" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToGestionComptes" styleClass="menu-btn" text="👤 Gestion comptes" />
 
                 <Region VBox.vgrow="ALWAYS" />
                 <VBox alignment="CENTER" spacing="10">
                     <padding><Insets bottom="20.0" left="20" right="20"/></padding>
                     <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="theme-toggle-btn" text="🌙" />
-                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="🚪 Déconnexion" />
+                    <Button mnemonicParsing="false" onAction="#handleLogout" prefWidth="1.7976931348623157E308" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="🚪 Déconnexion" />
                 </VBox>
             </children>
         </VBox>

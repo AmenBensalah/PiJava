@@ -22,6 +22,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import edu.PROJETPI.AdminDashboardController;
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.controllers.SceneManager;
 import edu.projetJava.entities.Categorie;
 import edu.projetJava.models.Produit;
 import edu.projetJava.services.CategorieService;
@@ -432,6 +434,22 @@ public class BackListProduitController implements Initializable {
     void goToCommandes(ActionEvent event) {
         AdminDashboardController.openOn(AdminDashboardController.InitialSection.COMMANDES);
         edu.ProjetPI.controllers.SceneManager.switchScene("/admin-dashboard-view.fxml", "Liste des commandes");
+    }
+
+    @FXML
+    void goToGestionComptes(ActionEvent event) {
+        edu.ProjetPI.controllers.SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Gestion des comptes");
+    }
+
+    @FXML
+    void handleViewProfile(ActionEvent event) {
+        SceneManager.switchScene("/edu/ProjetPI/views/profile.fxml", "Mon Profil");
+    }
+
+    @FXML
+    void handleLogout(ActionEvent event) {
+        DashboardSession.clear();
+        SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "E-SPORTIFY : Connexion");
     }
 
 }
