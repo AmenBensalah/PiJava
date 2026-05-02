@@ -19,6 +19,8 @@ import edu.projetJava.entities.Categorie;
 import edu.projetJava.models.Produit;
 import edu.projetJava.services.CategorieService;
 import edu.projetJava.services.ProduitService;
+import edu.PROJETPI.services.OrderSession;
+import edu.PROJETPI.tools.AlertUtils;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -188,6 +190,11 @@ public class AjoutProduitController implements Initializable {
         SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "E-SPORTIFY : Connexion");
     }
 
+    @FXML
+    void goToCart(ActionEvent event) {
+        SceneManager.switchScene("/lignecommande-view.fxml", "Panier");
+    }
+
     private VBox createProductCard(Produit p) {
         VBox card = new VBox();
         card.setPrefWidth(220.0);
@@ -265,12 +272,39 @@ public class AjoutProduitController implements Initializable {
         
         Button cartBtn = new Button("Ajouter");
         cartBtn.getStyleClass().add("btn-cart");
-        cartBtn.setOnAction(e -> ouvrirFenetrePaiement(p));
+        cartBtn.setDisable(!isEnStock);
+        cartBtn.setOnAction(e -> ajouterAuPanier(p));
         
         actionBox.getChildren().addAll(youtubeBtn, spacer2, cartBtn);
 
         card.getChildren().addAll(imgArea, title, priceStockBox, actionBox);
         return card;
+    }
+
+    private void ajouterAuPanier(Produit p) {
+        if (p.getStock() <= 0) {
+            AlertUtils.showError("Ce produit est en rupture de stock.");
+            return;
+        }
+
+        edu.PROJETPI.entites.Produit produitPanier = new edu.PROJETPI.entites.Produit(
+                p.getId(),
+                p.getNom(),
+                getPrixPanier(p),
+                p.getStock(),
+                p.getDescription()
+        );
+
+        OrderSession.getInstance().addProduct(produitPanier, 1);
+        AlertUtils.showSuccess(p.getNom() + " a ete ajoute au panier.");
+        SceneManager.switchScene("/lignecommande-view.fxml", "Panier");
+    }
+
+    private double getPrixPanier(Produit p) {
+        if (isGlobalOfferActive) {
+            return p.getPrix() * 0.9;
+        }
+        return p.getPrix();
     }
 
     private void ouvrirFenetrePaiement(Produit p) {

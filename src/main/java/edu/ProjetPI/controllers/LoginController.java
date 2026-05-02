@@ -71,15 +71,7 @@ public class LoginController {
 
             DashboardSession.setCurrentUser(user.get());
             userService.updateLastLogin(user.get().getId());
-            String role = user.get().getRole();
-            String email = user.get().getEmail();
-
-            // Redirect based on email (as requested) or role
-            if ("admin@admin.com".equalsIgnoreCase(email) || "ROLE_ADMIN".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
-                SceneManager.switchScene("/backListProduit.fxml", "Boutique Admin Dashboard");
-            } else {
-                SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
-            }
+            redirectAfterLogin(user.get());
         } catch (Exception e) {
             FormFeedback.showError(messageLabel, e.getMessage());
         }
@@ -112,14 +104,7 @@ public class LoginController {
             }
             DashboardSession.setCurrentUser(user);
             userService.updateLastLogin(user.getId());
-            String role = user.getRole();
-            String email = user.getEmail();
-
-            if ("admin@admin.com".equalsIgnoreCase(email) || "ROLE_ADMIN".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
-                SceneManager.switchScene("/backListProduit.fxml", "Boutique Admin Dashboard");
-            } else {
-                SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
-            }
+            redirectAfterLogin(user);
         }));
     }
 
@@ -140,14 +125,7 @@ public class LoginController {
             }
             DashboardSession.setCurrentUser(user);
             userService.updateLastLogin(user.getId());
-            String role = user.getRole();
-            String email = user.getEmail();
-
-            if ("admin@admin.com".equalsIgnoreCase(email) || "ROLE_ADMIN".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
-                SceneManager.switchScene("/backListProduit.fxml", "Boutique Admin Dashboard");
-            } else {
-                SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
-            }
+            redirectAfterLogin(user);
         }));
     }
 
@@ -171,14 +149,7 @@ public class LoginController {
                 userService.checkAndClearBanStatus(user);
                 DashboardSession.setCurrentUser(user);
                 userService.updateLastLogin(user.getId());
-                String role = user.getRole();
-                String email = user.getEmail();
-
-                if ("admin@admin.com".equalsIgnoreCase(email) || "ROLE_ADMIN".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
-                    SceneManager.switchScene("/backListProduit.fxml", "Boutique Admin Dashboard");
-                } else {
-                    SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
-                }
+                redirectAfterLogin(user);
             } else {
                 FormFeedback.showError(messageLabel, "Face capture canceled.");
             }
@@ -194,5 +165,22 @@ public class LoginController {
         }
         String msg = cursor.getMessage();
         return msg == null || msg.isBlank() ? "Social login failed." : msg;
+    }
+
+    private static void redirectAfterLogin(User user) {
+        if (isAdmin(user)) {
+            SceneManager.switchScene("/backListProduit.fxml", "Boutique Admin Dashboard");
+            return;
+        }
+
+        SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Dashboard");
+    }
+
+    private static boolean isAdmin(User user) {
+        String email = user.getEmail();
+        String role = user.getRole();
+        return "admin@admin.com".equalsIgnoreCase(email)
+                || "ROLE_ADMIN".equalsIgnoreCase(role)
+                || "ADMIN".equalsIgnoreCase(role);
     }
 }

@@ -52,8 +52,9 @@
                     <Button maxWidth="1.7976931348623157E308" text="🤍 Centre de Mailing" styleClass="sidebar-submenu-btn" onAction="#goToMailing" />
                     <Button maxWidth="1.7976931348623157E308" text="🏷️ Produits" styleClass="sidebar-submenu-btn, sidebar-submenu-active" />
                     <Button maxWidth="1.7976931348623157E308" text="🏷️ Catégories" styleClass="sidebar-submenu-btn" onAction="#goToAdminCategorie" />
-                    <Button maxWidth="1.7976931348623157E308" text="💳 Paiements" styleClass="sidebar-submenu-btn" />
-                    <Button maxWidth="1.7976931348623157E308" text="📦 Commandes" styleClass="sidebar-submenu-btn" />
+                    <Button maxWidth="1.7976931348623157E308" text="💳 Paiements" styleClass="sidebar-submenu-btn" onAction="#goToPayments" />
+                    <Button maxWidth="1.7976931348623157E308" text="Prédiction CA" styleClass="sidebar-submenu-btn" onAction="#goToRevenuePrediction" />
+                    <Button maxWidth="1.7976931348623157E308" text="📦 Commandes" styleClass="sidebar-submenu-btn" onAction="#goToCommandes" />
                 </VBox>
 
                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="👤 Gestion comptes" />

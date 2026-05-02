@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="760.0" prefWidth="1280.0" styleClass="delivery-root"
+            stylesheets="@styles/esportify-theme.css"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.PROJETPI.DeliveryController">
+    <center>
+        <VBox spacing="22.0" styleClass="delivery-shell">
+            <padding>
+                <Insets bottom="40.0" left="42.0" right="42.0" top="40.0"/>
+            </padding>
+            <children>
+                <VBox spacing="10.0" styleClass="delivery-hero">
+                    <children>
+                        <Label styleClass="delivery-kicker" text="SHIPPING"/>
+                        <Label styleClass="delivery-title" text="ADRESSE DE LIVRAISON"/>
+                        <Label styleClass="hero-subtitle" text="Renseigne les details pour finaliser ta commande."/>
+                    </children>
+                </VBox>
+
+                <HBox spacing="14.0" styleClass="delivery-steps">
+                    <children>
+                        <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="step-box">
+                            <children>
+                                <Label styleClass="step-index" text="1"/>
+                                <Label styleClass="step-title" text="PANIER"/>
+                            </children>
+                        </HBox>
+                        <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="step-box step-box-active">
+                            <children>
+                                <Label styleClass="step-index step-index-active" text="2"/>
+                                <Label styleClass="step-title step-title-active" text="LIVRAISON"/>
+                            </children>
+                        </HBox>
+                        <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="step-box">
+                            <children>
+                                <Label styleClass="step-index" text="3"/>
+                                <Label styleClass="step-title" text="PAIEMENT"/>
+                            </children>
+                        </HBox>
+                        <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="12.0" styleClass="step-box">
+                            <children>
+                                <Label styleClass="step-index" text="4"/>
+                                <Label styleClass="step-title" text="CONFIRMATION"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+
+                <ProgressBar maxWidth="1.7976931348623157E308" progress="0.50" styleClass="checkout-progress"/>
+
+                <HBox spacing="24.0">
+                    <children>
+                        <VBox HBox.hgrow="ALWAYS" spacing="18.0" styleClass="delivery-panel">
+                            <children>
+                                <Label styleClass="section-title" text="Informations de livraison"/>
+                                <GridPane hgap="14.0" vgap="14.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+                                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+                                    </columnConstraints>
+                                    <children>
+                                        <VBox spacing="8.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label styleClass="delivery-field-label" text="PAYS"/>
+                                                <HBox spacing="8.0">
+                                                    <children>
+                                                        <TextField fx:id="paysField" editable="false" focusTraversable="false" onMouseClicked="#openMapPicker" promptText="Cliquer pour choisir sur la carte" styleClass="dark-text-field map-picker-field" HBox.hgrow="ALWAYS"/>
+                                                        <Button mnemonicParsing="false" onAction="#openMapPicker" prefWidth="52.0" styleClass="map-button" text="+"/>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label styleClass="delivery-field-label" text="GOUVERNORAT"/>
+                                                <TextField fx:id="gouvernoratField" promptText="Gouvernorat" styleClass="dark-text-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                            <children>
+                                                <Label styleClass="delivery-field-label" text="CODE POSTAL"/>
+                                                <TextField fx:id="codePostalField" promptText="Code postal" styleClass="dark-text-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                            <children>
+                                                <Label styleClass="delivery-field-label" text="ADRESSE"/>
+                                                <TextField fx:id="adresseField" promptText="Adresse" styleClass="dark-text-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="8.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                            <children>
+                                                <Label styleClass="delivery-field-label" text="ADRESSE EXACTE / DESCRIPTION"/>
+                                                <TextArea fx:id="adresseDetailArea" prefRowCount="3" promptText="Adresse exacte" styleClass="dark-text-field"/>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </GridPane>
+                            </children>
+                        </VBox>
+
+                        <VBox prefWidth="380.0" minWidth="380.0" maxWidth="380.0" spacing="20.0" styleClass="delivery-summary">
+                            <children>
+                                <Label styleClass="section-title" text="Resume de la commande"/>
+                                <HBox>
+                                    <children>
+                                        <Label styleClass="metric-label" text="Sous-total"/>
+                                        <Region HBox.hgrow="ALWAYS"/>
+                                        <Label fx:id="subtotalLabel" styleClass="metric-value" text="0.00 TND"/>
+                                    </children>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label styleClass="metric-label" text="Livraison"/>
+                                        <Region HBox.hgrow="ALWAYS"/>
+                                        <Label styleClass="metric-value" text="Gratuite"/>
+                                    </children>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label styleClass="metric-label total" text="Total"/>
+                                        <Region HBox.hgrow="ALWAYS"/>
+                                        <Label fx:id="totalSummaryLabel" styleClass="metric-total" text="0.00 TND"/>
+                                    </children>
+                                </HBox>
+                                <Button fx:id="continueButton" mnemonicParsing="false" maxWidth="1.7976931348623157E308" onAction="#continueToPayment" styleClass="delivery-primary-button" text="Continuer"/>
+                                <Button mnemonicParsing="false" maxWidth="1.7976931348623157E308" onAction="#goBackToCommande" styleClass="delivery-ghost-button" text="Retour commande"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

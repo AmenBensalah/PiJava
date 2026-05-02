@@ -21,6 +21,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import edu.PROJETPI.AdminDashboardController;
 import edu.projetJava.entities.Categorie;
 import edu.projetJava.models.Produit;
 import edu.projetJava.services.CategorieService;
@@ -413,6 +414,24 @@ public class BackListProduitController implements Initializable {
     @FXML
     void goToAdminCategorie(ActionEvent event) {
         edu.ProjetPI.controllers.SceneManager.switchScene("/backListCategorie.fxml", "Boutique Admin - Catégories");
+    }
+
+    @FXML
+    void goToPayments(ActionEvent event) {
+        AdminDashboardController.openOn(AdminDashboardController.InitialSection.PAIEMENTS);
+        edu.ProjetPI.controllers.SceneManager.switchScene("/admin-dashboard-view.fxml", "Liste des paiements");
+    }
+
+    @FXML
+    void goToRevenuePrediction(ActionEvent event) {
+        AdminDashboardController.openOn(AdminDashboardController.InitialSection.PREDICTION_CA);
+        edu.ProjetPI.controllers.SceneManager.switchScene("/admin-dashboard-view.fxml", "Prediction chiffre d'affaires");
+    }
+
+    @FXML
+    void goToCommandes(ActionEvent event) {
+        AdminDashboardController.openOn(AdminDashboardController.InitialSection.COMMANDES);
+        edu.ProjetPI.controllers.SceneManager.switchScene("/admin-dashboard-view.fxml", "Liste des commandes");
     }
 
 }

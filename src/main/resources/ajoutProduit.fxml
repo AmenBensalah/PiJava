@@ -48,6 +48,7 @@
                                 </VBox>
                                 <HBox spacing="15.0" alignment="CENTER_RIGHT">
                                     <Button onAction="#voirRecommandationsIA" text="🤖 Recommandations IA" styleClass="btn-secondary" style="-fx-text-fill: #bd00ff; -fx-border-color: #bd00ff;" prefHeight="45" />
+                                    <Button onAction="#goToCart" text="Panier" styleClass="btn-secondary" prefWidth="120" prefHeight="45" />
                                     <Button onAction="#chargerProduits" text="Réinitialiser Filtres" styleClass="btn-primary" prefWidth="180" prefHeight="45" />
                                 </HBox>
                             </children>
