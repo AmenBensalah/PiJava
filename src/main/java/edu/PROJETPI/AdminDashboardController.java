@@ -3,14 +3,13 @@ package edu.PROJETPI;
 import edu.PROJETPI.entites.Commande;
 import edu.PROJETPI.entites.LigneCommande;
 import edu.PROJETPI.entites.Payment;
-import edu.PROJETPI.entites.Produit;
-import edu.PROJETPI.services.CatalogueProduitService;
 import edu.PROJETPI.services.PaymentReportPdfService;
 import edu.PROJETPI.services.RevenueForecastService;
 import edu.PROJETPI.services.ServiceCommande;
 import edu.PROJETPI.services.ServiceLigneCommande;
 import edu.PROJETPI.services.ServicePayment;
 import edu.PROJETPI.tools.AlertUtils;
+import edu.PROJETPI.tools.MyConexion;
 import edu.PROJETPI.tools.SceneNavigator;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -34,15 +33,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -50,6 +48,9 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -78,6 +79,8 @@ public class AdminDashboardController implements Initializable {
         initialSection = section == null ? InitialSection.COMMANDES : section;
     }
 
+    @FXML
+    private ScrollPane adminScrollPane;
     @FXML
     private TableView<Commande> commandeTableView;
     @FXML
@@ -131,6 +134,22 @@ public class AdminDashboardController implements Initializable {
     @FXML
     private VBox paymentFilterCard;
     @FXML
+    private TextField paymentSearchField;
+    @FXML
+    private ComboBox<String> paymentStatutFilterComboBox;
+    @FXML
+    private Button paymentSortIdDescButton;
+    @FXML
+    private Button paymentSortIdAscButton;
+    @FXML
+    private Button paymentSortMontantDescButton;
+    @FXML
+    private Button paymentSortMontantAscButton;
+    @FXML
+    private Button paymentSortDateDescButton;
+    @FXML
+    private Button paymentSortDateAscButton;
+    @FXML
     private DatePicker paymentDateDebutPicker;
     @FXML
     private DatePicker paymentDateFinPicker;
@@ -146,8 +165,6 @@ public class AdminDashboardController implements Initializable {
     private Button commandesButton;
     @FXML
     private Button paiementsButton;
-    @FXML
-    private Button paymentListButton;
     @FXML
     private Button paymentForecastButton;
     @FXML
@@ -188,41 +205,113 @@ public class AdminDashboardController implements Initializable {
     private final ServiceCommande serviceCommande = new ServiceCommande();
     private final ServicePayment servicePayment = new ServicePayment();
     private final ServiceLigneCommande serviceLigneCommande = new ServiceLigneCommande();
-    private final CatalogueProduitService catalogueProduitService = new CatalogueProduitService();
+    private final Connection cnx = MyConexion.getInstance().getConnection();
     private final PaymentReportPdfService paymentReportPdfService = new PaymentReportPdfService();
     private final RevenueForecastService revenueForecastService = new RevenueForecastService();
     private final ObservableList<Commande> commandes = FXCollections.observableArrayList();
     private final FilteredList<Commande> filteredCommandes = new FilteredList<>(commandes, item -> true);
     private final SortedList<Commande> sortedCommandes = new SortedList<>(filteredCommandes);
-    private final ObservableList<PaymentRow> payments = FXCollections.observableArrayList();
+    private final ObservableList<PaymentRow> paymentsAll = FXCollections.observableArrayList();
+    private final FilteredList<PaymentRow> filteredPayments = new FilteredList<>(paymentsAll, item -> true);
+    private final SortedList<PaymentRow> sortedPayments = new SortedList<>(filteredPayments);
     private Timeline paymentAutoRefreshTimeline;
     private boolean paymentMode;
     private boolean paymentForecastMode;
     private SortMode currentSortMode = SortMode.ID_DESC;
+    private PaymentSortMode currentPaymentSortMode = PaymentSortMode.ID_DESC;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colDate.setCellValueFactory(new PropertyValueFactory<>("dateCommande"));
-        colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
-        colClientId.setCellValueFactory(new PropertyValueFactory<>("clientId"));
-        colStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
+        colId.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getId()));
+        colId.setCellFactory(column -> new TableCell<Commande, Integer>() {
+            @Override
+            protected void updateItem(Integer id, boolean empty) {
+                super.updateItem(id, empty);
+                setText(empty || id == null ? "" : String.valueOf(id));
+                setStyle("-fx-text-alignment: CENTER;");
+            }
+        });
+        colDate.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getDateCommande()));
+        colDate.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(java.util.Date date, boolean empty) {
+                super.updateItem(date, empty);
+                setText(empty || date == null ? "" : PAYMENT_DATE_FORMAT.format(date));
+            }
+        });
+        colTotal.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getTotal()));
+        colTotal.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double total, boolean empty) {
+                super.updateItem(total, empty);
+                setText(empty || total == null ? "" : String.format(java.util.Locale.FRANCE, "%.2f TND", total));
+                setStyle("-fx-text-alignment: RIGHT;");
+            }
+        });
+        colClientId.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getClientId()));
+        colClientId.setCellFactory(column -> new TableCell<Commande, Integer>() {
+            @Override
+            protected void updateItem(Integer clientId, boolean empty) {
+                super.updateItem(clientId, empty);
+                setText(empty || clientId == null || clientId == 0 ? "—" : String.valueOf(clientId));
+                setStyle("-fx-text-alignment: CENTER;");
+            }
+        });
+        colStatut.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getStatut()));
         colModifier.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue()));
         colSupprimer.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue()));
-        paymentColId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        paymentColCommandeId.setCellValueFactory(new PropertyValueFactory<>("commandeId"));
+        paymentColId.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getId()));
+        paymentColId.setCellFactory(column -> new TableCell<PaymentRow, Integer>() {
+            @Override
+            protected void updateItem(Integer id, boolean empty) {
+                super.updateItem(id, empty);
+                setText(empty || id == null ? "" : String.valueOf(id));
+                setStyle("-fx-text-alignment: CENTER;");
+            }
+        });
+        paymentColCommandeId.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getCommandeId()));
+        paymentColCommandeId.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : String.valueOf(item));
+                setAlignment(Pos.CENTER_LEFT);
+            }
+        });
         paymentColMontant.setCellValueFactory(cellData ->
-                new ReadOnlyStringWrapper(String.format("%.2f TND", cellData.getValue().getMontant())));
+                new ReadOnlyStringWrapper(String.format(java.util.Locale.FRANCE, "%.2f TND", cellData.getValue().getMontant())));
+        paymentColMontant.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item);
+                setAlignment(Pos.CENTER_RIGHT);
+            }
+        });
         paymentColStatut.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getStatut()));
         paymentColDate.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getDateLabel()));
+        paymentColDate.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item);
+                setAlignment(Pos.CENTER_RIGHT);
+            }
+        });
         paymentColActions.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue()));
 
         commandeTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         paymentTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        configureCommandeTableLayout();
         configurePaymentTableLayout();
         configureDarkTableRows();
         forceDarkTableTheme();
+        javafx.application.Platform.runLater(() -> {
+            resizePaymentColumns(paymentTableView.getWidth());
+            resizeCommandeColumns(commandeTableView.getWidth());
+        });
         initializeCommandFilters();
+        initializePaymentFilters();
         configureCommandeStatusColumn();
         configureModifierColumn();
         configureSupprimerColumn();
@@ -275,14 +364,14 @@ public class AdminDashboardController implements Initializable {
         try {
             if (paymentMode) {
                 validatePaymentDateRange();
-                payments.setAll(buildPaymentRows());
-                paymentTableView.setItems(payments);
-                commandeCountLabel.setText(String.valueOf(payments.size()));
+                paymentsAll.setAll(buildPaymentRows());
+                applyPaymentClientFilters();
                 refreshPaymentPredictions();
             } else {
                 commandes.setAll(serviceCommande.readAll());
                 applyCommandFilters();
             }
+            resetViewportScrollPositions();
         } catch (SQLException e) {
             String message = paymentMode
                     ? "Erreur lors du chargement des paiements : "
@@ -304,7 +393,7 @@ public class AdminDashboardController implements Initializable {
         pageSubtitleLabel.setText("Suivez les commandes, leurs statuts et les actions associees.");
         sectionTitleLabel.setText("Liste des commandes");
         setPaymentSubmenuVisible(false);
-        setActiveMenuButton(commandesButton, paiementsButton, paymentListButton, paymentForecastButton);
+        setActiveMenuButton(commandesButton, paiementsButton, paymentForecastButton);
         commandeFilterCard.setManaged(true);
         commandeFilterCard.setVisible(true);
         paymentFilterCard.setManaged(false);
@@ -315,7 +404,7 @@ public class AdminDashboardController implements Initializable {
         commandeTableView.setVisible(true);
         paymentTableView.setManaged(false);
         paymentTableView.setVisible(false);
-        commandeTableView.setPrefHeight(560.0);
+        resetViewportScrollPositions();
         refreshData();
     }
 
@@ -329,12 +418,14 @@ public class AdminDashboardController implements Initializable {
     private void showPaymentList() {
         paymentMode = true;
         paymentForecastMode = false;
-        pageTitleLabel.setText("Liste des paiements");
+        pageTitleLabel.setText("GESTION DES PAIEMENTS");
         setPredictionTitleMode(false);
+        pageSubtitleLabel.setManaged(true);
+        pageSubtitleLabel.setVisible(true);
+        pageSubtitleLabel.setText("Consultez les paiements, filtrez par periode et gerez les actions associees.");
         sectionTitleLabel.setText("Liste des paiements");
         setPaymentSubmenuVisible(true);
-        setActiveMenuButton(paymentListButton, commandesButton, paiementsButton, paymentForecastButton);
-        setParentPaymentButtonActive();
+        setActiveMenuButton(paiementsButton, commandesButton, paymentForecastButton);
         commandeFilterCard.setManaged(false);
         commandeFilterCard.setVisible(false);
         paymentFilterCard.setManaged(true);
@@ -345,7 +436,7 @@ public class AdminDashboardController implements Initializable {
         commandeTableView.setVisible(false);
         paymentTableView.setManaged(true);
         paymentTableView.setVisible(true);
-        paymentTableView.setPrefHeight(280.0);
+        resetViewportScrollPositions();
         refreshData();
     }
 
@@ -357,8 +448,7 @@ public class AdminDashboardController implements Initializable {
         setPredictionTitleMode(true);
         sectionTitleLabel.setText("Prediction chiffre d'affaires");
         setPaymentSubmenuVisible(true);
-        setActiveMenuButton(paymentForecastButton, commandesButton, paiementsButton, paymentListButton);
-        setParentPaymentButtonActive();
+        setActiveMenuButton(paymentForecastButton, commandesButton, paiementsButton);
         commandeFilterCard.setManaged(false);
         commandeFilterCard.setVisible(false);
         paymentFilterCard.setManaged(false);
@@ -369,6 +459,7 @@ public class AdminDashboardController implements Initializable {
         commandeTableView.setVisible(false);
         paymentTableView.setManaged(false);
         paymentTableView.setVisible(false);
+        resetViewportScrollPositions();
         refreshData();
     }
 
@@ -383,10 +474,32 @@ public class AdminDashboardController implements Initializable {
     }
 
     @FXML
-    private void resetPaymentFilters() {
+    private void resetPaymentDateFilters() {
         paymentDateDebutPicker.setValue(null);
         paymentDateFinPicker.setValue(null);
         refreshData();
+    }
+
+    @FXML
+    private void applyPaymentClientFilters() {
+        if (!paymentMode || paymentForecastMode) {
+            return;
+        }
+        String searchValue = paymentSearchField.getText() == null ? "" : paymentSearchField.getText().trim().toLowerCase();
+        String selectedStatus = paymentStatutFilterComboBox.getValue() == null ? FILTER_ALL : paymentStatutFilterComboBox.getValue();
+        filteredPayments.setPredicate(row -> matchesPaymentSearch(row, searchValue) && matchesPaymentStatus(row, selectedStatus));
+        sortedPayments.setComparator(buildPaymentComparator(currentPaymentSortMode));
+        commandeCountLabel.setText(String.valueOf(filteredPayments.size()));
+    }
+
+    @FXML
+    private void resetPaymentViewFilters() {
+        paymentSearchField.clear();
+        paymentStatutFilterComboBox.setValue(FILTER_ALL);
+        currentPaymentSortMode = PaymentSortMode.ID_DESC;
+        sortedPayments.setComparator(buildPaymentComparator(currentPaymentSortMode));
+        updatePaymentSortButtons();
+        applyPaymentClientFilters();
     }
 
     @FXML
@@ -434,10 +547,6 @@ public class AdminDashboardController implements Initializable {
     }
 
     private void setPaymentSubmenuVisible(boolean visible) {
-        if (paymentListButton != null) {
-            paymentListButton.setManaged(visible);
-            paymentListButton.setVisible(visible);
-        }
         if (paymentForecastButton != null) {
             paymentForecastButton.setManaged(true);
             paymentForecastButton.setVisible(true);
@@ -452,15 +561,9 @@ public class AdminDashboardController implements Initializable {
         pageSubtitleLabel.setText("Analyse IA des revenus, paiements prevus et tendances");
     }
 
-    private void setParentPaymentButtonActive() {
-        if (!paiementsButton.getStyleClass().contains(MENU_ACTIVE_CLASS)) {
-            paiementsButton.getStyleClass().add(MENU_ACTIVE_CLASS);
-        }
-    }
-
     private void initializeCommandFilters() {
         statutFilterComboBox.setItems(FXCollections.observableArrayList(
-                FILTER_ALL, "EN_ATTENTE", "EN_ATTENTE_PAIEMENT", "EN_LIVRAISON", "PAYEE", "ANNULEE"
+                FILTER_ALL, "DRAFT", "EN_ATTENTE", "EN_ATTENTE_PAIEMENT", "PENDING_PAYMENT", "EN_LIVRAISON", "PAYEE", "ANNULEE"
         ));
         statutFilterComboBox.setValue(FILTER_ALL);
 
@@ -472,6 +575,33 @@ public class AdminDashboardController implements Initializable {
         sortedCommandes.setComparator(buildComparator(currentSortMode));
         commandeTableView.setItems(sortedCommandes);
         updateSortButtons();
+    }
+
+    private void initializePaymentFilters() {
+        paymentStatutFilterComboBox.setItems(FXCollections.observableArrayList(
+                FILTER_ALL, "DRAFT", "EN_ATTENTE", "EN_ATTENTE_PAIEMENT", "PENDING_PAYMENT", "EN_LIVRAISON", "PAYEE", "ANNULEE"
+        ));
+        paymentStatutFilterComboBox.setValue(FILTER_ALL);
+
+        paymentSearchField.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (paymentMode && !paymentForecastMode) {
+                applyPaymentClientFilters();
+            }
+        });
+        paymentStatutFilterComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (paymentMode && !paymentForecastMode) {
+                applyPaymentClientFilters();
+            }
+        });
+        filteredPayments.addListener((javafx.collections.ListChangeListener<? super PaymentRow>) change -> {
+            if (paymentMode && !paymentForecastMode) {
+                commandeCountLabel.setText(String.valueOf(filteredPayments.size()));
+            }
+        });
+
+        sortedPayments.setComparator(buildPaymentComparator(currentPaymentSortMode));
+        paymentTableView.setItems(sortedPayments);
+        updatePaymentSortButtons();
     }
 
     @FXML
@@ -522,6 +652,82 @@ public class AdminDashboardController implements Initializable {
     @FXML
     private void sortByDateAsc() {
         setSortMode(SortMode.DATE_ASC);
+    }
+
+    @FXML
+    private void sortPaymentsByIdDesc() {
+        setPaymentSortMode(PaymentSortMode.ID_DESC);
+    }
+
+    @FXML
+    private void sortPaymentsByIdAsc() {
+        setPaymentSortMode(PaymentSortMode.ID_ASC);
+    }
+
+    @FXML
+    private void sortPaymentsByMontantDesc() {
+        setPaymentSortMode(PaymentSortMode.MONTANT_DESC);
+    }
+
+    @FXML
+    private void sortPaymentsByMontantAsc() {
+        setPaymentSortMode(PaymentSortMode.MONTANT_ASC);
+    }
+
+    @FXML
+    private void sortPaymentsByDateDesc() {
+        setPaymentSortMode(PaymentSortMode.DATE_DESC);
+    }
+
+    @FXML
+    private void sortPaymentsByDateAsc() {
+        setPaymentSortMode(PaymentSortMode.DATE_ASC);
+    }
+
+    private void setPaymentSortMode(PaymentSortMode sortMode) {
+        currentPaymentSortMode = sortMode;
+        sortedPayments.setComparator(buildPaymentComparator(sortMode));
+        updatePaymentSortButtons();
+    }
+
+    private Comparator<PaymentRow> buildPaymentComparator(PaymentSortMode sortMode) {
+        return switch (sortMode) {
+            case ID_ASC -> Comparator.comparingInt(PaymentRow::getId);
+            case ID_DESC -> Comparator.comparingInt(PaymentRow::getId).reversed();
+            case MONTANT_ASC -> Comparator.comparingDouble(PaymentRow::getMontant);
+            case MONTANT_DESC -> Comparator.comparingDouble(PaymentRow::getMontant).reversed();
+            case DATE_ASC -> Comparator.comparing(PaymentRow::getActualDate, Comparator.nullsLast(Comparator.naturalOrder()));
+            case DATE_DESC -> Comparator.comparing(PaymentRow::getActualDate, Comparator.nullsLast(Comparator.reverseOrder()));
+        };
+    }
+
+    private void updatePaymentSortButtons() {
+        updateSortButtonState(paymentSortIdDescButton, currentPaymentSortMode == PaymentSortMode.ID_DESC);
+        updateSortButtonState(paymentSortIdAscButton, currentPaymentSortMode == PaymentSortMode.ID_ASC);
+        updateSortButtonState(paymentSortMontantDescButton, currentPaymentSortMode == PaymentSortMode.MONTANT_DESC);
+        updateSortButtonState(paymentSortMontantAscButton, currentPaymentSortMode == PaymentSortMode.MONTANT_ASC);
+        updateSortButtonState(paymentSortDateDescButton, currentPaymentSortMode == PaymentSortMode.DATE_DESC);
+        updateSortButtonState(paymentSortDateAscButton, currentPaymentSortMode == PaymentSortMode.DATE_ASC);
+    }
+
+    private boolean matchesPaymentSearch(PaymentRow row, String searchValue) {
+        if (searchValue.isBlank()) {
+            return true;
+        }
+        return String.valueOf(row.getId()).contains(searchValue)
+                || String.valueOf(row.getCommandeId()).contains(searchValue)
+                || safe(row.getStatut()).contains(searchValue)
+                || safe(row.getDateLabel()).contains(searchValue)
+                || String.valueOf(row.getMontant()).contains(searchValue);
+    }
+
+    private boolean matchesPaymentStatus(PaymentRow row, String selectedStatus) {
+        if (selectedStatus == null || FILTER_ALL.equalsIgnoreCase(selectedStatus)) {
+            return true;
+        }
+        String normalizedSelected = normalizeCommandeStatus(selectedStatus);
+        String normalizedRow = normalizeCommandeStatus(row.getStatut());
+        return normalizedSelected.equalsIgnoreCase(normalizedRow);
     }
 
     private void setSortMode(SortMode sortMode) {
@@ -598,15 +804,9 @@ public class AdminDashboardController implements Initializable {
                 Label badge = new Label(normalizedLabel);
                 badge.getStyleClass().add("commande-status-badge");
 
-                String normalized = normalizedLabel.trim().toUpperCase();
-                switch (normalized) {
-                    case "PAYEE" -> badge.getStyleClass().add("commande-status-paid");
-                    case "ANNULEE" -> badge.getStyleClass().add("commande-status-cancelled");
-                    case "EN_ATTENTE", "EN_ATTENTE_PAIEMENT", "EN_LIVRAISON" ->
-                            badge.getStyleClass().add("commande-status-pending");
-                    default -> badge.getStyleClass().add("commande-status-neutral");
-                }
+                applyCommandeStatusBadgeStyle(badge, normalizedLabel);
 
+                setAlignment(Pos.CENTER);
                 setGraphic(badge);
                 setText(null);
             }
@@ -624,22 +824,40 @@ public class AdminDashboardController implements Initializable {
                     return;
                 }
 
-                Label badge = new Label(item);
-                badge.getStyleClass().add("payment-status-badge");
+                String normalizedLabel = normalizeCommandeStatus(item);
+                Label badge = new Label(normalizedLabel);
+                badge.getStyleClass().add("commande-status-badge");
+
+                applyCommandeStatusBadgeStyle(badge, normalizedLabel);
+
+                setAlignment(Pos.CENTER);
                 setGraphic(badge);
                 setText(null);
             }
         });
     }
 
+    private void applyCommandeStatusBadgeStyle(Label badge, String normalizedLabel) {
+        String normalized = normalizedLabel.trim().toUpperCase();
+        switch (normalized) {
+            case "PAYEE" -> badge.getStyleClass().add("commande-status-paid");
+            case "ANNULEE" -> badge.getStyleClass().add("commande-status-cancelled");
+            case "EN_ATTENTE", "EN_ATTENTE_PAIEMENT", "EN_LIVRAISON" ->
+                    badge.getStyleClass().add("commande-status-pending");
+            case "PENDING_PAYMENT" -> badge.getStyleClass().add("commande-status-payment-pending");
+            case "DRAFT" -> badge.getStyleClass().add("commande-status-neutral");
+            default -> badge.getStyleClass().add("commande-status-neutral");
+        }
+    }
+
     private void configurePaymentActionsColumn() {
         paymentColActions.setCellFactory(column -> new TableCell<>() {
-            private final Button viewButton = new Button("...");
-            private final Button deleteButton = new Button("Suppr");
-            private final HBox actionsBox = new HBox(5, viewButton, deleteButton);
+            private final Button viewButton = new Button("Voir");
+            private final Button deleteButton = new Button("Suppr.");
+            private final HBox actionsBox = new HBox(8, viewButton, deleteButton);
 
             {
-                viewButton.getStyleClass().add("table-action-view");
+                viewButton.getStyleClass().add("table-action-edit");
                 deleteButton.getStyleClass().add("table-action-delete");
                 actionsBox.setFillHeight(false);
                 actionsBox.setStyle("-fx-alignment: center;");
@@ -680,14 +898,59 @@ public class AdminDashboardController implements Initializable {
             paymentTableView.getStyleClass().add("payment-data-table");
         }
         paymentColId.setMinWidth(56);
-        paymentColCommandeId.setMinWidth(88);
-        paymentColMontant.setMinWidth(118);
-        paymentColStatut.setMinWidth(106);
-        paymentColDate.setMinWidth(116);
-        paymentColActions.setMinWidth(112);
-        paymentColActions.setMaxWidth(132);
+        paymentColCommandeId.setMinWidth(72);
+        paymentColMontant.setMinWidth(100);
+        paymentColStatut.setMinWidth(100);
+        paymentColDate.setMinWidth(100);
+        paymentColActions.setMinWidth(148);
+        paymentColActions.setMaxWidth(220);
         paymentTableView.widthProperty().addListener((obs, oldWidth, newWidth) -> resizePaymentColumns(newWidth.doubleValue()));
+        paymentTableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            if (newSkin != null) {
+                javafx.application.Platform.runLater(() -> resizePaymentColumns(paymentTableView.getWidth()));
+            }
+        });
         resizePaymentColumns(paymentTableView.getWidth());
+    }
+
+    private void configureCommandeTableLayout() {
+        if (!commandeTableView.getStyleClass().contains("commande-data-table")) {
+            commandeTableView.getStyleClass().add("commande-data-table");
+        }
+        colId.setMinWidth(44);
+        colDate.setMinWidth(88);
+        colTotal.setMinWidth(72);
+        colClientId.setMinWidth(56);
+        colStatut.setMinWidth(108);
+        colModifier.setMinWidth(104);
+        colSupprimer.setMinWidth(104);
+        commandeTableView.widthProperty().addListener((obs, oldWidth, newWidth) -> resizeCommandeColumns(newWidth.doubleValue()));
+        commandeTableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            if (newSkin != null) {
+                javafx.application.Platform.runLater(() -> resizeCommandeColumns(commandeTableView.getWidth()));
+            }
+        });
+        resizeCommandeColumns(commandeTableView.getWidth());
+    }
+
+    private void resizeCommandeColumns(double tableWidth) {
+        if (tableWidth <= 0) {
+            return;
+        }
+
+        double scrollbar = 14.0;
+        javafx.scene.control.ScrollBar sb = findVerticalScrollBar(commandeTableView);
+        if (sb == null || !sb.isVisible()) {
+            scrollbar = 0.0;
+        }
+        double width = Math.max(400, tableWidth - scrollbar - 12);
+        colId.setPrefWidth(width * 0.09);
+        colDate.setPrefWidth(width * 0.16);
+        colTotal.setPrefWidth(width * 0.13);
+        colClientId.setPrefWidth(width * 0.12);
+        colStatut.setPrefWidth(width * 0.17);
+        colModifier.setPrefWidth(width * 0.165);
+        colSupprimer.setPrefWidth(width * 0.165);
     }
 
     private void configureDarkTableRows() {
@@ -723,13 +986,23 @@ public class AdminDashboardController implements Initializable {
             return;
         }
 
-        double width = Math.max(680, tableWidth - 28);
-        paymentColId.setPrefWidth(width * 0.08);
+        double scrollbar = 14.0;
+        javafx.scene.control.ScrollBar sb = findVerticalScrollBar(paymentTableView);
+        if (sb == null || !sb.isVisible()) {
+            scrollbar = 0.0;
+        }
+        double width = Math.max(400, tableWidth - scrollbar - 4);
+        paymentColId.setPrefWidth(width * 0.12);
         paymentColCommandeId.setPrefWidth(width * 0.16);
-        paymentColMontant.setPrefWidth(width * 0.17);
-        paymentColStatut.setPrefWidth(width * 0.16);
-        paymentColDate.setPrefWidth(width * 0.23);
-        paymentColActions.setPrefWidth(width * 0.20);
+        paymentColMontant.setPrefWidth(width * 0.20);
+        paymentColStatut.setPrefWidth(width * 0.18);
+        paymentColDate.setPrefWidth(width * 0.18);
+        paymentColActions.setPrefWidth(Math.max(130, width * 0.16));
+    }
+
+    private static javafx.scene.control.ScrollBar findVerticalScrollBar(TableView<?> table) {
+        javafx.scene.Node bar = table.lookup(".scroll-bar:vertical");
+        return bar instanceof javafx.scene.control.ScrollBar ? (javafx.scene.control.ScrollBar) bar : null;
     }
 
     private ObservableList<PaymentRow> buildPaymentRows() throws SQLException {
@@ -798,18 +1071,18 @@ public class AdminDashboardController implements Initializable {
             validatePaymentDateRange();
             if (!paymentMode) {
                 showPaiements();
-            } else if (payments.isEmpty()) {
-                payments.setAll(buildPaymentRows());
-                paymentTableView.setItems(payments);
+            } else if (paymentsAll.isEmpty()) {
+                paymentsAll.setAll(buildPaymentRows());
+                applyPaymentClientFilters();
             }
 
-            if (payments.isEmpty()) {
+            if (paymentsAll.isEmpty()) {
                 AlertUtils.showError("Aucun paiement a exporter pour cette periode.");
                 return;
             }
 
             var pdfPath = paymentReportPdfService.generateReport(
-                    List.copyOf(payments),
+                    List.copyOf(paymentsAll),
                     paymentDateDebutPicker != null ? paymentDateDebutPicker.getValue() : null,
                     paymentDateFinPicker != null ? paymentDateFinPicker.getValue() : null,
                     getConnectedAdminName()
@@ -835,7 +1108,7 @@ public class AdminDashboardController implements Initializable {
     }
 
     private void refreshPaymentPredictions() {
-        RevenueForecastService.PredictionSnapshot snapshot = revenueForecastService.analyze(List.copyOf(payments));
+        RevenueForecastService.PredictionSnapshot snapshot = revenueForecastService.analyze(List.copyOf(paymentsAll));
         predictedRevenueLabel.setText(revenueForecastService.formatMoney(snapshot.predictedNextDayRevenue()));
         predictedRevenueWeekLabel.setText(revenueForecastService.formatMoney(snapshot.predictedWeekRevenue()));
         predictedRevenueMonthLabel.setText(revenueForecastService.formatMoney(snapshot.predictedMonthRevenue()));
@@ -863,6 +1136,27 @@ public class AdminDashboardController implements Initializable {
         }));
         paymentAutoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
         paymentAutoRefreshTimeline.play();
+    }
+
+    private void resetViewportScrollPositions() {
+        javafx.application.Platform.runLater(() -> {
+            if (adminScrollPane != null) {
+                adminScrollPane.setHvalue(0.0);
+                adminScrollPane.setVvalue(0.0);
+            }
+            if (commandeTableView != null) {
+                commandeTableView.scrollTo(0);
+                if (colId != null) {
+                    commandeTableView.scrollToColumn(colId);
+                }
+            }
+            if (paymentTableView != null) {
+                paymentTableView.scrollTo(0);
+                if (paymentColId != null) {
+                    paymentTableView.scrollToColumn(paymentColId);
+                }
+            }
+        });
     }
 
     private void populateDailyEvolution(List<RevenueForecastService.DailyPoint> points) {
@@ -911,28 +1205,28 @@ public class AdminDashboardController implements Initializable {
     private HBox createAnalyticsRow(String labelText, double value, double maxValue, String valueText, String secondaryText) {
         Label label = new Label(labelText);
         label.getStyleClass().add("analytics-row-label");
-        label.setMinWidth(72);
-        label.setPrefWidth(72);
+        label.setMinWidth(58);
+        label.setPrefWidth(58);
 
         ProgressBar progressBar = new ProgressBar(maxValue <= 0 ? 0 : Math.min(1.0, value / maxValue));
         progressBar.getStyleClass().add("analytics-progress");
-        progressBar.setMinWidth(120);
+        progressBar.setMinWidth(70);
         progressBar.setMaxWidth(Double.MAX_VALUE);
 
         VBox valueBox = new VBox(2);
         valueBox.setAlignment(Pos.CENTER_RIGHT);
-        valueBox.setMinWidth(118);
-        valueBox.setPrefWidth(118);
+        valueBox.setMinWidth(86);
+        valueBox.setPrefWidth(86);
         Label mainValue = new Label(valueText);
         mainValue.getStyleClass().add("analytics-row-value");
         Label secondaryValue = new Label(secondaryText);
         secondaryValue.getStyleClass().add("analytics-row-subvalue");
         valueBox.getChildren().addAll(mainValue, secondaryValue);
 
-        HBox row = new HBox(12);
+        HBox row = new HBox(8);
         row.getStyleClass().add("analytics-row");
         row.setAlignment(Pos.CENTER_LEFT);
-        row.setPadding(new Insets(7, 10, 7, 10));
+        row.setPadding(new Insets(7, 8, 7, 8));
         HBox.setHgrow(progressBar, Priority.ALWAYS);
         row.getChildren().addAll(label, progressBar, valueBox);
         return row;
@@ -1043,13 +1337,12 @@ public class AdminDashboardController implements Initializable {
                     .filter(ligne -> ligne.getCommandeId() == paymentRow.getCommandeId())
                     .collect(Collectors.toList());
 
-            Map<Integer, Produit> produitsById = catalogueProduitService.readAll().stream()
-                    .collect(Collectors.toMap(Produit::getId, produit -> produit));
+            Map<Integer, String> produitsById = readProductNamesById();
 
             StringBuilder details = new StringBuilder();
             details.append("Commande #").append(paymentRow.getCommandeId()).append("\n");
             details.append("Paiement #").append(paymentRow.getId()).append("\n");
-            details.append("Montant: ").append(String.format("%.2f TND", paymentRow.getMontant())).append("\n");
+            details.append("Montant: ").append(String.format(java.util.Locale.FRANCE, "%.2f TND", paymentRow.getMontant())).append("\n");
             details.append("Statut: ").append(paymentRow.getStatut()).append("\n");
             details.append("Date: ").append(paymentRow.getDateLabel()).append("\n\n");
 
@@ -1058,8 +1351,7 @@ public class AdminDashboardController implements Initializable {
             } else {
                 details.append("Produits:\n");
                 for (LigneCommande ligne : lignes) {
-                    Produit produit = produitsById.get(ligne.getProduitId());
-                    String nomProduit = produit != null ? produit.getNom() : "Produit ID " + ligne.getProduitId();
+                    String nomProduit = produitsById.getOrDefault(ligne.getProduitId(), "Produit ID " + ligne.getProduitId());
                     details.append("- ")
                             .append(nomProduit)
                             .append(" | Quantite: ").append(ligne.getQuantite())
@@ -1076,6 +1368,18 @@ public class AdminDashboardController implements Initializable {
         } catch (SQLException e) {
             AlertUtils.showError("Erreur lors du chargement du detail de la commande : " + e.getMessage());
         }
+    }
+
+    private Map<Integer, String> readProductNamesById() throws SQLException {
+        Map<Integer, String> produitsById = new HashMap<>();
+        String query = "SELECT id, nom FROM produit";
+        try (PreparedStatement pst = cnx.prepareStatement(query);
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                produitsById.put(rs.getInt("id"), rs.getString("nom"));
+            }
+        }
+        return produitsById;
     }
 
     public static class PaymentRow {
@@ -1131,6 +1435,15 @@ public class AdminDashboardController implements Initializable {
     }
 
     private enum SortMode {
+        ID_DESC,
+        ID_ASC,
+        MONTANT_DESC,
+        MONTANT_ASC,
+        DATE_DESC,
+        DATE_ASC
+    }
+
+    private enum PaymentSortMode {
         ID_DESC,
         ID_ASC,
         MONTANT_DESC,

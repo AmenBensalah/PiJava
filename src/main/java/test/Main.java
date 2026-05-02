@@ -22,7 +22,8 @@ public class Main extends Application {
         stage.setTitle("E-SPORTIFY : Connexion");
         
         // Mode plein écran pour l'immersion Cyberpunk
-        stage.setFullScreen(true);
+        stage.setFullScreen(false);
+        stage.setMaximized(true);
         stage.show();
     }
 

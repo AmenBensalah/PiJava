@@ -2,9 +2,12 @@ package edu.PROJETPI;
 
 import edu.PROJETPI.entites.CartItem;
 import edu.PROJETPI.entites.Commande;
+import edu.PROJETPI.services.CheckoutService;
 import edu.PROJETPI.services.OrderSession;
 import edu.PROJETPI.tools.AlertUtils;
 import edu.PROJETPI.tools.SceneNavigator;
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.entities.User;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -46,6 +49,7 @@ public class CommandeController implements Initializable {
     private Label totalSummaryLabel;
 
     private static final int AUTO_CLIENT_ID_PLACEHOLDER = 0;
+    private final CheckoutService checkoutService = new CheckoutService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -68,6 +72,9 @@ public class CommandeController implements Initializable {
         commande.setStatut("EN_ATTENTE");
         OrderSession.getInstance().setDraftCommande(commande);
         OrderSession.getInstance().setCheckoutMode(OrderSession.CheckoutMode.STRIPE);
+        if (!savePendingCommande()) {
+            return;
+        }
         SceneNavigator.switchScene(nomField, "/payment-view.fxml", "Paiement en ligne Stripe");
     }
 
@@ -83,13 +90,13 @@ public class CommandeController implements Initializable {
 
     @FXML
     private void continueShopping() {
-        SceneNavigator.switchScene(nomField, "/main-view.fxml", "Catalogue produits");
+        SceneNavigator.switchScene(nomField, "/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
     }
 
     @FXML
     private void deleteCommande() {
         OrderSession.getInstance().clearCart();
-        SceneNavigator.switchScene(nomField, "/main-view.fxml", "Catalogue produits");
+        SceneNavigator.switchScene(nomField, "/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
     }
 
     @FXML
@@ -102,7 +109,24 @@ public class CommandeController implements Initializable {
         commande.setStatut("EN_LIVRAISON");
         OrderSession.getInstance().setDraftCommande(commande);
         OrderSession.getInstance().setCheckoutMode(OrderSession.CheckoutMode.CASH_ON_DELIVERY);
+        if (!savePendingCommande()) {
+            return;
+        }
         SceneNavigator.switchScene(nomField, "/delivery-view.fxml", "Adresse de livraison");
+    }
+
+    private boolean savePendingCommande() {
+        try {
+            int commandeId = checkoutService.savePendingPaymentCommande(
+                    OrderSession.getInstance(),
+                    java.sql.Date.valueOf(java.time.LocalDate.now())
+            );
+            OrderSession.getInstance().getDraftCommande().setId(commandeId);
+            return true;
+        } catch (java.sql.SQLException e) {
+            AlertUtils.showError("Impossible d'enregistrer les lignes de commande : " + e.getMessage());
+            return false;
+        }
     }
 
     private void loadSessionData() {
@@ -157,7 +181,7 @@ public class CommandeController implements Initializable {
         Commande commande = new Commande(
                 java.sql.Date.valueOf(java.time.LocalDate.now()),
                 OrderSession.getInstance().getCartTotal(),
-                AUTO_CLIENT_ID_PLACEHOLDER
+                resolveCurrentUserId()
         );
         if (draft != null) {
             commande.setId(draft.getId());
@@ -173,6 +197,11 @@ public class CommandeController implements Initializable {
         commande.setAdresse(adresse);
         commande.setStatut("EN_ATTENTE");
         return commande;
+    }
+
+    private int resolveCurrentUserId() {
+        User currentUser = DashboardSession.getCurrentUser();
+        return currentUser == null ? AUTO_CLIENT_ID_PLACEHOLDER : currentUser.getId();
     }
 
     private void refreshCartPreview() {
@@ -213,8 +242,12 @@ public class CommandeController implements Initializable {
             return;
         }
 
-        OrderSession.getInstance().updateQuantity(firstItem.getProduitId(), newQuantity);
-        loadSessionData();
+        try {
+            OrderSession.getInstance().updateQuantity(firstItem.getProduitId(), newQuantity);
+            loadSessionData();
+        } catch (IllegalArgumentException e) {
+            AlertUtils.showError(e.getMessage());
+        }
     }
 
     private String emptyIfNull(String value) {

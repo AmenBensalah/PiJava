@@ -333,9 +333,12 @@ public class AjoutProduitController implements Initializable {
                 p.getDescription()
         );
 
-        OrderSession.getInstance().addProduct(produitPanier, 1);
-        AlertUtils.showSuccess(p.getNom() + " a ete ajoute au panier.");
-        SceneManager.switchScene("/lignecommande-view.fxml", "Panier");
+        try {
+            OrderSession.getInstance().addProduct(produitPanier, 1);
+            SceneManager.switchScene("/lignecommande-view.fxml", "Panier");
+        } catch (IllegalArgumentException e) {
+            AlertUtils.showError(e.getMessage());
+        }
     }
 
     private double getPrixPanier(Produit p) {

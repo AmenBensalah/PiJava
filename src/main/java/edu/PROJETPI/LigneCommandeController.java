@@ -98,8 +98,12 @@ public class LigneCommandeController implements Initializable {
             return;
         }
 
-        OrderSession.getInstance().updateQuantity(selected.getProduitId(), selected.getQuantite() + 1);
-        refresh(selected.getProduitId());
+        try {
+            OrderSession.getInstance().updateQuantity(selected.getProduitId(), selected.getQuantite() + 1);
+            refresh(selected.getProduitId());
+        } catch (IllegalArgumentException e) {
+            AlertUtils.showError(e.getMessage());
+        }
     }
 
     @FXML
@@ -115,8 +119,12 @@ public class LigneCommandeController implements Initializable {
             return;
         }
 
-        OrderSession.getInstance().updateQuantity(selected.getProduitId(), selected.getQuantite() - 1);
-        refresh(selected.getProduitId());
+        try {
+            OrderSession.getInstance().updateQuantity(selected.getProduitId(), selected.getQuantite() - 1);
+            refresh(selected.getProduitId());
+        } catch (IllegalArgumentException e) {
+            AlertUtils.showError(e.getMessage());
+        }
     }
 
     @FXML

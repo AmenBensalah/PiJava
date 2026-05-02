@@ -27,9 +27,17 @@ abstract class ServiceTestSupport {
             statement.executeUpdate("DELETE FROM payment");
             statement.executeUpdate("DELETE FROM lignecommande");
             statement.executeUpdate("DELETE FROM commande");
+            statement.executeUpdate("DELETE FROM produit");
             statement.executeUpdate("ALTER TABLE payment AUTO_INCREMENT = 1");
             statement.executeUpdate("ALTER TABLE lignecommande AUTO_INCREMENT = 1");
             statement.executeUpdate("ALTER TABLE commande AUTO_INCREMENT = 1");
+            statement.executeUpdate("ALTER TABLE produit AUTO_INCREMENT = 1");
+            statement.executeUpdate("""
+                    INSERT INTO produit (id, nom, prix, stock, description, active, statut)
+                    VALUES
+                        (1, 'Casque Gaming', 249, 10, 'Test', 1, 'DISPONIBLE'),
+                        (2, 'Clavier Mecanique', 189, 10, 'Test', 1, 'DISPONIBLE')
+                    """);
         }
     }
 

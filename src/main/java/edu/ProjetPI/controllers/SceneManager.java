@@ -3,6 +3,7 @@ package edu.ProjetPI.controllers;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,10 +23,15 @@ public class SceneManager {
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             Parent root = loader.load();
-            Scene scene = new Scene(root);
+            Scene currentScene = primaryStage.getScene();
+            Scene scene = currentScene == null
+                    ? new Scene(root)
+                    : new Scene(root, currentScene.getWidth(), currentScene.getHeight());
+            scene.setFill(Color.web("#050608"));
             primaryStage.setTitle(title);
             primaryStage.setScene(scene);
-            primaryStage.setFullScreen(true);
+            primaryStage.setFullScreen(false);
+            primaryStage.setMaximized(true);
             primaryStage.show();
         } catch (IOException e) {
             throw new IllegalStateException("Unable to load scene: " + fxmlPath, e);

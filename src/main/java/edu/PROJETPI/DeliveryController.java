@@ -5,6 +5,8 @@ import edu.PROJETPI.services.CheckoutService;
 import edu.PROJETPI.services.OrderSession;
 import edu.PROJETPI.tools.AlertUtils;
 import edu.PROJETPI.tools.SceneNavigator;
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.entities.User;
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.geometry.Insets;
@@ -154,7 +156,7 @@ public class DeliveryController implements Initializable {
                         java.sql.Date.valueOf(java.time.LocalDate.now())
                 );
                 AlertUtils.showSuccess("Commande validee avec paiement a la livraison. ID commande : " + commandeId);
-                SceneNavigator.switchScene(paysField, "/main-view.fxml", "Catalogue produits");
+                SceneNavigator.switchScene(paysField, "/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
             } catch (SQLException e) {
                 AlertUtils.showError("Erreur lors de la validation de la livraison : " + e.getMessage());
             }
@@ -196,7 +198,7 @@ public class DeliveryController implements Initializable {
 
         Commande draft = OrderSession.getInstance().getDraftCommande();
         Commande commande = draft == null
-                ? new Commande(java.sql.Date.valueOf(java.time.LocalDate.now()), OrderSession.getInstance().getCartTotal(), AUTO_CLIENT_ID_PLACEHOLDER)
+                ? new Commande(java.sql.Date.valueOf(java.time.LocalDate.now()), OrderSession.getInstance().getCartTotal(), resolveCurrentUserId())
                 : draft;
 
         commande.setDateCommande(java.sql.Date.valueOf(java.time.LocalDate.now()));
@@ -210,6 +212,11 @@ public class DeliveryController implements Initializable {
                 ? "EN_LIVRAISON"
                 : "EN_ATTENTE_PAIEMENT");
         return commande;
+    }
+
+    private int resolveCurrentUserId() {
+        User currentUser = DashboardSession.getCurrentUser();
+        return currentUser == null ? AUTO_CLIENT_ID_PLACEHOLDER : currentUser.getId();
     }
 
     private String emptyIfNull(String value) {
