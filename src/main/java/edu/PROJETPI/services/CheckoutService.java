@@ -3,6 +3,8 @@ package edu.PROJETPI.services;
 import edu.PROJETPI.entites.CartItem;
 import edu.PROJETPI.entites.Commande;
 import edu.PROJETPI.tools.MyConexion;
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.entities.User;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -58,8 +60,10 @@ public class CheckoutService {
             cnx.setAutoCommit(false);
 
             int commandeId;
+            String previousStatut = null;
             if (draft.getId() > 0) {
                 commandeId = draft.getId();
+                previousStatut = readCommandeStatus(commandeId);
                 try (PreparedStatement pstCommande = cnx.prepareStatement(updateCommande)) {
                     fillCommandeStatement(pstCommande, draft, session.getCartTotal(), session.getTotalItems(), commandeStatut);
                     pstCommande.setInt(13, commandeId);
@@ -80,6 +84,10 @@ public class CheckoutService {
                 draft.setId(commandeId);
             }
 
+            if (CommandeStockService.impactsStock(previousStatut)) {
+                CommandeStockService.restoreForCommande(cnx, commandeId);
+            }
+
             try (PreparedStatement pstDeleteLignes = cnx.prepareStatement(deleteExistingLignes)) {
                 pstDeleteLignes.setInt(1, commandeId);
                 pstDeleteLignes.executeUpdate();
@@ -94,6 +102,10 @@ public class CheckoutService {
                     pstLigne.addBatch();
                 }
                 pstLigne.executeBatch();
+            }
+
+            if (CommandeStockService.impactsStock(commandeStatut)) {
+                CommandeStockService.decrementForCart(cnx, session.getCartItems());
             }
 
             if (registerPayment) {
@@ -141,8 +153,31 @@ public class CheckoutService {
         pstCommande.setString(8, draft.getGouvernoratLivraison());
         pstCommande.setString(9, draft.getCodePostalLivraison());
         pstCommande.setString(10, CommandeDatabaseMapper.buildAdresseDetail(draft));
-        pstCommande.setObject(11, CommandeDatabaseMapper.normalizeUserId(draft.getClientId()));
+        pstCommande.setObject(11, CommandeDatabaseMapper.normalizeUserId(resolveClientId(draft)));
         pstCommande.setString(12, CommandeDatabaseMapper.buildIdentityKey(draft, total));
+    }
+
+    private int resolveClientId(Commande draft) {
+        if (draft.getClientId() > 0) {
+            return draft.getClientId();
+        }
+
+        User currentUser = DashboardSession.getCurrentUser();
+        int currentUserId = currentUser == null ? 0 : currentUser.getId();
+        if (currentUserId > 0) {
+            draft.setClientId(currentUserId);
+        }
+        return currentUserId;
+    }
+
+    private String readCommandeStatus(int commandeId) throws SQLException {
+        String query = "SELECT statut FROM commande WHERE id = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setInt(1, commandeId);
+            try (ResultSet rs = pst.executeQuery()) {
+                return rs.next() ? rs.getString("statut") : null;
+            }
+        }
     }
 
     private void normalizeLegacyDeliveryFields(Commande draft) {

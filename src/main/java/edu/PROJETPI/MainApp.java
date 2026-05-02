@@ -35,7 +35,8 @@ public class MainApp extends Application {
         stage.setTitle("E-SPORTIFY : Connexion");
         stage.setScene(scene);
         stage.setResizable(true);
-        stage.setFullScreen(true);
+        stage.setFullScreen(false);
+        stage.setMaximized(true);
         stage.show();
     }
 

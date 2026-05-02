@@ -85,6 +85,24 @@ public class MyConexion {
 
     private static void createSchemaTables(Statement st) throws SQLException {
         st.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS produit (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                        "nom VARCHAR(255) NOT NULL, " +
+                        "prix INT NOT NULL DEFAULT 0, " +
+                        "stock INT NOT NULL DEFAULT 0, " +
+                        "description TEXT NULL, " +
+                        "image VARCHAR(500) NULL, " +
+                        "active TINYINT(1) NOT NULL DEFAULT 1, " +
+                        "statut VARCHAR(50) NULL, " +
+                        "owner_user_id INT NULL, " +
+                        "owner_equipe_id INT NULL, " +
+                        "categorie_id INT NULL, " +
+                        "video_url VARCHAR(500) NULL, " +
+                        "technical_specs TEXT NULL, " +
+                        "install_difficulty VARCHAR(80) NULL)"
+        );
+
+        st.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS commande (" +
                         "id INT AUTO_INCREMENT PRIMARY KEY, " +
                         "nom VARCHAR(255) NULL, " +

@@ -43,10 +43,30 @@ public class ServiceCommande implements IServiceCommande {
     @Override
     public void update(Commande commande) throws SQLException {
         String query = "UPDATE commande SET nom = ?, prenom = ?, adresse = ?, quantite = ?, numtel = ?, statut = ?, pays = ?, gouvernerat = ?, code_postal = ?, adresse_detail = ?, user_id = ?, identity_key = ? WHERE id = ?";
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            fillCommandeStatement(pst, commande, 0);
-            pst.setInt(13, commande.getId());
-            pst.executeUpdate();
+        try {
+            cnx.setAutoCommit(false);
+            String previousStatut = readCommandeStatus(commande.getId());
+
+            try (PreparedStatement pst = cnx.prepareStatement(query)) {
+                fillCommandeStatement(pst, commande, 0);
+                pst.setInt(13, commande.getId());
+                pst.executeUpdate();
+            }
+
+            boolean impactedBefore = CommandeStockService.impactsStock(previousStatut);
+            boolean impactsNow = CommandeStockService.impactsStock(commande.getStatut());
+            if (!impactedBefore && impactsNow) {
+                CommandeStockService.decrementForCommande(cnx, commande.getId());
+            } else if (impactedBefore && !impactsNow) {
+                CommandeStockService.restoreForCommande(cnx, commande.getId());
+            }
+
+            cnx.commit();
+        } catch (SQLException e) {
+            cnx.rollback();
+            throw e;
+        } finally {
+            cnx.setAutoCommit(true);
         }
     }
 
@@ -58,6 +78,10 @@ public class ServiceCommande implements IServiceCommande {
 
         try {
             cnx.setAutoCommit(false);
+            String previousStatut = readCommandeStatus(id);
+            if (CommandeStockService.impactsStock(previousStatut)) {
+                CommandeStockService.restoreForCommande(cnx, id);
+            }
 
             try (PreparedStatement pstLignes = cnx.prepareStatement(deleteLignes);
                  PreparedStatement pstPayments = cnx.prepareStatement(deletePayments);
@@ -134,5 +158,15 @@ public class ServiceCommande implements IServiceCommande {
         pst.setString(10, CommandeDatabaseMapper.buildAdresseDetail(commande));
         pst.setObject(11, CommandeDatabaseMapper.normalizeUserId(commande.getClientId()));
         pst.setString(12, CommandeDatabaseMapper.buildIdentityKey(commande, commande.getTotal()));
+    }
+
+    private String readCommandeStatus(int commandeId) throws SQLException {
+        String query = "SELECT statut FROM commande WHERE id = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setInt(1, commandeId);
+            try (ResultSet rs = pst.executeQuery()) {
+                return rs.next() ? rs.getString("statut") : null;
+            }
+        }
     }
 }

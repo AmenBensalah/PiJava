@@ -214,7 +214,7 @@ public class BackAjoutProduitController implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("/ajoutProduit.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
-        if(!stage.isFullScreen()) stage.setFullScreen(true);
+        stage.setFullScreen(false); stage.setMaximized(true);
     }
 
     @FXML
@@ -222,7 +222,7 @@ public class BackAjoutProduitController implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("/backCategorie.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
-        if(!stage.isFullScreen()) stage.setFullScreen(true);
+        stage.setFullScreen(false); stage.setMaximized(true);
     }
 
     @FXML
@@ -231,7 +231,7 @@ public class BackAjoutProduitController implements Initializable {
             Parent root = FXMLLoader.load(getClass().getResource("/backListProduit.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
-            if(!stage.isFullScreen()) stage.setFullScreen(true);
+            stage.setFullScreen(false); stage.setMaximized(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -278,7 +278,7 @@ public class BackListProduitController implements Initializable {
                 formController.initData(p);
                 Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
-                if(!stage.isFullScreen()) stage.setFullScreen(true);
+                stage.setFullScreen(false); stage.setMaximized(true);
             } catch (IOException ex) { ex.printStackTrace(); }
         });
 

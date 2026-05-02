@@ -32,8 +32,9 @@ public class FixFullScreen {
                             String stageVar = matcher.group(2);
                             
                             String nextLine = (i + 1 < lines.size()) ? lines.get(i + 1) : "";
-                            if (!nextLine.contains("setFullScreen")) {
-                                newLines.add(indent + stageVar + ".setFullScreen(true);");
+                            if (!nextLine.contains("setMaximized")) {
+                                newLines.add(indent + stageVar + ".setFullScreen(false);");
+                                newLines.add(indent + stageVar + ".setMaximized(true);");
                                 modified = true;
                             }
                         }

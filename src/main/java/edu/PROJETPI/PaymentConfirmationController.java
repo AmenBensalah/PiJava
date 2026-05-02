@@ -67,7 +67,7 @@ public class PaymentConfirmationController implements Initializable {
 
     @FXML
     private void goToCatalogue() {
-        SceneNavigator.switchScene(confirmationMessageLabel, "/main-view.fxml", "Catalogue produits");
+        SceneNavigator.switchScene(confirmationMessageLabel, "/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
     }
 
     private void loadConfirmationSummary() {

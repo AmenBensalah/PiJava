@@ -26,7 +26,7 @@ public class EditCommandeStatusController {
 
     @FXML
     private void initialize() {
-        statutComboBox.setItems(FXCollections.observableArrayList("EN_ATTENTE", "VALIDEE", "PAYEE", "ANNULEE"));
+        statutComboBox.setItems(FXCollections.observableArrayList("EN_ATTENTE", "EN_ATTENTE_PAIEMENT", "EN_LIVRAISON", "PAYEE", "ANNULEE"));
     }
 
     public void setCommande(Commande commande) {
@@ -84,7 +84,7 @@ public class EditCommandeStatusController {
                 ? commande.getDateCommande()
                 : new java.util.Date();
         double montant = commande.getTotal();
-        servicePayment.addIfMissingForCommande(commande.getId(), montant, paymentDate, "paid");
+        servicePayment.addIfMissingForCommande(commande.getId(), montant, paymentDate, "PAYEE");
     }
 
     private boolean isPaidStatus(String statut) {

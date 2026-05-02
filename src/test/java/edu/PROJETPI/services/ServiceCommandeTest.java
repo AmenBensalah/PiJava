@@ -34,6 +34,9 @@ class ServiceCommandeTest extends ServiceTestSupport {
     void updateShouldModifyExistingCommande() throws SQLException {
         Commande commande = sampleCommande();
         int id = serviceCommande.addAndReturnId(commande);
+        connection.createStatement().executeUpdate(
+                "INSERT INTO lignecommande (commandeId, produitId, quantite, prixUnitaire) VALUES (" + id + ", 1, 2, 10.0)"
+        );
 
         commande.setId(id);
         commande.setStatut("PAYEE");
@@ -48,7 +51,8 @@ class ServiceCommandeTest extends ServiceTestSupport {
 
         assertEquals("PAYEE", updated.getStatut());
         assertEquals("Nom modifie", updated.getNom());
-        assertEquals(299.50, updated.getTotal());
+        assertEquals(20.0, updated.getTotal());
+        assertProductStock(1, 8);
     }
 
     @Test
@@ -73,6 +77,33 @@ class ServiceCommandeTest extends ServiceTestSupport {
         try (var rsPayment = connection.createStatement().executeQuery("SELECT COUNT(*) FROM payment")) {
             rsPayment.next();
             assertEquals(0, rsPayment.getInt(1));
+        }
+    }
+
+    @Test
+    void deleteShouldRestoreStockWhenCommandeWasPaid() throws SQLException {
+        Commande commande = sampleCommande();
+        int commandeId = serviceCommande.addAndReturnId(commande);
+        connection.createStatement().executeUpdate(
+                "INSERT INTO lignecommande (commandeId, produitId, quantite, prixUnitaire) VALUES (" + commandeId + ", 1, 3, 10.0)"
+        );
+
+        commande.setId(commandeId);
+        commande.setStatut("PAYEE");
+        serviceCommande.update(commande);
+        assertProductStock(1, 7);
+
+        serviceCommande.delete(commandeId);
+
+        assertProductStock(1, 10);
+    }
+
+    private void assertProductStock(int produitId, int expectedStock) throws SQLException {
+        try (var rs = connection.createStatement().executeQuery(
+                "SELECT stock FROM produit WHERE id = " + produitId
+        )) {
+            rs.next();
+            assertEquals(expectedStock, rs.getInt("stock"));
         }
     }
 }

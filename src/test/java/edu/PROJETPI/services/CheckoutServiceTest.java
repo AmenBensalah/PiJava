@@ -32,6 +32,7 @@ class CheckoutServiceTest extends ServiceTestSupport {
         assertDeliveryColumns(commandeId, null, null, null, null, null);
         assertTableCount("lignecommande", 1);
         assertTableCount("payment", 1);
+        assertProductStock(1, 9);
     }
 
     @Test
@@ -47,6 +48,7 @@ class CheckoutServiceTest extends ServiceTestSupport {
         assertTableCount("commande", 1);
         assertTableCount("lignecommande", 1);
         assertTableCount("payment", 0);
+        assertProductStock(1, 10);
         assertTrue(new ServiceCommande().readAll().stream().anyMatch(commande ->
                 commande.getId() == commandeId
                         && "EN_ATTENTE".equals(commande.getStatut())
@@ -72,6 +74,7 @@ class CheckoutServiceTest extends ServiceTestSupport {
         assertTableCount("commande", 1);
         assertTableCount("lignecommande", 1);
         assertTableCount("payment", 1);
+        assertProductStock(1, 9);
     }
 
     @Test
@@ -100,6 +103,7 @@ class CheckoutServiceTest extends ServiceTestSupport {
         );
         assertTableCount("lignecommande", 1);
         assertTableCount("payment", 0);
+        assertProductStock(1, 9);
     }
 
     @Test
@@ -181,6 +185,15 @@ class CheckoutServiceTest extends ServiceTestSupport {
         try (var rs = connection.createStatement().executeQuery("SELECT COUNT(*) FROM " + tableName)) {
             rs.next();
             assertEquals(expectedCount, rs.getInt(1));
+        }
+    }
+
+    private void assertProductStock(int produitId, int expectedStock) throws SQLException {
+        try (var rs = connection.createStatement().executeQuery(
+                "SELECT stock FROM produit WHERE id = " + produitId
+        )) {
+            rs.next();
+            assertEquals(expectedStock, rs.getInt("stock"));
         }
     }
 

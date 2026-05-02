@@ -6,6 +6,7 @@ import edu.ProjetPI.services.FaceIdAuthService;
 import edu.ProjetPI.services.GoogleOAuthService;
 import edu.ProjetPI.services.UserService;
 import edu.ProjetPI.tools.UserValidationRules;
+import edu.PROJETPI.services.OrderSession;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -69,9 +70,7 @@ public class LoginController {
 
             userService.checkAndClearBanStatus(user.get());
 
-            DashboardSession.setCurrentUser(user.get());
-            userService.updateLastLogin(user.get().getId());
-            redirectAfterLogin(user.get());
+            completeLogin(user.get());
         } catch (Exception e) {
             FormFeedback.showError(messageLabel, e.getMessage());
         }
@@ -102,9 +101,7 @@ public class LoginController {
                 FormFeedback.showError(messageLabel, unwrapMessage(error));
                 return;
             }
-            DashboardSession.setCurrentUser(user);
-            userService.updateLastLogin(user.getId());
-            redirectAfterLogin(user);
+            completeLogin(user);
         }));
     }
 
@@ -123,9 +120,7 @@ public class LoginController {
                 FormFeedback.showError(messageLabel, unwrapMessage(error));
                 return;
             }
-            DashboardSession.setCurrentUser(user);
-            userService.updateLastLogin(user.getId());
-            redirectAfterLogin(user);
+            completeLogin(user);
         }));
     }
 
@@ -147,9 +142,7 @@ public class LoginController {
                 }
                 User user = match.get().user();
                 userService.checkAndClearBanStatus(user);
-                DashboardSession.setCurrentUser(user);
-                userService.updateLastLogin(user.getId());
-                redirectAfterLogin(user);
+                completeLogin(user);
             } else {
                 FormFeedback.showError(messageLabel, "Face capture canceled.");
             }
@@ -165,6 +158,13 @@ public class LoginController {
         }
         String msg = cursor.getMessage();
         return msg == null || msg.isBlank() ? "Social login failed." : msg;
+    }
+
+    private void completeLogin(User user) {
+        DashboardSession.setCurrentUser(user);
+        OrderSession.getInstance().reloadCartForCurrentUser();
+        userService.updateLastLogin(user.getId());
+        redirectAfterLogin(user);
     }
 
     private static void redirectAfterLogin(User user) {
