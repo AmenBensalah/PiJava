@@ -14,49 +14,73 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
 
-<BorderPane prefHeight="760.0" prefWidth="1280.0" styleClass="app-root"
-            stylesheets="@styles/esportify-theme.css"
+<BorderPane prefHeight="760.0" prefWidth="1280.0" styleClass="app-root command-admin-root"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.PROJETPI.AdminDashboardController">
+    <stylesheets>
+        <URL value="@ajoutProduit.css" />
+        <URL value="@styles/esportify-theme.css" />
+    </stylesheets>
     <left>
-        <VBox prefWidth="250.0" styleClass="sidebar">
-            <padding>
-                <Insets bottom="24.0" left="20.0" right="20.0" top="26.0"/>
-            </padding>
+        <VBox prefWidth="220.0" styleClass="global-sidebar" BorderPane.alignment="CENTER">
             <children>
-                <Label styleClass="brand-label" text="E-SPORTIFY"/>
-                <Label styleClass="brand-subtitle" text="Admin Dashboard"/>
-                <VBox spacing="12.0" styleClass="side-menu">
+                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                    <padding><Insets bottom="22.0" left="20.0" right="10.0" top="26.0"/></padding>
                     <children>
-                        <Label styleClass="menu-heading" text="Administration"/>
-                        <Button fx:id="commandesButton" mnemonicParsing="false" onAction="#showCommandes" prefWidth="200.0" styleClass="side-menu-item side-menu-item-active" text="Commandes"/>
-                        <Button fx:id="paiementsButton" mnemonicParsing="false" onAction="#showPaiements" prefWidth="200.0" styleClass="side-menu-item" text="Paiements"/>
-                        <Button fx:id="paymentListButton" managed="false" mnemonicParsing="false" onAction="#showPaymentList" prefWidth="178.0" styleClass="side-menu-sub-item" text="Liste paiements" visible="false"/>
-                        <Button fx:id="paymentForecastButton" managed="false" mnemonicParsing="false" onAction="#showPaymentForecast" prefWidth="178.0" styleClass="side-menu-sub-item" text="Prediction CA" visible="false"/>
-                        <Button mnemonicParsing="false" onAction="#goToCatalogue" prefWidth="200.0" styleClass="side-menu-item" text="Retour catalogue"/>
+                        <Label styleClass="logo-text" text="E-" />
+                        <Label styleClass="logo-text, logo-white" text="SPORTIFY" />
+                        <Label style="-fx-text-fill: #ffa500; -fx-background-color: #332100; -fx-padding: 3 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 10px;" text="ADMIN" />
                     </children>
+                </HBox>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="≡ Menu">
+                    <VBox.margin><Insets bottom="10.0" top="10.0" /></VBox.margin>
+                </Button>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToFrontOffice" styleClass="menu-btn" text="🌍 Client (Front)" textFill="#00e5ff" style="-fx-font-weight: bold;" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="📡 Gestion fil d'actualité" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="👥 Gestion Équipes" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="🏆 Gestion Tournoi" />
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="🛍️ Gestion Boutique" />
+                <VBox>
+                    <Button maxWidth="1.7976931348623157E308" text="🤍 Centre de Mailing" styleClass="sidebar-submenu-btn" onAction="#goToMailing" />
+                    <Button maxWidth="1.7976931348623157E308" text="🏷️ Produits" styleClass="sidebar-submenu-btn" onAction="#goToCatalogue" />
+                    <Button maxWidth="1.7976931348623157E308" text="🏷️ Catégories" styleClass="sidebar-submenu-btn" onAction="#goToAdminCategorie" />
+                    <Button fx:id="paiementsButton" maxWidth="1.7976931348623157E308" text="💳 Paiements" styleClass="sidebar-submenu-btn" onAction="#showPaymentList" />
+                    <Button fx:id="paymentForecastButton" maxWidth="1.7976931348623157E308" text="Prédiction CA" styleClass="sidebar-submenu-btn" onAction="#showPaymentForecast" />
+                    <Button fx:id="commandesButton" maxWidth="1.7976931348623157E308" text="📦 Commandes" styleClass="sidebar-submenu-btn" onAction="#showCommandes" />
                 </VBox>
-                <Region VBox.vgrow="ALWAYS"/>
-                <Label styleClass="sidebar-footer" text="Gestion des commandes et paiements"/>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="👤 Gestion comptes" />
+
+                <Region VBox.vgrow="ALWAYS" />
+                <VBox alignment="CENTER" spacing="10">
+                    <padding><Insets bottom="20.0" left="20" right="20"/></padding>
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="theme-toggle-btn" text="🌙" />
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="🚪 Déconnexion" />
+                </VBox>
             </children>
         </VBox>
     </left>
     <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="page-scroll">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="page-scroll command-background-layer">
             <content>
-                <VBox spacing="18.0" styleClass="content-shell">
+                <VBox spacing="18.0" styleClass="content-shell command-admin-shell">
                     <padding>
                         <Insets bottom="24.0" left="24.0" right="24.0" top="24.0"/>
                     </padding>
                     <children>
-                <HBox alignment="CENTER_LEFT" styleClass="top-bar">
+                <HBox alignment="CENTER_LEFT" styleClass="command-admin-hero">
                     <children>
                         <HBox alignment="CENTER_LEFT" spacing="14.0">
                             <children>
                                 <Label fx:id="pageAiIconLabel" managed="false" styleClass="page-ai-icon" text="IA" visible="false"/>
                                 <VBox spacing="3.0">
                                     <children>
+                                        <Label styleClass="command-admin-kicker" text="ADMIN"/>
                                         <Label fx:id="pageTitleLabel" styleClass="page-title" text="Liste des commandes"/>
                                         <Label fx:id="pageSubtitleLabel" managed="false" styleClass="page-subtitle" text="Analyse automatique des paiements" visible="false"/>
                                     </children>
@@ -64,13 +88,13 @@
                             </children>
                         </HBox>
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Button mnemonicParsing="false" onAction="#refreshData" prefWidth="160.0" styleClass="ghost-button" text="Actualiser"/>
+                        <Button mnemonicParsing="false" onAction="#refreshData" prefWidth="160.0" styleClass="command-refresh-button" text="⟳ Rafraîchir"/>
                     </children>
                 </HBox>
 
                 <HBox spacing="20.0">
                     <children>
-                        <VBox HBox.hgrow="ALWAYS" spacing="16.0" styleClass="panel-card">
+                        <VBox HBox.hgrow="ALWAYS" spacing="16.0" styleClass="command-admin-content-card">
                             <children>
                                 <VBox fx:id="commandeFilterCard" spacing="16.0" styleClass="admin-filter-card">
                                     <children>
@@ -292,7 +316,7 @@
                                         <Label fx:id="commandeCountLabel" styleClass="metric-value" text="0"/>
                                     </children>
                                 </HBox>
-                                <TableView fx:id="commandeTableView" fixedCellSize="44.0" prefHeight="560.0" styleClass="data-table" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="commandeTableView" fixedCellSize="44.0" prefHeight="560.0" styleClass="data-table command-admin-table" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="colId" prefWidth="80.0" text="ID"/>
                                         <TableColumn fx:id="colDate" prefWidth="170.0" text="Date"/>
@@ -303,7 +327,7 @@
                                         <TableColumn fx:id="colSupprimer" prefWidth="150.0" text="Supprimer"/>
                                     </columns>
                                 </TableView>
-                                <TableView fx:id="paymentTableView" fixedCellSize="44.0" prefHeight="560.0" styleClass="data-table" managed="false" visible="false" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="paymentTableView" fixedCellSize="44.0" prefHeight="560.0" styleClass="data-table command-admin-table" managed="false" visible="false" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="paymentColId" prefWidth="90.0" text="ID"/>
                                         <TableColumn fx:id="paymentColCommandeId" prefWidth="170.0" text="Commande"/>

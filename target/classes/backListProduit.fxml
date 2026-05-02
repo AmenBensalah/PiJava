@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="root-pane" stylesheets="@ajoutProduit.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.projetJava.controllers.BackListProduitController" prefWidth="1280.0" prefHeight="720.0">
+    
+    <!-- TOP NAVBAR -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="65.0" styleClass="top-navbar" BorderPane.alignment="CENTER">
+            <padding><Insets left="20.0" right="30.0" /></padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                    <Label styleClass="logo-text" text="E-" />
+                    <Label styleClass="logo-text, logo-white" text="SPORTIFY" />
+                    <Label style="-fx-text-fill: #ffa500; -fx-background-color: #332100; -fx-padding: 3 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 10px;" text="ADMIN" translateX="10" />
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField prefWidth="350.0" promptText="🔍 Rechercher joueurs, équipes, tournois..." styleClass="global-search" />
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="15.0" alignment="CENTER">
+                    <Button text="Dashboard" styleClass="btn-primary" />
+                    <Button text="Voir mon profil" styleClass="btn-secondary" />
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox prefWidth="220.0" styleClass="global-sidebar" BorderPane.alignment="CENTER">
+            <children>
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="≡ Menu">
+                    <VBox.margin><Insets bottom="10.0" top="10.0" /></VBox.margin>
+                </Button>
+                <!-- NAVIGATION BUTTONS -->
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToFrontOffice" styleClass="menu-btn" text="🌍 Client (Front)" textFill="#00e5ff" style="-fx-font-weight: bold;" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="📡 Gestion fil d'actualité" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="👥 Gestion Équipes" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="🏆 Gestion Tournoi" />
+                
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="🛍️ Gestion Boutique" />
+                <VBox>
+                    <Button maxWidth="1.7976931348623157E308" text="🤍 Centre de Mailing" styleClass="sidebar-submenu-btn" onAction="#goToMailing" />
+                    <Button maxWidth="1.7976931348623157E308" text="🏷️ Produits" styleClass="sidebar-submenu-btn, sidebar-submenu-active" />
+                    <Button maxWidth="1.7976931348623157E308" text="🏷️ Catégories" styleClass="sidebar-submenu-btn" onAction="#goToAdminCategorie" />
+                    <Button maxWidth="1.7976931348623157E308" text="💳 Paiements" styleClass="sidebar-submenu-btn" onAction="#goToPayments" />
+                    <Button maxWidth="1.7976931348623157E308" text="Prédiction CA" styleClass="sidebar-submenu-btn" onAction="#goToRevenuePrediction" />
+                    <Button maxWidth="1.7976931348623157E308" text="📦 Commandes" styleClass="sidebar-submenu-btn" onAction="#goToCommandes" />
+                </VBox>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="👤 Gestion comptes" />
+
+                <Region VBox.vgrow="ALWAYS" />
+                <VBox alignment="CENTER" spacing="10">
+                    <padding><Insets bottom="20.0" left="20" right="20"/></padding>
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="theme-toggle-btn" text="🌙" />
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="🚪 Déconnexion" />
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane" mouseTransparent="false">
+            <content>
+                <VBox spacing="25.0" styleClass="main-area-bg" minHeight="1000">
+                    <padding><Insets bottom="40.0" left="50.0" right="50.0" top="30.0" /></padding>
+                    <children>
+                        <!-- Banner -->
+                        <HBox prefHeight="140.0" styleClass="boutique-banner" alignment="CENTER_LEFT">
+                            <padding><Insets left="40.0" right="40.0" /></padding>
+                            <children>
+                                <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-text-fill: #00e5ff; -fx-font-size: 11px; -fx-font-weight: bold;" text="ADMIN" />
+                                    <Label styleClass="banner-title" text="GESTION DES PRODUITS" />
+                                    <Label styleClass="banner-subtitle" text="Gérez le catalogue, les stocks et les prix de la boutique." />
+                                </VBox>
+                                <HBox spacing="15.0" alignment="CENTER_RIGHT">
+                                    <Button onAction="#goToFrontOffice" text="🌍 Voir Boutique" styleClass="theme-toggle-btn" prefWidth="150" prefHeight="45" />
+                                    <Button onAction="#goToCreateForm" text="+ Créer un produit" styleClass="btn-3d-cyan" prefWidth="180" prefHeight="45" />
+                                    <Button onAction="#chargerProduits" text="🔁" styleClass="btn-secondary" prefWidth="50" prefHeight="45" />
+                                </HBox>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="20">
+                            <!-- STAT: TOTAL PRODUITS -->
+                            <VBox style="-fx-background-color: #151521; -fx-border-color: #00e5ff; -fx-border-width: 0 0 0 4; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(0, 229, 255, 0.4), 15, 0, 0, 0);" minWidth="200" prefHeight="100" alignment="CENTER" spacing="5">
+                                <Label text="TOTAL PRODUITS" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: bold;" />
+                                <Label fx:id="statTotal" text="0" style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 900; -fx-effect: dropshadow(one-pass-box, #00e5ff, 5, 0, 0, 0);" />
+                            </VBox>
+                            
+                            <!-- STAT: VALEUR CATALOGUE -->
+                            <VBox style="-fx-background-color: #151521; -fx-border-color: #8a2be2; -fx-border-width: 0 0 0 4; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(138,43,226,0.4), 15, 0, 0, 0);" minWidth="200" prefHeight="100" alignment="CENTER" spacing="5">
+                                <Label text="VALEUR CATALOGUE" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: bold;" />
+                                <Label fx:id="statValeur" text="0 €" style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 900; -fx-effect: dropshadow(one-pass-box, #8a2be2, 5, 0, 0, 0);" />
+                            </VBox>
+                            
+                            <!-- STAT: EN RUPTURE -->
+                            <VBox style="-fx-background-color: #151521; -fx-border-color: #ff0055; -fx-border-width: 0 0 0 4; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(255,0,85,0.4), 15, 0, 0, 0);" minWidth="200" prefHeight="100" alignment="CENTER" spacing="5">
+                                <Label text="EN RUPTURE" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: bold;" />
+                                <Label fx:id="statRupture" text="0" style="-fx-text-fill: #ff0055; -fx-font-size: 28px; -fx-font-weight: 900; -fx-effect: dropshadow(one-pass-box, #ff0055, 5, 0, 0, 0);" />
+                            </VBox>
+
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <!-- GRAPH : STOCKS -->
+                            <VBox style="-fx-background-color: #11111a; -fx-border-color: linear-gradient(to bottom right, #ff0055, #bd00ff, #00e5ff); -fx-border-width: 3px; -fx-border-radius: 15px; -fx-background-radius: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0, 229, 255, 0.6), 40, 0, 0, 0);" prefWidth="450" prefHeight="150" alignment="CENTER" spacing="5">
+                                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                                <Label text="📊 RÉPARTITION DES PRODUITS PAR CATÉGORIE (%)" style="-fx-text-fill: white; -fx-font-weight: 900; -fx-font-size: 13px; -fx-effect: dropshadow(one-pass-box, #00e5ff, 5, 0, 0, 0);" />
+                                <!-- PIECHART ANIMÉ 3D CYBERPUNK -->
+                                <javafx.scene.chart.PieChart fx:id="statChartProduit" prefHeight="130" styleClass="cyber-pie-chart" style="-fx-legend-visible: false; -fx-pie-label-visible: true; -fx-font-weight: bold; -fx-cursor: hand;" />
+                            </VBox>
+                        </HBox>
+
+                        <HBox fx:id="categoryPillsContainer" spacing="12" alignment="CENTER_LEFT" />
+
+                        <VBox styleClass="advanced-search-box" spacing="15">
+                            <padding><Insets top="20" right="25" bottom="20" left="25"/></padding>
+                            <Label text="🔍 Recherche avancée" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+                            <HBox spacing="20" alignment="CENTER_LEFT">
+                                <VBox spacing="5" HBox.hgrow="ALWAYS"><Label text="NOM" styleClass="filter-label" /><TextField fx:id="searchNom" onKeyReleased="#appliquerFiltres" styleClass="filter-input" /></VBox>
+                                <VBox spacing="5" HBox.hgrow="ALWAYS"><Label text="PRIX MIN" styleClass="filter-label" /><TextField fx:id="searchPrixMin" onKeyReleased="#appliquerFiltres" styleClass="filter-input" /></VBox>
+                                <VBox spacing="5" HBox.hgrow="ALWAYS"><Label text="PRIX MAX" styleClass="filter-label" /><TextField fx:id="searchPrixMax" onKeyReleased="#appliquerFiltres" styleClass="filter-input" /></VBox>
+                                <VBox spacing="5" HBox.hgrow="ALWAYS"><Label text="STATUT" styleClass="filter-label" /><ComboBox fx:id="searchStatut" onAction="#appliquerFiltres" prefWidth="200" styleClass="filter-input" /></VBox>
+                                <Button onAction="#appliquerFiltres" text="Rechercher" styleClass="btn-rechercher" prefHeight="45" prefWidth="130" translateY="10" />
+                            </HBox>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="Trier :" styleClass="side-label" />
+                                <Label onMouseClicked="#triPrixAsc" text="Prix ↑" styleClass="cat-pill" style="-fx-cursor: hand;" />
+                                <Label onMouseClicked="#triPrixDesc" text="Prix ↓" styleClass="cat-pill" style="-fx-cursor: hand;" />
+                                <Label onMouseClicked="#triStock" text="Stock" styleClass="cat-pill" style="-fx-cursor: hand;" />
+                            </HBox>
+                        </VBox>
+
+                        <VBox styleClass="filter-panel">
+                            <HBox styleClass="table-header-row" spacing="10">
+                                <Label text="ID" prefWidth="50" styleClass="table-header-text" />
+                                <Label text="PRODUIT" prefWidth="250" styleClass="table-header-text" />
+                                <Label text="CATÉGORIE" prefWidth="150" styleClass="table-header-text" />
+                                <Label text="PRIX" prefWidth="100" styleClass="table-header-text" />
+                                <Label text="STOCK" prefWidth="100" styleClass="table-header-text" />
+                                <Label text="STATUT" prefWidth="100" styleClass="table-header-text" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label text="ACTIONS" prefWidth="150" alignment="CENTER_RIGHT" styleClass="table-header-text" />
+                            </HBox>
+                            <VBox fx:id="tableContainer" />
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

@@ -36,6 +36,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -62,9 +63,20 @@ import java.util.stream.Collectors;
 
 public class AdminDashboardController implements Initializable {
 
-    private static final String MENU_ACTIVE_CLASS = "side-menu-item-active";
+    private static final String MENU_ACTIVE_CLASS = "sidebar-submenu-active";
     private static final SimpleDateFormat PAYMENT_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
     private static final String FILTER_ALL = "Tous";
+    private static InitialSection initialSection = InitialSection.COMMANDES;
+
+    public enum InitialSection {
+        COMMANDES,
+        PAIEMENTS,
+        PREDICTION_CA
+    }
+
+    public static void openOn(InitialSection section) {
+        initialSection = section == null ? InitialSection.COMMANDES : section;
+    }
 
     @FXML
     private TableView<Commande> commandeTableView;
@@ -208,6 +220,8 @@ public class AdminDashboardController implements Initializable {
         commandeTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         paymentTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         configurePaymentTableLayout();
+        configureDarkTableRows();
+        forceDarkTableTheme();
         initializeCommandFilters();
         configureCommandeStatusColumn();
         configureModifierColumn();
@@ -215,12 +229,34 @@ public class AdminDashboardController implements Initializable {
         configurePaymentStatusColumn();
         configurePaymentActionsColumn();
         startPaymentAutoRefresh();
-        showCommandes();
+        if (initialSection == InitialSection.PREDICTION_CA) {
+            showPaymentForecast();
+        } else if (initialSection == InitialSection.PAIEMENTS) {
+            showPaymentList();
+        } else {
+            showCommandes();
+        }
+        initialSection = InitialSection.COMMANDES;
     }
 
     @FXML
     private void goToCatalogue() {
-        SceneNavigator.switchScene(commandeTableView, "/main-view.fxml", "Catalogue produits");
+        SceneNavigator.switchScene(commandeTableView, "/backListProduit.fxml", "Gestion des produits");
+    }
+
+    @FXML
+    private void goToFrontOffice() {
+        SceneNavigator.switchScene(commandeTableView, "/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
+    }
+
+    @FXML
+    private void goToMailing() {
+        SceneNavigator.switchScene(commandeTableView, "/backMailing.fxml", "Boutique Admin - Mailing");
+    }
+
+    @FXML
+    private void goToAdminCategorie() {
+        SceneNavigator.switchScene(commandeTableView, "/backListCategorie.fxml", "Boutique Admin - Categories");
     }
 
     @FXML
@@ -250,8 +286,11 @@ public class AdminDashboardController implements Initializable {
     private void showCommandes() {
         paymentMode = false;
         paymentForecastMode = false;
-        pageTitleLabel.setText("Liste des commandes");
+        pageTitleLabel.setText("GESTION DES COMMANDES");
         setPredictionTitleMode(false);
+        pageSubtitleLabel.setManaged(true);
+        pageSubtitleLabel.setVisible(true);
+        pageSubtitleLabel.setText("Suivez les commandes, leurs statuts et les actions associees.");
         sectionTitleLabel.setText("Liste des commandes");
         setPaymentSubmenuVisible(false);
         setActiveMenuButton(commandesButton, paiementsButton, paymentListButton, paymentForecastButton);
@@ -373,19 +412,25 @@ public class AdminDashboardController implements Initializable {
     }
 
     private void setActiveMenuButton(Button activeButton, Button... inactiveButtons) {
-        if (!activeButton.getStyleClass().contains(MENU_ACTIVE_CLASS)) {
+        if (activeButton != null && !activeButton.getStyleClass().contains(MENU_ACTIVE_CLASS)) {
             activeButton.getStyleClass().add(MENU_ACTIVE_CLASS);
         }
         for (Button inactiveButton : inactiveButtons) {
-            inactiveButton.getStyleClass().remove(MENU_ACTIVE_CLASS);
+            if (inactiveButton != null) {
+                inactiveButton.getStyleClass().remove(MENU_ACTIVE_CLASS);
+            }
         }
     }
 
     private void setPaymentSubmenuVisible(boolean visible) {
-        paymentListButton.setManaged(visible);
-        paymentListButton.setVisible(visible);
-        paymentForecastButton.setManaged(visible);
-        paymentForecastButton.setVisible(visible);
+        if (paymentListButton != null) {
+            paymentListButton.setManaged(visible);
+            paymentListButton.setVisible(visible);
+        }
+        if (paymentForecastButton != null) {
+            paymentForecastButton.setManaged(true);
+            paymentForecastButton.setVisible(true);
+        }
     }
 
     private void setPredictionTitleMode(boolean enabled) {
@@ -632,6 +677,34 @@ public class AdminDashboardController implements Initializable {
         paymentColActions.setMaxWidth(132);
         paymentTableView.widthProperty().addListener((obs, oldWidth, newWidth) -> resizePaymentColumns(newWidth.doubleValue()));
         resizePaymentColumns(paymentTableView.getWidth());
+    }
+
+    private void configureDarkTableRows() {
+        commandeTableView.setRowFactory(tableView -> createDarkRow());
+        paymentTableView.setRowFactory(tableView -> createDarkRow());
+    }
+
+    private void forceDarkTableTheme() {
+        String tableStyle = "-fx-background-color: #070b18;"
+                + "-fx-control-inner-background: #070b18;"
+                + "-fx-table-cell-border-color: rgba(255,255,255,0.06);"
+                + "-fx-text-background-color: #eef5ff;";
+        commandeTableView.setStyle(tableStyle);
+        paymentTableView.setStyle(tableStyle);
+    }
+
+    private <T> TableRow<T> createDarkRow() {
+        return new TableRow<>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setStyle("-fx-background-color: #070b18;");
+                } else {
+                    setStyle("-fx-background-color: #0b1020; -fx-table-cell-border-color: rgba(255, 255, 255, 0.055);");
+                }
+            }
+        };
     }
 
     private void resizePaymentColumns(double tableWidth) {

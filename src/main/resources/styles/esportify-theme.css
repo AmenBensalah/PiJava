@@ -1715,3 +1715,220 @@
     -fx-border-color: rgba(255, 82, 119, 0.55);
     -fx-text-fill: #fff1f5;
 }
+
+.app-root.command-admin-root {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(3, 7, 18, 0.20), rgba(3, 7, 18, 0.58)),
+        #070b18;
+    -fx-background-image: url("../images/background.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
+
+.content-shell.command-admin-shell {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(3, 7, 18, 0.24), rgba(3, 7, 18, 0.62)),
+        transparent;
+    -fx-background-image: url("../images/background.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-padding: 26 34 34 34;
+}
+
+.command-background-layer,
+.command-background-layer > .viewport {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(3, 7, 18, 0.24), rgba(3, 7, 18, 0.62)),
+        transparent;
+    -fx-background-image: url("../images/background.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
+
+.command-admin-root .scroll-pane,
+.command-admin-root .content-shell {
+    -fx-background-color: transparent;
+}
+
+.command-admin-hero {
+    -fx-background-color:
+        linear-gradient(to right, rgba(18, 71, 94, 0.78), rgba(84, 45, 126, 0.74)),
+        rgba(7, 13, 31, 0.50);
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(118, 216, 255, 0.18);
+    -fx-border-radius: 20;
+    -fx-padding: 28 30 28 30;
+    -fx-min-height: 170;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.36), 24, 0.18, 0, 12);
+}
+
+.command-admin-kicker {
+    -fx-text-fill: #58d4ff;
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+    -fx-letter-spacing: 5px;
+}
+
+.command-admin-hero .page-title {
+    -fx-text-fill: white;
+    -fx-font-size: 36px;
+    -fx-font-weight: 900;
+}
+
+.command-admin-hero .page-subtitle {
+    -fx-text-fill: #b8c3d7;
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+}
+
+.command-refresh-button {
+    -fx-background-color: rgba(255, 255, 255, 0.09);
+    -fx-border-color: rgba(255, 255, 255, 0.16);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-text-fill: #f1f6ff;
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+    -fx-padding: 12 18 12 18;
+}
+
+.command-admin-content-card {
+    -fx-background-color: #050914;
+    -fx-background-radius: 18;
+    -fx-border-color: rgba(117, 154, 255, 0.18);
+    -fx-border-radius: 18;
+    -fx-padding: 22;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.42), 28, 0.20, 0, 12);
+}
+
+.command-admin-content-card .admin-filter-card {
+    -fx-background-color: #080d1d;
+    -fx-background-radius: 18;
+    -fx-border-color: rgba(111, 140, 210, 0.16);
+    -fx-border-radius: 18;
+    -fx-padding: 22;
+}
+
+.command-admin-content-card .section-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+}
+
+.table-view.command-admin-table {
+    -fx-background-color: #070b18;
+    -fx-control-inner-background: #070b18;
+    -fx-border-color: rgba(112, 146, 255, 0.16);
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-padding: 8;
+}
+
+.table-view.command-admin-table .virtual-flow,
+.table-view.command-admin-table .clipped-container,
+.table-view.command-admin-table .sheet,
+.table-view.command-admin-table .placeholder,
+.table-view.command-admin-table .corner,
+.table-view.command-admin-table .filler,
+.table-view.command-admin-table .table-row-cell:empty,
+.table-view.command-admin-table .table-row-cell:empty .table-cell {
+    -fx-background-color: #070b18;
+}
+
+.table-view.command-admin-table .column-header-background {
+    -fx-background-color: #111827;
+    -fx-background-radius: 12 12 0 0;
+}
+
+.table-view.command-admin-table .column-header,
+.table-view.command-admin-table .nested-column-header,
+.table-view.command-admin-table .column-drag-header,
+.table-view.command-admin-table .filler {
+    -fx-background-color: #111827;
+    -fx-border-color: transparent transparent rgba(255, 255, 255, 0.06) transparent;
+}
+
+.table-view.command-admin-table .column-header .label {
+    -fx-text-fill: #e6edff;
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+}
+
+.table-view.command-admin-table .table-row-cell,
+.table-view.command-admin-table .table-row-cell:filled {
+    -fx-background-color: #0b1020;
+    -fx-background-insets: 0;
+    -fx-table-cell-border-color: rgba(255, 255, 255, 0.055);
+    -fx-text-background-color: #eef5ff;
+}
+
+.table-view.command-admin-table .table-row-cell:odd,
+.table-view.command-admin-table .table-row-cell:filled:odd {
+    -fx-background-color: #0d1326;
+}
+
+.table-view.command-admin-table .table-row-cell:filled:hover {
+    -fx-background-color: rgba(76, 142, 255, 0.15);
+}
+
+.table-view.command-admin-table .table-cell {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-text-fill: #eef5ff;
+    -fx-padding: 12 14 12 14;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-view.command-admin-table .indexed-cell {
+    -fx-background-color: #0b1020;
+}
+
+.table-view.command-admin-table .indexed-cell:odd {
+    -fx-background-color: #0d1326;
+}
+
+.table-view.command-admin-table .scroll-bar:vertical,
+.table-view.command-admin-table .scroll-bar:horizontal {
+    -fx-background-color: rgba(6, 10, 24, 0.34);
+}
+
+.table-view.command-admin-table .scroll-bar .thumb {
+    -fx-background-color: rgba(143, 164, 232, 0.66);
+    -fx-background-radius: 999;
+}
+
+.commande-name-cell {
+    -fx-text-fill: #f5f8ff;
+    -fx-font-size: 14px;
+    -fx-font-weight: 900;
+}
+
+.commande-contact-cell {
+    -fx-text-fill: #f1f5ff;
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-line-spacing: 2px;
+}
+
+.ai-alert-badge {
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-font-size: 12px;
+    -fx-font-weight: 900;
+    -fx-padding: 6 16 6 16;
+}
+
+.ai-alert-ok {
+    -fx-background-color: rgba(29, 185, 116, 0.18);
+    -fx-border-color: rgba(77, 235, 159, 0.48);
+    -fx-text-fill: #7df3b4;
+}
+
+.ai-alert-warning {
+    -fx-background-color: rgba(255, 174, 56, 0.18);
+    -fx-border-color: rgba(255, 210, 86, 0.55);
+    -fx-text-fill: #ffe08a;
+}

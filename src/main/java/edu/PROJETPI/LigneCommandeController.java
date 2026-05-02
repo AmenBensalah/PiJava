@@ -143,7 +143,7 @@ public class LigneCommandeController implements Initializable {
 
     @FXML
     private void continueShopping() {
-        SceneNavigator.switchScene(tableView, "/main-view.fxml", "Catalogue produits");
+        SceneNavigator.switchScene(tableView, "/ajoutProduit.fxml", "E-SPORTIFY : Dashboard");
     }
 
     @FXML

@@ -1,9 +1,11 @@
 package edu.PROJETPI;
 
+import edu.ProjetPI.controllers.SceneManager;
 import edu.PROJETPI.tools.MyConexion;
 import javafx.application.Platform;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
@@ -25,13 +27,15 @@ public class MainApp extends Application {
             return;
         }
 
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add(MainApp.class.getResource("/styles/esportify-theme.css").toExternalForm());
-        stage.setTitle("Gestion Commerciale");
+        SceneManager.setStage(stage);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/edu/ProjetPI/views/login.fxml"));
+        Parent root = fxmlLoader.load();
+        Scene scene = new Scene(root);
+        stage.setTitle("E-SPORTIFY : Connexion");
         stage.setScene(scene);
         stage.setResizable(true);
-        stage.setMaximized(true);
+        stage.setFullScreen(true);
         stage.show();
     }
 
