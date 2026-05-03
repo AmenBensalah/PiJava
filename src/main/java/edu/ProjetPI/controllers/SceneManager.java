@@ -27,7 +27,7 @@ public class SceneManager {
             Scene scene = currentScene == null
                     ? new Scene(root)
                     : new Scene(root, currentScene.getWidth(), currentScene.getHeight());
-            scene.setFill(Color.web("#050608"));
+            scene.setFill(Color.BLACK);
             primaryStage.setTitle(title);
             primaryStage.setScene(scene);
             primaryStage.setFullScreen(false);

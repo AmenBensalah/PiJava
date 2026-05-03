@@ -25,7 +25,7 @@ public final class SceneNavigator {
             FXMLLoader loader = new FXMLLoader(SceneNavigator.class.getResource(resource));
             Parent root = loader.load();
             Scene scene = new Scene(root, node.getScene().getWidth(), node.getScene().getHeight());
-            scene.setFill(Color.web("#050608"));
+            scene.setFill(Color.BLACK);
             scene.getStylesheets().add(SceneNavigator.class.getResource("/styles/esportify-theme.css").toExternalForm());
 
             stage.setTitle(title);
