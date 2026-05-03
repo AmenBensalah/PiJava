@@ -386,7 +386,7 @@ public class AdminDashboardController implements Initializable {
     private void showCommandes() {
         paymentMode = false;
         paymentForecastMode = false;
-        pageTitleLabel.setText("GESTION DES COMMANDES");
+        pageTitleLabel.setText("Liste des commandes");
         setPredictionTitleMode(false);
         pageSubtitleLabel.setManaged(true);
         pageSubtitleLabel.setVisible(true);
@@ -404,6 +404,7 @@ public class AdminDashboardController implements Initializable {
         commandeTableView.setVisible(true);
         paymentTableView.setManaged(false);
         paymentTableView.setVisible(false);
+        commandeTableView.setPrefHeight(520);
         resetViewportScrollPositions();
         refreshData();
     }
@@ -418,7 +419,7 @@ public class AdminDashboardController implements Initializable {
     private void showPaymentList() {
         paymentMode = true;
         paymentForecastMode = false;
-        pageTitleLabel.setText("GESTION DES PAIEMENTS");
+        pageTitleLabel.setText("Liste des paiements");
         setPredictionTitleMode(false);
         pageSubtitleLabel.setManaged(true);
         pageSubtitleLabel.setVisible(true);
@@ -436,6 +437,7 @@ public class AdminDashboardController implements Initializable {
         commandeTableView.setVisible(false);
         paymentTableView.setManaged(true);
         paymentTableView.setVisible(true);
+        paymentTableView.setPrefHeight(520);
         resetViewportScrollPositions();
         refreshData();
     }
@@ -904,6 +906,7 @@ public class AdminDashboardController implements Initializable {
         paymentColDate.setMinWidth(100);
         paymentColActions.setMinWidth(148);
         paymentColActions.setMaxWidth(220);
+        paymentTableView.setFixedCellSize(38);
         paymentTableView.widthProperty().addListener((obs, oldWidth, newWidth) -> resizePaymentColumns(newWidth.doubleValue()));
         paymentTableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
             if (newSkin != null) {
@@ -924,6 +927,7 @@ public class AdminDashboardController implements Initializable {
         colStatut.setMinWidth(108);
         colModifier.setMinWidth(104);
         colSupprimer.setMinWidth(104);
+        commandeTableView.setFixedCellSize(38);
         commandeTableView.widthProperty().addListener((obs, oldWidth, newWidth) -> resizeCommandeColumns(newWidth.doubleValue()));
         commandeTableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
             if (newSkin != null) {
