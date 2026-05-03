@@ -15,6 +15,7 @@ import javafx.scene.chart.XYChart;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 import java.sql.Date;
@@ -108,6 +109,10 @@ public class TournoiAdminController {
     private VBox tournamentPane;
     @FXML
     private VBox participationPane;
+    @FXML
+    private ScrollPane tournamentScroll;
+    @FXML
+    private ScrollPane participationScroll;
     @FXML
     private TableView<DemandeParticipation> participationAdminTable;
     @FXML
@@ -229,17 +234,17 @@ public class TournoiAdminController {
     }
 
     private void showParticipationView() {
-        tournamentPane.setVisible(false);
-        tournamentPane.setManaged(false);
-        participationPane.setVisible(true);
-        participationPane.setManaged(true);
+        tournamentScroll.setVisible(false);
+        tournamentScroll.setManaged(false);
+        participationScroll.setVisible(true);
+        participationScroll.setManaged(true);
     }
 
     private void showTournamentView() {
-        participationPane.setVisible(false);
-        participationPane.setManaged(false);
-        tournamentPane.setVisible(true);
-        tournamentPane.setManaged(true);
+        participationScroll.setVisible(false);
+        participationScroll.setManaged(false);
+        tournamentScroll.setVisible(true);
+        tournamentScroll.setManaged(true);
     }
 
     @FXML

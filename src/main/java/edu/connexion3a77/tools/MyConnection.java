@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class MyConnection {
 
-    private String url="jdbc:mysql://localhost:3306/javafx";
+    private String url="jdbc:mysql://localhost:3306/esportify";
     private String login="root";
     private String pwd="";
 

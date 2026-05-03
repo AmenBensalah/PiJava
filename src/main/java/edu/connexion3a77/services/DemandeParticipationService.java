@@ -6,16 +6,24 @@ import edu.connexion3a77.tools.MyConnection;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class DemandeParticipationService implements IService<DemandeParticipation> {
-    private static final String TABLE_NAME = "demande_participation";
+    private static final String TABLE_NAME = "participation_request";
+    private final Map<String, String> columns = new HashMap<>();
 
     public DemandeParticipationService() {
         createTableIfNotExists();
+        resolveColumns();
     }
 
     private void createTableIfNotExists() {
@@ -42,7 +50,7 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
                 // Column may already exist, ignore.
             }
         } catch (SQLException e) {
-            System.out.println("Erreur creation table demande_participation : " + e.getMessage());
+            System.out.println("Erreur creation table participation_request : " + e.getMessage());
         }
     }
 
@@ -57,14 +65,67 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
             return;
         }
 
-        String requete = "INSERT INTO " + TABLE_NAME + " (tournoi_id, description, niveau, statut) VALUES (?, ?, ?, ?)";
+        boolean includeUserId = columns.containsKey("userId");
+        boolean includeRulesAccepted = columns.containsKey("rulesAccepted");
+        boolean includeApplicantName = columns.containsKey("applicantName");
+        boolean includeApplicantEmail = columns.containsKey("applicantEmail");
+        boolean includeCreatedAt = columns.containsKey("createdAt");
+        boolean includeLegacyStatut = columns.containsKey("legacyStatut");
+
+        StringBuilder requete = new StringBuilder("INSERT INTO " + TABLE_NAME + " (")
+                .append(col("tournoiId")).append(", ")
+                .append(col("description")).append(", ")
+                .append(col("niveau")).append(", ")
+                .append(col("statut"));
+
+        if (includeLegacyStatut) requete.append(", ").append(col("legacyStatut"));
+        if (includeUserId) requete.append(", ").append(col("userId"));
+        if (includeRulesAccepted) requete.append(", ").append(col("rulesAccepted"));
+        if (includeApplicantName) requete.append(", ").append(col("applicantName"));
+        if (includeApplicantEmail) requete.append(", ").append(col("applicantEmail"));
+        if (includeCreatedAt) requete.append(", ").append(col("createdAt"));
+
+        requete.append(") VALUES (?, ?, ?, ?");
+        if (includeLegacyStatut) requete.append(", ?");
+        if (includeUserId) requete.append(", ?");
+        if (includeRulesAccepted) requete.append(", ?");
+        if (includeApplicantName) requete.append(", ?");
+        if (includeApplicantEmail) requete.append(", ?");
+        if (includeCreatedAt) requete.append(", ?");
+        requete.append(")");
 
         try {
-            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete.toString());
             pst.setInt(1, demandeParticipation.getTournoiId());
             pst.setString(2, demandeParticipation.getDescription());
             pst.setString(3, demandeParticipation.getNiveau());
             pst.setString(4, normalizedStatut(demandeParticipation.getStatut()));
+
+            int idx = 5;
+            if (includeLegacyStatut) {
+                pst.setString(idx++, normalizedStatut(demandeParticipation.getStatut()));
+            }
+            if (includeUserId) {
+                Integer userId = resolveDefaultUserId();
+                if (userId == null) {
+                    pst.setNull(idx++, Types.INTEGER);
+                } else {
+                    pst.setInt(idx++, userId);
+                }
+            }
+            if (includeRulesAccepted) {
+                pst.setBoolean(idx++, true);
+            }
+            if (includeApplicantName) {
+                pst.setString(idx++, "Utilisateur App");
+            }
+            if (includeApplicantEmail) {
+                pst.setString(idx++, "user@app.local");
+            }
+            if (includeCreatedAt) {
+                pst.setTimestamp(idx++, new Timestamp(System.currentTimeMillis()));
+            }
+
             pst.executeUpdate();
             System.out.println("Demande de participation ajoutee avec succes !");
         } catch (SQLException e) {
@@ -78,7 +139,7 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
 
     @Override
     public void deleteEntity(DemandeParticipation demandeParticipation) {
-        String requete = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
+        String requete = "DELETE FROM " + TABLE_NAME + " WHERE " + col("id") + " = ?";
 
         try {
             PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
@@ -107,7 +168,7 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
             return;
         }
 
-        String requete = "UPDATE " + TABLE_NAME + " SET tournoi_id = ?, description = ?, niveau = ?, statut = ? WHERE id = ?";
+        String requete = "UPDATE " + TABLE_NAME + " SET " + col("tournoiId") + " = ?, " + col("description") + " = ?, " + col("niveau") + " = ?, " + col("statut") + " = ? WHERE " + col("id") + " = ?";
 
         try {
             PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
@@ -138,11 +199,11 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
 
             while (rs.next()) {
                 DemandeParticipation demandeParticipation = new DemandeParticipation();
-                demandeParticipation.setId(rs.getInt("id"));
-                demandeParticipation.setTournoiId(rs.getInt("tournoi_id"));
-                demandeParticipation.setDescription(rs.getString("description"));
-                demandeParticipation.setNiveau(rs.getString("niveau"));
-                demandeParticipation.setStatut(normalizedStatut(rs.getString("statut")));
+                demandeParticipation.setId(rs.getInt(col("id")));
+                demandeParticipation.setTournoiId(rs.getInt(col("tournoiId")));
+                demandeParticipation.setDescription(rs.getString(col("description")));
+                demandeParticipation.setNiveau(rs.getString(col("niveau")));
+                demandeParticipation.setStatut(normalizedStatut(rs.getString(col("statut"))));
                 data.add(demandeParticipation);
             }
         } catch (SQLException e) {
@@ -162,7 +223,7 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
         }
 
         List<DemandeParticipation> data = new ArrayList<>();
-        String requete = "SELECT * FROM " + TABLE_NAME + " WHERE statut = ?";
+        String requete = "SELECT * FROM " + TABLE_NAME + " WHERE " + col("statut") + " = ?";
 
         try {
             PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
@@ -170,11 +231,11 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 DemandeParticipation demandeParticipation = new DemandeParticipation();
-                demandeParticipation.setId(rs.getInt("id"));
-                demandeParticipation.setTournoiId(rs.getInt("tournoi_id"));
-                demandeParticipation.setDescription(rs.getString("description"));
-                demandeParticipation.setNiveau(rs.getString("niveau"));
-                demandeParticipation.setStatut(normalizedStatut(rs.getString("statut")));
+                demandeParticipation.setId(rs.getInt(col("id")));
+                demandeParticipation.setTournoiId(rs.getInt(col("tournoiId")));
+                demandeParticipation.setDescription(rs.getString(col("description")));
+                demandeParticipation.setNiveau(rs.getString(col("niveau")));
+                demandeParticipation.setStatut(normalizedStatut(rs.getString(col("statut"))));
                 data.add(demandeParticipation);
             }
         } catch (SQLException e) {
@@ -191,7 +252,7 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
             return;
         }
 
-        String requete = "UPDATE " + TABLE_NAME + " SET statut = ? WHERE id = ?";
+        String requete = "UPDATE " + TABLE_NAME + " SET " + col("statut") + " = ? WHERE " + col("id") + " = ?";
         try {
             PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
             pst.setString(1, statutNormalise);
@@ -232,9 +293,9 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
     }
 
     private boolean existsSameDemande(DemandeParticipation demandeParticipation, Integer excludeId) {
-        String requete = "SELECT id FROM " + TABLE_NAME +
-                " WHERE tournoi_id = ? AND description = ? AND niveau = ?" +
-                (excludeId != null ? " AND id <> ?" : "") +
+        String requete = "SELECT " + col("id") + " FROM " + TABLE_NAME +
+                " WHERE " + col("tournoiId") + " = ? AND " + col("description") + " = ? AND " + col("niveau") + " = ?" +
+                (excludeId != null ? " AND " + col("id") + " <> ?" : "") +
                 " LIMIT 1";
 
         try {
@@ -264,6 +325,145 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
             return normalized;
         }
         return null;
+    }
+
+    private void resolveColumns() {
+        columns.put("id", findColumnName("id", "id_participation", "request_id"));
+        columns.put("tournoiId", findColumnName("tournoi_id", "tournament_id", "tournoiId"));
+        columns.put("description", findColumnName("description", "message", "details", "contenu", "commentaire", "body"));
+        columns.put("niveau", findColumnName("niveau", "level", "niveau_joueur", "rank", "skill", "player_level"));
+        // Important: prioritize "status" over legacy "statut" because DB requires it.
+        columns.put("statut", findColumnName("status", "statut", "etat", "state"));
+        String legacyStatutCol = findOptionalColumnName("statut");
+        if (legacyStatutCol != null && !legacyStatutCol.isBlank() && !legacyStatutCol.equalsIgnoreCase(columns.get("statut"))) {
+            columns.put("legacyStatut", legacyStatutCol);
+        }
+
+        String userIdCol = findOptionalColumnName("user_id", "id_user", "userid");
+        if (userIdCol != null && !userIdCol.isBlank()) {
+            columns.put("userId", userIdCol);
+        }
+        String rulesAcceptedCol = findOptionalColumnName("rules_accepted", "accepted_rules", "rulesaccepted");
+        if (rulesAcceptedCol != null && !rulesAcceptedCol.isBlank()) {
+            columns.put("rulesAccepted", rulesAcceptedCol);
+        }
+        String applicantNameCol = findOptionalColumnName("applicant_name", "nom_applicant", "player_name", "fullname");
+        if (applicantNameCol != null && !applicantNameCol.isBlank()) {
+            columns.put("applicantName", applicantNameCol);
+        }
+        String applicantEmailCol = findOptionalColumnName("applicant_email", "email", "mail");
+        if (applicantEmailCol != null && !applicantEmailCol.isBlank()) {
+            columns.put("applicantEmail", applicantEmailCol);
+        }
+        String createdAtCol = findOptionalColumnName("created_at", "createdat", "date_creation", "created_on");
+        if (createdAtCol != null && !createdAtCol.isBlank()) {
+            columns.put("createdAt", createdAtCol);
+        }
+    }
+
+    private String col(String key) {
+        String value = columns.get(key);
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException("Colonne introuvable pour: " + key);
+        }
+        return value;
+    }
+
+    private String findColumnName(String... candidates) {
+        String optional = findOptionalColumnName(candidates);
+        if (optional != null) {
+            return optional;
+        }
+        return candidates[0];
+    }
+
+    private String findOptionalColumnName(String... candidates) {
+        try {
+            PreparedStatement pst = MyConnection.getInstance().getCnx()
+                    .prepareStatement("SELECT * FROM " + TABLE_NAME + " LIMIT 1");
+            ResultSet rs = pst.executeQuery();
+            ResultSetMetaData meta = rs.getMetaData();
+            Map<String, String> existing = new HashMap<>();
+            for (int i = 1; i <= meta.getColumnCount(); i++) {
+                String label = meta.getColumnLabel(i);
+                existing.put(label.toLowerCase(Locale.ROOT), label);
+            }
+            for (String candidate : candidates) {
+                String hit = existing.get(candidate.toLowerCase(Locale.ROOT));
+                if (hit != null) {
+                    return hit;
+                }
+            }
+
+            // Fallback: relaxed matching ignoring underscores/case.
+            for (String candidate : candidates) {
+                String normalizedCandidate = normalize(candidate);
+                for (Map.Entry<String, String> entry : existing.entrySet()) {
+                    if (normalize(entry.getKey()).equals(normalizedCandidate)) {
+                        return entry.getValue();
+                    }
+                }
+            }
+
+            if (candidates.length > 0) {
+                String first = normalize(candidates[0]);
+
+                if (first.contains("niveau") || first.contains("level")) {
+                    for (Map.Entry<String, String> entry : existing.entrySet()) {
+                        String n = normalize(entry.getKey());
+                        if (n.contains("niveau") || n.contains("level") || n.contains("rank") || n.contains("skill")) {
+                            return entry.getValue();
+                        }
+                    }
+                }
+
+                if (first.contains("description") || first.contains("message")) {
+                    for (Map.Entry<String, String> entry : existing.entrySet()) {
+                        String n = normalize(entry.getKey());
+                        if (n.contains("description") || n.contains("message") || n.contains("detail") || n.contains("comment")) {
+                            return entry.getValue();
+                        }
+                    }
+                }
+
+                if (first.contains("statut") || first.contains("status")) {
+                    for (Map.Entry<String, String> entry : existing.entrySet()) {
+                        String n = normalize(entry.getKey());
+                        if (n.contains("statut") || n.contains("status") || n.contains("etat") || n.contains("state")) {
+                            return entry.getValue();
+                        }
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Detection colonnes participation_request: " + e.getMessage());
+        }
+        return null;
+    }
+
+    private String normalize(String value) {
+        return value == null ? "" : value.toLowerCase(Locale.ROOT).replace("_", "").replace("-", "").trim();
+    }
+
+    private Integer resolveDefaultUserId() {
+        try {
+            Statement st = MyConnection.getInstance().getCnx().createStatement();
+            ResultSet rs = st.executeQuery("SELECT id FROM user ORDER BY id ASC LIMIT 1");
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ignored) {
+        }
+        try {
+            Statement st = MyConnection.getInstance().getCnx().createStatement();
+            ResultSet rs = st.executeQuery("SELECT id_user FROM user ORDER BY id_user ASC LIMIT 1");
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ignored) {
+        }
+        return 1;
     }
 
 }

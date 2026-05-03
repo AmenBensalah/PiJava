@@ -57,7 +57,7 @@ class DemandeParticipationServiceTest {
     @AfterEach
     void tearDown() throws SQLException {
         PreparedStatement pstDemande = MyConnection.getInstance().getCnx()
-                .prepareStatement("DELETE FROM demande_participation WHERE description LIKE ?");
+                .prepareStatement("DELETE FROM participation_request WHERE description LIKE ?");
         pstDemande.setString(1, TEST_DEMANDE_PREFIX + "%");
         pstDemande.executeUpdate();
 
@@ -154,7 +154,7 @@ class DemandeParticipationServiceTest {
 
     private int getDemandeIdByDescription(String description) throws SQLException {
         PreparedStatement pst = MyConnection.getInstance().getCnx()
-                .prepareStatement("SELECT id FROM demande_participation WHERE description = ? ORDER BY id DESC LIMIT 1");
+                .prepareStatement("SELECT id FROM participation_request WHERE description = ? ORDER BY id DESC LIMIT 1");
         pst.setString(1, description);
         ResultSet rs = pst.executeQuery();
         if (rs.next()) {
@@ -165,7 +165,7 @@ class DemandeParticipationServiceTest {
 
     private String getDemandeNiveauById(int id) throws SQLException {
         PreparedStatement pst = MyConnection.getInstance().getCnx()
-                .prepareStatement("SELECT niveau FROM demande_participation WHERE id = ?");
+                .prepareStatement("SELECT niveau FROM participation_request WHERE id = ?");
         pst.setInt(1, id);
         ResultSet rs = pst.executeQuery();
         if (rs.next()) {
@@ -176,7 +176,7 @@ class DemandeParticipationServiceTest {
 
     private boolean existsDemandeById(int id) throws SQLException {
         PreparedStatement pst = MyConnection.getInstance().getCnx()
-                .prepareStatement("SELECT id FROM demande_participation WHERE id = ?");
+                .prepareStatement("SELECT id FROM participation_request WHERE id = ?");
         pst.setInt(1, id);
         ResultSet rs = pst.executeQuery();
         return rs.next();
