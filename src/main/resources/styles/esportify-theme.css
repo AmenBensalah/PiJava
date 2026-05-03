@@ -1711,27 +1711,27 @@
 }
 
 .app-root.command-admin-root {
-    -fx-background-color: #050608;
-    -fx-background-image: url("../images/background.jpg");
+    -fx-background-color: #000000;
+    -fx-background-image: none;
     -fx-background-size: cover;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
 }
 
 .command-admin-root {
-    -fx-background-color: #050608;
-    -fx-background-image: url("../images/background.jpg");
+    -fx-background-color: #000000;
+    -fx-background-image: none;
     -fx-background-size: cover;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
 }
 
 .admin-dashboard-layer {
-    -fx-background-color: linear-gradient(to bottom right, rgba(5, 8, 18, 0.22), rgba(8, 4, 18, 0.32));
+    -fx-background-color: #000000;
 }
 
 .admin-center-background {
-    -fx-background-color: #050608;
+    -fx-background-color: #000000;
 }
 
 .global-sidebar {
@@ -1858,9 +1858,9 @@
 }
 
 .content-shell.command-admin-shell {
-    -fx-background-color: linear-gradient(to bottom, rgba(5, 8, 19, 0.30), rgba(8, 4, 17, 0.42));
-    -fx-padding: 18 20 24 20;
-    -fx-min-height: 980;
+    -fx-background-color: #000000;
+    -fx-padding: 18 20 38 20;
+    -fx-min-height: 0;
 }
 
 /* Dashboard commandes / paiements : vue compacte (tient dans la fenêtre) */
@@ -1996,21 +1996,62 @@
 .scroll-pane.page-scroll.command-background-layer,
 .scroll-pane.page-scroll.command-background-layer > .viewport,
 .scroll-pane.page-scroll.command-background-layer > .corner {
-    -fx-background-color: #050608;
+    -fx-background-color: #000000;
+    -fx-background: #000000;
     -fx-background-insets: 0;
 }
 
 .command-background-layer > .viewport,
 .scroll-pane.page-scroll.command-background-layer > .viewport {
-    -fx-background-image: url("../images/background.jpg");
+    -fx-background-image: none;
     -fx-background-size: cover;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
 }
 
 .scroll-pane.page-scroll.command-background-layer {
+    -fx-background-color: #000000;
+    -fx-background: #000000;
     -fx-background-insets: 0;
     -fx-padding: 0;
+}
+
+.scroll-pane.page-scroll.command-background-layer .scroll-bar:vertical,
+.scroll-pane.page-scroll.command-background-layer .scroll-bar:horizontal {
+    -fx-background-color: #000000;
+}
+
+.scroll-pane.page-scroll.command-background-layer .scroll-bar:vertical .track,
+.scroll-pane.page-scroll.command-background-layer .scroll-bar:horizontal .track,
+.scroll-pane.page-scroll.command-background-layer .scroll-bar:vertical .increment-button,
+.scroll-pane.page-scroll.command-background-layer .scroll-bar:vertical .decrement-button,
+.scroll-pane.page-scroll.command-background-layer .scroll-bar:horizontal .increment-button,
+.scroll-pane.page-scroll.command-background-layer .scroll-bar:horizontal .decrement-button,
+.scroll-pane.page-scroll.command-background-layer .corner {
+    -fx-background-color: #000000;
+    -fx-background-insets: 0;
+}
+
+.command-admin-root .scroll-pane,
+.command-admin-root .scroll-pane > .viewport,
+.command-admin-root .scroll-pane > .corner,
+.command-admin-root .scroll-bar,
+.command-admin-root .scroll-bar .track,
+.command-admin-root .scroll-bar .increment-button,
+.command-admin-root .scroll-bar .decrement-button {
+    -fx-background-color: #000000;
+    -fx-background: #000000;
+    -fx-background-insets: 0;
+}
+
+.scroll-pane.page-scroll.command-background-layer .scroll-bar .increment-arrow,
+.scroll-pane.page-scroll.command-background-layer .scroll-bar .decrement-arrow {
+    -fx-background-color: #7687b4;
+}
+
+.scroll-pane.page-scroll.command-background-layer .scroll-bar .thumb {
+    -fx-background-color: rgba(118, 135, 180, 0.72);
+    -fx-background-radius: 999;
 }
 
 .command-admin-hero {

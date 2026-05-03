@@ -19,19 +19,19 @@
 <?import javafx.scene.layout.VBox?>
 <?import java.net.URL?>
 
-<StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="760.0" prefWidth="1280.0" styleClass="command-admin-root command-admin-compact"
+<StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="760.0" prefWidth="1280.0" style="-fx-background-color: #000000;" styleClass="command-admin-root"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.PROJETPI.AdminDashboardController">
     <stylesheets>
         <URL value="@styles/esportify-theme.css" />
     </stylesheets>
     <children>
-        <ImageView fitHeight="1400.0" fitWidth="2300.0" opacity="0.86" preserveRatio="false">
+        <ImageView fitHeight="1400.0" fitWidth="2300.0" managed="false" opacity="0.0" preserveRatio="false" visible="false">
             <image>
                 <Image url="@images/background.jpg" />
             </image>
         </ImageView>
-        <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="admin-dashboard-layer">
+        <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #000000;" styleClass="admin-dashboard-layer">
     <left>
         <VBox prefWidth="220.0" styleClass="global-sidebar" BorderPane.alignment="CENTER">
             <children>
@@ -75,16 +75,16 @@
         </VBox>
     </left>
     <center>
-        <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="admin-center-background">
+        <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #000000;" styleClass="admin-center-background">
             <children>
-                <ImageView fitHeight="1400.0" fitWidth="2300.0" opacity="0.86" preserveRatio="false">
+                <ImageView fitHeight="1400.0" fitWidth="2300.0" managed="false" opacity="0.0" preserveRatio="false" visible="false">
                     <image>
                         <Image url="@images/background.jpg" />
                     </image>
                 </ImageView>
-        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="page-scroll command-background-layer">
+        <ScrollPane fx:id="adminScrollPane" fitToWidth="true" fitToHeight="false" hbarPolicy="NEVER" style="-fx-background-color: #000000; -fx-background: #000000;" vbarPolicy="ALWAYS" styleClass="page-scroll command-background-layer">
             <content>
-                <VBox spacing="10.0" styleClass="content-shell command-admin-shell">
+                <VBox spacing="24.0" style="-fx-background-color: #000000;" styleClass="content-shell command-admin-shell">
                     <padding>
                         <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
                     </padding>
@@ -108,24 +108,24 @@
                     </children>
                 </HBox>
 
-                <HBox spacing="10.0" VBox.vgrow="ALWAYS">
+                <HBox spacing="20.0">
                     <children>
-                        <VBox HBox.hgrow="ALWAYS" spacing="8.0" styleClass="command-admin-content-card">
+                        <VBox HBox.hgrow="ALWAYS" spacing="20.0" styleClass="command-admin-content-card">
                             <children>
-                                <VBox fx:id="commandeFilterCard" spacing="8.0" styleClass="admin-filter-card">
+                                <VBox fx:id="commandeFilterCard" spacing="18.0" styleClass="admin-filter-card">
                                     <children>
-                                        <HBox spacing="10.0">
+                                        <HBox spacing="20.0">
                                             <children>
-                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                                                     <children>
                                                         <Label styleClass="admin-filter-label" text="Recherche"/>
                                                         <TextField fx:id="searchField" promptText="ID, client, statut, nom..." styleClass="dark-text-field"/>
                                                     </children>
                                                 </VBox>
-                                                <VBox spacing="4.0" prefWidth="200.0">
+                                                <VBox spacing="10.0" prefWidth="275.0">
                                                     <children>
                                                         <Label styleClass="admin-filter-label" text="Statut"/>
-                                                        <ComboBox fx:id="statutFilterComboBox" prefWidth="200.0" styleClass="dark-text-field"/>
+                                                        <ComboBox fx:id="statutFilterComboBox" prefWidth="275.0" styleClass="dark-text-field"/>
                                                     </children>
                                                 </VBox>
                                                 <VBox alignment="BOTTOM_LEFT" spacing="4.0">
@@ -141,7 +141,7 @@
                                                 </VBox>
                                             </children>
                                         </HBox>
-                                        <VBox spacing="4.0">
+                                        <VBox spacing="10.0">
                                             <children>
                                                 <Label styleClass="admin-filter-label" text="Trier"/>
                                                 <FlowPane hgap="8.0" vgap="8.0">
@@ -158,7 +158,7 @@
                                         </VBox>
                                     </children>
                                 </VBox>
-                                <VBox fx:id="paymentFilterCard" managed="false" spacing="8.0" styleClass="admin-filter-card" visible="false">
+                                <VBox fx:id="paymentFilterCard" managed="false" spacing="18.0" styleClass="admin-filter-card" visible="false">
                                     <children>
                                         <VBox spacing="4.0">
                                             <children>
@@ -175,18 +175,18 @@
                                                 </FlowPane>
                                             </children>
                                         </VBox>
-                                        <HBox spacing="10.0">
+                                        <HBox spacing="20.0">
                                             <children>
-                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                                                     <children>
                                                         <Label styleClass="admin-filter-label" text="Recherche"/>
                                                         <TextField fx:id="paymentSearchField" promptText="ID, commande, statut, montant..." styleClass="dark-text-field"/>
                                                     </children>
                                                 </VBox>
-                                                <VBox spacing="4.0" prefWidth="200.0">
+                                                <VBox spacing="10.0" prefWidth="275.0">
                                                     <children>
                                                         <Label styleClass="admin-filter-label" text="Statut"/>
-                                                        <ComboBox fx:id="paymentStatutFilterComboBox" prefWidth="200.0" styleClass="dark-text-field"/>
+                                                        <ComboBox fx:id="paymentStatutFilterComboBox" prefWidth="275.0" styleClass="dark-text-field"/>
                                                     </children>
                                                 </VBox>
                                                 <VBox alignment="BOTTOM_LEFT" spacing="4.0">
@@ -202,18 +202,18 @@
                                                 </VBox>
                                             </children>
                                         </HBox>
-                                        <HBox spacing="10.0" alignment="TOP_LEFT">
+                                        <HBox spacing="20.0" alignment="TOP_LEFT">
                                             <children>
-                                                <VBox spacing="4.0" prefWidth="200.0">
+                                                <VBox spacing="10.0" prefWidth="275.0">
                                                     <children>
                                                         <Label styleClass="admin-filter-label" text="Date debut"/>
-                                                        <DatePicker fx:id="paymentDateDebutPicker" prefWidth="200.0" styleClass="dark-date-picker"/>
+                                                        <DatePicker fx:id="paymentDateDebutPicker" prefWidth="275.0" styleClass="dark-date-picker"/>
                                                     </children>
                                                 </VBox>
-                                                <VBox spacing="4.0" prefWidth="200.0">
+                                                <VBox spacing="10.0" prefWidth="275.0">
                                                     <children>
                                                         <Label styleClass="admin-filter-label" text="Date fin"/>
-                                                        <DatePicker fx:id="paymentDateFinPicker" prefWidth="200.0" styleClass="dark-date-picker"/>
+                                                        <DatePicker fx:id="paymentDateFinPicker" prefWidth="275.0" styleClass="dark-date-picker"/>
                                                     </children>
                                                 </VBox>
                                             </children>
@@ -369,7 +369,7 @@
                                         <Label fx:id="commandeCountLabel" styleClass="metric-value" text="0"/>
                                     </children>
                                 </HBox>
-                                <TableView fx:id="commandeTableView" fixedCellSize="28.0" prefHeight="260.0" styleClass="data-table command-admin-table" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="commandeTableView" fixedCellSize="44.0" prefHeight="1320.0" styleClass="data-table command-admin-table">
                                     <columns>
                                         <TableColumn fx:id="colId" prefWidth="80.0" text="ID"/>
                                         <TableColumn fx:id="colDate" prefWidth="170.0" text="Date"/>
@@ -380,8 +380,9 @@
                                         <TableColumn fx:id="colSupprimer" prefWidth="150.0" text="Supprimer"/>
                                     </columns>
                                 </TableView>
-                                <TableView fx:id="paymentTableView" fixedCellSize="28.0" prefHeight="260.0" styleClass="data-table command-admin-table" managed="false" visible="false" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="paymentTableView" fixedCellSize="44.0" prefHeight="520.0" styleClass="data-table command-admin-table" managed="false" visible="false">
                                     <columns>
+                                        <TableColumn fx:id="paymentColId" prefWidth="90.0" text="ID"/>
                                         <TableColumn fx:id="paymentColCommandeId" prefWidth="170.0" text="Commande"/>
                                         <TableColumn fx:id="paymentColMontant" prefWidth="180.0" text="Montant"/>
                                         <TableColumn fx:id="paymentColStatut" prefWidth="160.0" text="Statut"/>
