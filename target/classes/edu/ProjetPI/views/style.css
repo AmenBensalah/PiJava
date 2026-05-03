@@ -297,3 +297,21 @@ premium-label-cyan {
 .profile-actions {
     -fx-padding: 6 0 2 0;
 }
+
+/* TableView: entete noir dans tout le projet */
+.table-view .column-header-background,
+.table-view .column-header-background .nested-column-header,
+.table-view .column-header-background .column-header,
+.table-view .column-header-background .filler,
+.table-view .column-header-background .show-hide-columns-button,
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: #070b18;
+    -fx-background: #070b18;
+    -fx-border-color: rgba(112, 146, 255, 0.24);
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: 900;
+}
