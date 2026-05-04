@@ -14,5 +14,5 @@ if not exist "%WRAPPER_JAR%" (
   echo Maven Wrapper jar not found. Please run the wrapper generation or install Maven.
   exit /b 1
 )
-"%JAVACMD%" -cp "%WRAPPER_JAR%" -Dmaven.multiModuleProjectDirectory="%MAVEN_PROJECTBASEDIR%" org.apache.maven.wrapper.MavenWrapperMain %*
+"%JAVACMD%" -Dmaven.multiModuleProjectDirectory=%MAVEN_PROJECTBASEDIR% -cp "%WRAPPER_JAR%" org.apache.maven.wrapper.MavenWrapperMain %*
 endlocal

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefHeight="860.0" prefWidth="1380.0" styleClass="page-root" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ProjetPI.controllers.ProfileController">
+    <children>
+        <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="page-background" />
+        <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="page-overlay" />
+
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" pannable="true" styleClass="profile-scroll" vbarPolicy="AS_NEEDED">
+            <content>
+                <StackPane alignment="TOP_CENTER">
+                    <children>
+                        <VBox alignment="TOP_CENTER" maxWidth="950.0" prefWidth="950.0" spacing="16.0" styleClass="page-card">
+                    <padding>
+                        <Insets bottom="26.0" left="34.0" right="34.0" top="26.0" />
+                    </padding>
+
+                    <children>
+                <Label fx:id="titleLabel" styleClass="title" text="Mon Profil" />
+                <Label fx:id="roleLabel" styleClass="subtitle" text="Role:" />
+
+                <TextField fx:id="fullNameField" promptText="Full name" />
+                <TextField fx:id="pseudoField" promptText="Pseudo" />
+                <TextField fx:id="emailField" promptText="Email" />
+                <PasswordField fx:id="passwordField" promptText="New password (optional)" />
+
+                <HBox alignment="CENTER" spacing="12.0" styleClass="profile-actions">
+                    <children>
+                        <Button onAction="#handleUpdateProfile" styleClass="primary-cta" text="Modifier" />
+                        <Button onAction="#handleDeleteAccount" styleClass="danger-button" text="Supprimer Mon Compte" />
+                        <Button onAction="#handleBack" styleClass="secondary-button" text="Retour" />
+                    </children>
+                </HBox>
+
+                <Label fx:id="messageLabel" styleClass="message" wrapText="true" />
+
+                <Separator />
+                <Label styleClass="stats-title" text="Performance IA" />
+                <VBox spacing="8.0" styleClass="stats-box">
+                    <children>
+                        <Label fx:id="aiStatusLabel" styleClass="stats-line" text="Statut: chargement..." />
+                        <Label fx:id="aiSummaryLabel" styleClass="stats-line" text="Résumé: -" wrapText="true" />
+
+                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                            <children>
+                                <Label styleClass="stats-chip-label" text="Mode de jeu" />
+                                <ComboBox fx:id="aiGameTypeCombo" prefWidth="220.0" />
+                                <Button onAction="#handleRefreshAi" styleClass="secondary-button" text="Refresh AI" />
+                            </children>
+                        </HBox>
+
+                        <Label fx:id="aiTrendLabel" styleClass="stats-line" text="Trend: -" />
+                        <Label fx:id="aiConfidenceLabel" styleClass="stats-line" text="Confiance: -" />
+                        <Label fx:id="aiBestGameLabel" styleClass="stats-line" text="Meilleur mode: -" />
+                        <Label fx:id="aiWinRateLabel" styleClass="stats-line" text="Win rate global: -" />
+                        <Label fx:id="aiMatchesLabel" styleClass="stats-line" text="Matchs joués: -" />
+                        <Label fx:id="aiPredBestLabel" styleClass="stats-line" text="Prédiction IA globale: -" />
+
+                        <Label fx:id="aiTournamentStatsLabel" styleClass="stats-line" text="Win rate par type de jeu: -" wrapText="true" />
+                        <Label fx:id="aiTournamentPredLabel" styleClass="stats-line" text="Prediction win rate par type de jeu: -" wrapText="true" />
+
+                        <VBox spacing="8.0" styleClass="stats-inner-card">
+                            <children>
+                                <Label fx:id="aiGameTitleLabel" styleClass="stats-highlight" text="Analyse du mode: -" />
+                                <Label fx:id="aiGamePlayedLabel" styleClass="stats-line" text="Matchs: -" />
+                                <Label fx:id="aiGameWinRateLabel" styleClass="stats-line" text="Win rate réel: -" />
+                                <ProgressBar fx:id="aiGameWinRateBar" prefWidth="620.0" progress="0.0" />
+                                <Label fx:id="aiGamePredictionLabel" styleClass="stats-line" text="Win rate prédit: -" />
+                                <ProgressBar fx:id="aiGamePredBar" prefWidth="620.0" progress="0.0" />
+                                <Label fx:id="aiGameConfidenceLabel" styleClass="stats-line" text="Confiance IA: -" />
+                                <Label fx:id="aiGameExpectedLabel" styleClass="stats-line" text="Résultat attendu: -" />
+                                <Label styleClass="stats-chip-label" text="Derniers matchs (mode sélectionné)" />
+                                <ListView fx:id="aiGameRecentList" prefHeight="120.0" />
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+                    </children>
+                        </VBox>
+                    </children>
+                </StackPane>
+            </content>
+        </ScrollPane>
+    </children>
+</StackPane>

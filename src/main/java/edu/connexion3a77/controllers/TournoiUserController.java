@@ -9,10 +9,13 @@ import edu.connexion3a77.entities.Tournoi;
 import edu.connexion3a77.services.DemandeParticipationService;
 import edu.connexion3a77.services.TournoiService;
 import edu.connexion3a77.ui.SceneNavigator;
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.controllers.SceneManager;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -37,6 +40,10 @@ public class TournoiUserController {
     private FlowPane tournoiCardsPane;
     @FXML
     private Label userStatusLabel;
+    @FXML
+    private Label currentUserNameLabel;
+    @FXML
+    private Label currentUserRankLabel;
     @FXML
     private StackPane calendarContainer;
 
@@ -73,6 +80,7 @@ public class TournoiUserController {
 
     @FXML
     public void initialize() {
+        bindCurrentUserCard();
         cbFilterTypeTournoi.setItems(FXCollections.observableArrayList("Tous", "SOLO", "DUO", "SQUAD", "LIGUE"));
         cbFilterTypeTournoi.setValue("Tous");
         cbPartNiveau.setItems(FXCollections.observableArrayList("Amateur", "Medium", "Pro"));
@@ -89,6 +97,22 @@ public class TournoiUserController {
     @FXML
     private void onBackToAdmin() {
         SceneNavigator.showAdminView();
+    }
+
+    @FXML
+    private void goToCatalogue(ActionEvent event) {
+        SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
+    }
+
+    @FXML
+    private void handleViewProfile(ActionEvent event) {
+        SceneManager.switchScene("/edu/ProjetPI/views/profile.fxml", "Mon Profil");
+    }
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        DashboardSession.clear();
+        SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "E-SPORTIFY : Connexion");
     }
 
     @FXML
@@ -405,5 +429,36 @@ public class TournoiUserController {
             return "BATTLE ROYALE";
         }
         return "MIND";
+    }
+
+    private void bindCurrentUserCard() {
+        var currentUser = DashboardSession.getCurrentUser();
+        if (currentUser == null) {
+            return;
+        }
+
+        if (currentUserNameLabel != null) {
+            String displayName = currentUser.getPseudo();
+            if (displayName == null || displayName.isBlank()) {
+                displayName = currentUser.getFullName();
+            }
+            if (displayName == null || displayName.isBlank()) {
+                displayName = currentUser.getEmail();
+            }
+            currentUserNameLabel.setText(displayName == null ? "PLAYER" : displayName);
+        }
+
+        if (currentUserRankLabel != null) {
+            String role = currentUser.getRole();
+            String rank = "Member";
+            if ("ROLE_ADMIN".equalsIgnoreCase(role)) {
+                rank = "Admin";
+            } else if ("ROLE_MANAGER".equalsIgnoreCase(role)) {
+                rank = "Manager";
+            } else if ("ROLE_JOUEUR".equalsIgnoreCase(role) || "ROLE_USER".equalsIgnoreCase(role)) {
+                rank = "Player";
+            }
+            currentUserRankLabel.setText("Rank: " + rank);
+        }
     }
 }

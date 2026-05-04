@@ -5,8 +5,11 @@ import edu.connexion3a77.entities.Tournoi;
 import edu.connexion3a77.services.DemandeParticipationService;
 import edu.connexion3a77.services.TournoiService;
 import edu.connexion3a77.ui.SceneNavigator;
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.controllers.SceneManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -29,6 +32,16 @@ import java.util.Map;
 import java.util.Optional;
 
 public class TournoiAdminController {
+    private static InitialSection initialSection = InitialSection.TOURNOIS;
+
+    public enum InitialSection {
+        TOURNOIS,
+        PARTICIPATIONS
+    }
+
+    public static void openOn(InitialSection section) {
+        initialSection = section == null ? InitialSection.TOURNOIS : section;
+    }
 
     @FXML
     private VBox formCard;
@@ -150,6 +163,13 @@ public class TournoiAdminController {
 
         formCard.setVisible(false);
         formCard.setManaged(false);
+
+        if (initialSection == InitialSection.PARTICIPATIONS) {
+            showParticipationView();
+        } else {
+            showTournamentView();
+        }
+        initialSection = InitialSection.TOURNOIS;
     }
 
     private void configureColumns() {
@@ -301,6 +321,75 @@ public class TournoiAdminController {
     }
 
     @FXML
+    private void goToTournoisAdmin(ActionEvent event) {
+        showTournamentView();
+    }
+
+    @FXML
+    private void goToParticipationsAdmin(ActionEvent event) {
+        onShowParticipationView();
+    }
+
+    @FXML
+    private void goToFrontOffice(ActionEvent event) {
+        SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
+    }
+
+    @FXML
+    private void goToGestionComptes(ActionEvent event) {
+        SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Gestion des comptes");
+    }
+
+    @FXML
+    private void goToMailing(ActionEvent event) {
+        SceneManager.switchScene("/backMailing.fxml", "Boutique Admin - Mailing");
+    }
+
+    @FXML
+    private void goToCatalogue(ActionEvent event) {
+        SceneManager.switchScene("/backListProduit.fxml", "Gestion des produits");
+    }
+
+    @FXML
+    private void goToAdminCategorie(ActionEvent event) {
+        SceneManager.switchScene("/backListCategorie.fxml", "Boutique Admin - Categories");
+    }
+
+    @FXML
+    private void goToPayments(ActionEvent event) {
+        edu.PROJETPI.AdminDashboardController.openOn(edu.PROJETPI.AdminDashboardController.InitialSection.PAIEMENTS);
+        SceneManager.switchScene("/admin-dashboard-view.fxml", "Liste des paiements");
+    }
+
+    @FXML
+    private void goToRevenuePrediction(ActionEvent event) {
+        edu.PROJETPI.AdminDashboardController.openOn(edu.PROJETPI.AdminDashboardController.InitialSection.PREDICTION_CA);
+        SceneManager.switchScene("/admin-dashboard-view.fxml", "Prediction chiffre d'affaires");
+    }
+
+    @FXML
+    private void goToCommandes(ActionEvent event) {
+        edu.PROJETPI.AdminDashboardController.openOn(edu.PROJETPI.AdminDashboardController.InitialSection.COMMANDES);
+        SceneManager.switchScene("/admin-dashboard-view.fxml", "Liste des commandes");
+    }
+
+    @FXML
+    private void handleViewProfile(ActionEvent event) {
+        SceneManager.switchScene("/edu/ProjetPI/views/profile.fxml", "Mon Profil");
+    }
+
+    @FXML
+    private void handleThemeToggle() {
+        statusLabel.setText("Theme conserve (style admin actif).");
+    }
+
+    @FXML
+    private void handleLogout() {
+        DashboardSession.clear();
+        SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "Login");
+    }
+
+    @FXML
     private void onToggleCreateForm() {
         if (formCard.isVisible()) {
             hideForm();
@@ -330,7 +419,7 @@ public class TournoiAdminController {
 
     @FXML
     private void onConsultJeux() {
-        SceneNavigator.showRawgGamesView();
+        SceneManager.switchScene("/fxml/rawg-games-view.fxml", "E-Sportify Admin - Consulter Jeux");
     }
 
     @FXML

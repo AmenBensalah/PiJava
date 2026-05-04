@@ -1,0 +1,107 @@
+{
+  "generatedAt": "2026-04-24T19:04:48+00:00",
+  "users": {
+    "42": {
+      "byGameType": {
+        "fps": {
+          "winProbability": 50.0,
+          "expectedResult": "L",
+          "confidence": "low",
+          "samplesSeen": 5,
+          "gameSamples": 2,
+          "model": "baseline_fallback",
+          "gameType": "fps"
+        },
+        "sports": {
+          "winProbability": 50.0,
+          "expectedResult": "L",
+          "confidence": "low",
+          "samplesSeen": 5,
+          "gameSamples": 2,
+          "model": "baseline_fallback",
+          "gameType": "sports"
+        },
+        "battle_royale": {
+          "winProbability": 40.0,
+          "expectedResult": "L",
+          "confidence": "low",
+          "samplesSeen": 5,
+          "gameSamples": 0,
+          "model": "baseline_fallback",
+          "gameType": "battle_royale"
+        },
+        "mind": {
+          "winProbability": 1.0,
+          "expectedResult": "L",
+          "confidence": "low",
+          "samplesSeen": 5,
+          "gameSamples": 1,
+          "model": "baseline_fallback",
+          "gameType": "mind"
+        },
+        "other": {
+          "winProbability": 40.0,
+          "expectedResult": "L",
+          "confidence": "low",
+          "samplesSeen": 5,
+          "gameSamples": 0,
+          "model": "baseline_fallback",
+          "gameType": "other"
+        }
+      },
+      "bestGameType": "fps",
+      "bestWinProbability": 50.0
+    },
+    "43": {
+      "byGameType": {
+        "fps": {
+          "winProbability": 50.0,
+          "expectedResult": "L",
+          "confidence": "low",
+          "samplesSeen": 5,
+          "gameSamples": 2,
+          "model": "baseline_fallback",
+          "gameType": "fps"
+        },
+        "sports": {
+          "winProbability": 50.0,
+          "expectedResult": "L",
+          "confidence": "low",
+          "samplesSeen": 5,
+          "gameSamples": 2,
+          "model": "baseline_fallback",
+          "gameType": "sports"
+        },
+        "battle_royale": {
+          "winProbability": 40.0,
+          "expectedResult": "L",
+          "confidence": "low",
+          "samplesSeen": 5,
+          "gameSamples": 0,
+          "model": "baseline_fallback",
+          "gameType": "battle_royale"
+        },
+        "mind": {
+          "winProbability": 1.0,
+          "expectedResult": "L",
+          "confidence": "low",
+          "samplesSeen": 5,
+          "gameSamples": 1,
+          "model": "baseline_fallback",
+          "gameType": "mind"
+        },
+        "other": {
+          "winProbability": 40.0,
+          "expectedResult": "L",
+          "confidence": "low",
+          "samplesSeen": 5,
+          "gameSamples": 0,
+          "model": "baseline_fallback",
+          "gameType": "other"
+        }
+      },
+      "bestGameType": "fps",
+      "bestWinProbability": 50.0
+    }
+  }
+}

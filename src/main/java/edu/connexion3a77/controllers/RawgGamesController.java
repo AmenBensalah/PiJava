@@ -2,7 +2,9 @@ package edu.connexion3a77.controllers;
 
 import edu.connexion3a77.entities.RawgGame;
 import edu.connexion3a77.services.RawgApiService;
-import edu.connexion3a77.ui.SceneNavigator;
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.controllers.SceneManager;
+import edu.connexion3a77.controllers.TournoiAdminController;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -46,7 +48,79 @@ public class RawgGamesController {
     @FXML
     private void onBackToAdmin() {
         executor.shutdownNow();
-        SceneNavigator.showAdminView();
+        SceneManager.switchScene("/fxml/tournoi-admin-view.fxml", "Gestion des tournois");
+    }
+
+    @FXML
+    private void goToFrontOffice() {
+        SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
+    }
+
+    @FXML
+    private void goToTournoisAdmin() {
+        TournoiAdminController.openOn(TournoiAdminController.InitialSection.TOURNOIS);
+        SceneManager.switchScene("/fxml/tournoi-admin-view.fxml", "Gestion des tournois");
+    }
+
+    @FXML
+    private void goToParticipationsAdmin() {
+        TournoiAdminController.openOn(TournoiAdminController.InitialSection.PARTICIPATIONS);
+        SceneManager.switchScene("/fxml/tournoi-admin-view.fxml", "Gestion des participations");
+    }
+
+    @FXML
+    private void goToGestionComptes() {
+        SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Gestion des comptes");
+    }
+
+    @FXML
+    private void goToMailing() {
+        SceneManager.switchScene("/backMailing.fxml", "Boutique Admin - Mailing");
+    }
+
+    @FXML
+    private void goToCatalogue() {
+        SceneManager.switchScene("/backListProduit.fxml", "Gestion des produits");
+    }
+
+    @FXML
+    private void goToAdminCategorie() {
+        SceneManager.switchScene("/backListCategorie.fxml", "Boutique Admin - Categories");
+    }
+
+    @FXML
+    private void goToPayments() {
+        edu.PROJETPI.AdminDashboardController.openOn(edu.PROJETPI.AdminDashboardController.InitialSection.PAIEMENTS);
+        SceneManager.switchScene("/admin-dashboard-view.fxml", "Liste des paiements");
+    }
+
+    @FXML
+    private void goToRevenuePrediction() {
+        edu.PROJETPI.AdminDashboardController.openOn(edu.PROJETPI.AdminDashboardController.InitialSection.PREDICTION_CA);
+        SceneManager.switchScene("/admin-dashboard-view.fxml", "Prediction chiffre d'affaires");
+    }
+
+    @FXML
+    private void goToCommandes() {
+        edu.PROJETPI.AdminDashboardController.openOn(edu.PROJETPI.AdminDashboardController.InitialSection.COMMANDES);
+        SceneManager.switchScene("/admin-dashboard-view.fxml", "Liste des commandes");
+    }
+
+    @FXML
+    private void handleViewProfile() {
+        SceneManager.switchScene("/edu/ProjetPI/views/profile.fxml", "Mon Profil");
+    }
+
+    @FXML
+    private void handleThemeToggle() {
+        gamesStatusLabel.setText("Theme conserve (style admin actif).");
+    }
+
+    @FXML
+    private void handleLogout() {
+        executor.shutdownNow();
+        DashboardSession.clear();
+        SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "Login");
     }
 
     @FXML

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane styleClass="root-pane" stylesheets="@ajoutProduit.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.projetJava.controllers.AjoutProduitController" prefWidth="1280.0" prefHeight="720.0">
+    <BorderPane>
+    <!-- TOP NAVBAR -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="65.0" styleClass="top-navbar" BorderPane.alignment="CENTER">
+            <padding><Insets left="20.0" right="30.0" /></padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                    <Label styleClass="logo-text" text="E-" />
+                    <Label styleClass="logo-text, logo-white" text="SPORTIFY" />
+                    <Label style="-fx-text-fill: #00e5ff; -fx-background-color: #001f3f; -fx-padding: 3 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 10px;" text="STORE" translateX="10" />
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox alignment="CENTER_RIGHT" spacing="12.0">
+                    <Button onAction="#handleViewProfile" text="Mon profil" styleClass="btn-secondary" prefWidth="170.0" prefHeight="45.0" />
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane">
+            <content>
+                <VBox spacing="25.0" styleClass="main-area-bg" minHeight="1000">
+                    <padding><Insets bottom="40.0" left="50.0" right="50.0" top="30.0" /></padding>
+                    <children>
+                        <!-- Banner -->
+                        <HBox prefHeight="140.0" styleClass="boutique-banner" alignment="CENTER_LEFT">
+                            <padding><Insets left="40.0" right="40.0" /></padding>
+                            <children>
+                                <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-text-fill: #00e5ff; -fx-font-size: 11px; -fx-font-weight: bold;" text="BOUTIQUE" />
+                                    <Label styleClass="banner-title" text="NOTRE CATALOGUE" />
+                                    <Label styleClass="banner-subtitle" text="Decouvrez nos produits gaming et e-sport." />
+                                </VBox>
+                                <HBox spacing="15.0" alignment="CENTER_RIGHT">
+                                    <Button onAction="#voirRecommandationsIA" text="IA Recommandations" styleClass="btn-secondary" prefWidth="190" prefHeight="45" />
+                                    <Button onAction="#goToCart" text="Panier" styleClass="btn-secondary" prefWidth="120" prefHeight="45" />
+                                    <Button onAction="#chargerProduits" text="Reinitialiser Filtres" styleClass="btn-primary" prefWidth="180" prefHeight="45" />
+                                </HBox>
+                            </children>
+                        </HBox>
+
+                        <HBox fx:id="categoryPillsContainer" spacing="12" alignment="CENTER_LEFT" />
+
+                        <!-- FILTERS -->
+                        <VBox styleClass="advanced-search-box" spacing="15">
+                            <padding><Insets top="20" right="25" bottom="20" left="25"/></padding>
+                            <Label text="Trouver un produit &amp; Offres" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+                            
+                            <!-- NOUVEAU : VERIFICATION FIDELITE -->
+                            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: rgba(255,255,255,0.05); -fx-padding: 10; -fx-background-radius: 8;">
+                                <Label text="Client fidele ?" style="-fx-text-fill: #d946ef; -fx-font-weight: bold;" />
+                                <TextField fx:id="inputFideliteEmail" promptText="Entrez votre e-mail..." styleClass="filter-input" prefWidth="250" />
+                                <Button text="Activer -10% sur tout" onAction="#activerOffreGlobale" styleClass="btn-special-pink" />
+                                <Label fx:id="lblGlobalPromo" text="Offre activee !" visible="false" style="-fx-text-fill: #00ffaa; -fx-font-weight: bold;" />
+                            </HBox>
+                            
+                            <HBox spacing="20" alignment="CENTER_LEFT">
+                                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                    <Label text="MOT CLE" styleClass="filter-label" />
+                                    <TextField fx:id="searchNom" onKeyReleased="#appliquerFiltres" styleClass="filter-input" promptText="Nom du produit..." />
+                                </VBox>
+                                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                    <Label text="CATEGORIE" styleClass="filter-label" />
+                                    <ComboBox fx:id="searchCat" onAction="#appliquerFiltres" prefWidth="200" styleClass="filter-input" promptText="Toutes les categories" />
+                                </VBox>
+                                <Button onAction="#trierPrixCroissant" text="Prix +" styleClass="cat-pill" prefHeight="45" translateY="10" />
+                                <Button onAction="#trierPrixDecroissant" text="Prix -" styleClass="cat-pill" prefHeight="45" translateY="10"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- PRODUCTS GRID -->
+                        <FlowPane fx:id="produitsContainer" hgap="20.0" vgap="25.0" />
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+    <!-- LEFT SIDEBAR: ADVANCED 3D DASHBOARD -->
+    <left>
+        <VBox prefWidth="260.0" styleClass="advanced-3d-sidebar" BorderPane.alignment="CENTER">
+            <padding><Insets top="30.0" left="20.0" right="20.0" /></padding>
+            <children>
+                <VBox spacing="8" style="-fx-padding: 0 0 30 0;">
+                    <Label text="MAIN INTERFACE" style="-fx-text-fill: #00e5ff; -fx-font-size: 10px; -fx-font-weight: 900; -fx-letter-spacing: 2;" />
+                    <Label text="DASHBOARD" styleClass="filter-title" style="-fx-font-size: 22px; -fx-text-fill: white;" />
+                    <Region prefHeight="2" style="-fx-background-color: linear-gradient(to right, #00e5ff, transparent); -fx-opacity: 0.5;" />
+                </VBox>
+                
+                <VBox spacing="15.0" VBox.vgrow="ALWAYS">
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu, menu-active" text="Boutique Core">
+                        <graphic><Region styleClass="icon-glow" /></graphic>
+                    </Button>
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu" text="Tournois Pro"  onAction="#goToTournoisUser" />
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu" text="Equipes Elite" />
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu" text="Flux Reseau" />
+                    
+                    <Region prefHeight="40" />
+                    <Label text="NEURAL SERVICES" styleClass="filter-label" style="-fx-font-size: 10px; -fx-letter-spacing: 1;" />
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu-alt" text="Coaching IA" />
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu-alt" text="Analytics" />
+                    
+                    <Region VBox.vgrow="ALWAYS" />
+                    
+                    <!-- USER CARD MINI -->
+                    <VBox styleClass="user-mini-card" spacing="10">
+                        <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Region prefWidth="35" prefHeight="35" style="-fx-background-color: #bd00ff; -fx-background-radius: 50%; -fx-effect: dropshadow(gaussian, #bd00ff, 10, 0, 0, 0);" />
+                            <VBox>
+                                <Label fx:id="currentUserNameLabel" text="PLAYER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px;" />
+                                <Label fx:id="currentUserRankLabel" text="Rank: Member" style="-fx-text-fill: #bd00ff; -fx-font-size: 10px;" />
+                            </VBox>
+                        </HBox>
+                        <Button onAction="#handleLogout" text="DECONNEXION" styleClass="btn-3d-red-small" prefWidth="200" />
+                    </VBox>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+    </BorderPane>
+
+    <!-- CHATBOT OVERLAY -->
+    <VBox fx:id="chatbotWindow" visible="false" maxWidth="350" maxHeight="450" styleClass="chatbot-window" StackPane.alignment="BOTTOM_RIGHT">
+        <StackPane.margin><Insets bottom="80.0" right="30.0"/></StackPane.margin>
+        <HBox styleClass="chatbot-header" alignment="CENTER_LEFT" prefHeight="50.0">
+            <Label text="IA Assistant" style="-fx-font-weight: bold; -fx-text-fill: white;" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+            <Button text="X" onAction="#toggleChatbot" styleClass="chatbot-close-btn" />
+        </HBox>
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="chatbot-scroll" vbarPolicy="ALWAYS">
+            <VBox fx:id="chatMessages" spacing="10" style="-fx-padding: 15;" />
+        </ScrollPane>
+        <HBox spacing="10" style="-fx-padding: 10; -fx-background-color: #1a1a2e; -fx-border-color: #333; -fx-border-width: 1 0 0 0; -fx-background-radius: 0 0 10 10;">
+            <TextField fx:id="chatInput" promptText="Poser une question..." HBox.hgrow="ALWAYS" onAction="#sendChatMessage" styleClass="chatbot-input" />
+            <Button text="Envoyer" onAction="#sendChatMessage" styleClass="btn-primary" />
+        </HBox>
+    </VBox>
+
+    <!-- RECOMMANDATION OVERLAY - ADVANCED AI INTERFACE -->
+    <VBox fx:id="recoOverlay" visible="false" alignment="CENTER" spacing="20" style="-fx-background-color: rgba(5, 5, 15, 0.95); -fx-padding: 50;">
+        <HBox alignment="CENTER_RIGHT" maxWidth="1200" spacing="20">
+            <!-- Decorative AI Stats / Numbers -->
+            <HBox spacing="15" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <VBox style="-fx-background-color: rgba(0, 229, 255, 0.1); -fx-padding: 8 15; -fx-background-radius: 8; -fx-border-color: rgba(0, 229, 255, 0.4); -fx-border-radius: 8;" alignment="CENTER">
+                    <Label text="SYS_LOAD" style="-fx-text-fill: #94a3b8; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                    <Label text="42.8%" style="-fx-text-fill: #00e5ff; -fx-font-size: 18px; -fx-font-weight: 900; -fx-effect: dropshadow(gaussian, #00e5ff, 5, 0, 0, 0);"/>
+                </VBox>
+                <VBox style="-fx-background-color: rgba(189, 0, 255, 0.1); -fx-padding: 8 15; -fx-background-radius: 8; -fx-border-color: rgba(189, 0, 255, 0.4); -fx-border-radius: 8;" alignment="CENTER">
+                    <Label text="MATCH_RATE" style="-fx-text-fill: #94a3b8; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                    <Label text="99.9%" style="-fx-text-fill: #bd00ff; -fx-font-size: 18px; -fx-font-weight: 900; -fx-effect: dropshadow(gaussian, #bd00ff, 5, 0, 0, 0);"/>
+                </VBox>
+                <VBox style="-fx-background-color: rgba(255, 0, 85, 0.1); -fx-padding: 8 15; -fx-background-radius: 8; -fx-border-color: rgba(255, 0, 85, 0.4); -fx-border-radius: 8;" alignment="CENTER">
+                    <Label text="NEURAL_NODES" style="-fx-text-fill: #94a3b8; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                    <Label text="14,059" style="-fx-text-fill: #ff0055; -fx-font-size: 18px; -fx-font-weight: 900; -fx-effect: dropshadow(gaussian, #ff0055, 5, 0, 0, 0);"/>
+                </VBox>
+            </HBox>
+            <Button text="[ RELOAD_CORE ]" style="-fx-background-color: transparent; -fx-border-color: #00e5ff; -fx-border-radius: 4; -fx-text-fill: #00e5ff; -fx-font-weight: bold; -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 8 15;"/>
+            <Button text="TERMINATE SESSION" onAction="#closeRecommandations" style="-fx-background-color: rgba(255, 0, 85, 0.2); -fx-border-color: #ff0055; -fx-border-radius: 4; -fx-text-fill: #ff0055; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 8 20; -fx-effect: dropshadow(gaussian, #ff0055, 10, 0, 0, 0);"/>
+        </HBox>
+
+        <Label text="SELECTION DE L'INTELLIGENCE ARTIFICIELLE" style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: 900; -fx-effect: dropshadow(three-pass-box, #bd00ff, 30, 0, 0, 0);"/>
+        <Label text="Notre modele de Machine Learning a identifie ces produits comme etant les plus pertinents pour vous." style="-fx-text-fill: #00e5ff; -fx-font-size: 16px; -fx-padding: 0 0 30 0;"/>
+        
+        <HBox fx:id="recoCardsContainer" alignment="CENTER" spacing="30" maxWidth="1200" />
+    </VBox>
+
+    <Button fx:id="chatbotToggleBtn" text="Aide IA" onAction="#toggleChatbot" StackPane.alignment="BOTTOM_RIGHT" styleClass="btn-chatbot-toggle">
+        <StackPane.margin><Insets bottom="20.0" right="30.0"/></StackPane.margin>
+    </Button>
+
+</StackPane>

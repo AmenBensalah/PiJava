@@ -1,0 +1,294 @@
+{
+  "generatedAt": "2026-04-24T19:04:48+00:00",
+  "summary": {
+    "tournoisPlayed": 6,
+    "matchesPlayed": 6,
+    "wins": 2,
+    "draws": 1,
+    "losses": 2,
+    "winRate": 40.0,
+    "totalPoints": 3.0,
+    "averagePointsPerMatch": 0.5,
+    "bestGameType": "fps",
+    "bestGameWinRate": 50.0
+  },
+  "placements": {
+    "first": 1,
+    "second": 0,
+    "third": 0
+  },
+  "perGame": {
+    "fps": {
+      "played": 2,
+      "wins": 1,
+      "draws": 0,
+      "losses": 1,
+      "points": 0.0,
+      "winRate": 50.0,
+      "avgPoints": 0.0
+    },
+    "sports": {
+      "played": 2,
+      "wins": 1,
+      "draws": 0,
+      "losses": 1,
+      "points": 0.0,
+      "winRate": 50.0,
+      "avgPoints": 0.0
+    },
+    "battle_royale": {
+      "played": 1,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "points": 3.0,
+      "winRate": 0.0,
+      "avgPoints": 3.0
+    },
+    "mind": {
+      "played": 1,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "points": 0.0,
+      "winRate": 0.0,
+      "avgPoints": 0.0
+    },
+    "other": {
+      "played": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "points": 0.0,
+      "winRate": 0.0,
+      "avgPoints": 0.0
+    }
+  },
+  "recentForm": [
+    "L",
+    "W",
+    "L",
+    "W",
+    "D"
+  ],
+  "recentMatches": [
+    {
+      "date": "2026-02-14",
+      "tournoi": "AI Duel FPS Score Cup",
+      "typeGame": "fps",
+      "typeTournoi": "solo",
+      "result": "L",
+      "points": 0.0,
+      "placement": null,
+      "matchedBy": "player_link"
+    },
+    {
+      "date": "2026-02-16",
+      "tournoi": "AI Duel Sports Score Cup",
+      "typeGame": "sports",
+      "typeTournoi": "solo",
+      "result": "W",
+      "points": 0.0,
+      "placement": null,
+      "matchedBy": "player_link"
+    },
+    {
+      "date": "2026-02-18",
+      "tournoi": "AI Duel Battle Royale Cup",
+      "typeGame": "battle_royale",
+      "typeTournoi": "solo",
+      "result": NaN,
+      "points": 3.0,
+      "placement": "first",
+      "matchedBy": "player_link"
+    },
+    {
+      "date": "2026-02-20",
+      "tournoi": "Solo Sports Test Cup",
+      "typeGame": "sports",
+      "typeTournoi": "solo",
+      "result": "L",
+      "points": 0.0,
+      "placement": null,
+      "matchedBy": "player_link"
+    },
+    {
+      "date": "2026-02-21",
+      "tournoi": "Solo FPS Test Cup",
+      "typeGame": "fps",
+      "typeTournoi": "solo",
+      "result": "W",
+      "points": 0.0,
+      "placement": null,
+      "matchedBy": "player_link"
+    },
+    {
+      "date": "2026-02-22",
+      "tournoi": "Solo Mind Test Cup",
+      "typeGame": "mind",
+      "typeTournoi": "solo",
+      "result": "D",
+      "points": 0.0,
+      "placement": null,
+      "matchedBy": "player_link"
+    }
+  ],
+  "trend": "stable",
+  "confidence": "low",
+  "dataQuality": {
+    "matchedByPlayerLink": 6,
+    "matchedByNameAlias": 0,
+    "matchedByPlacement": 0,
+    "ambiguousSideMatches": 0
+  },
+  "aiInsight": "Resultats actuellement fragiles; un travail cible sur la regularite est recommande. Le meilleur rendement apparait sur le mode fps. La dynamique recente est stable. 1 premiere(s) place(s) confirment un vrai potentiel de podium. Attention: faible volume de matchs, analyse a confirmer avec plus de donnees.",
+  "tournamentTypeStats": {
+    "solo": {
+      "played": 6,
+      "wins": 2,
+      "draws": 1,
+      "losses": 2,
+      "winRate": 33.3
+    },
+    "duo": {
+      "played": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "winRate": 0.0
+    },
+    "trio": {
+      "played": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "winRate": 0.0
+    },
+    "squad": {
+      "played": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "winRate": 0.0
+    },
+    "other": {
+      "played": 0,
+      "wins": 0,
+      "draws": 0,
+      "losses": 0,
+      "winRate": 0.0
+    }
+  },
+  "tournamentTypePrediction": {
+    "solo": {
+      "predictedWinRate": 34.5,
+      "confidence": "low",
+      "historySamples": 6
+    },
+    "duo": {
+      "predictedWinRate": 36.2,
+      "confidence": "low",
+      "historySamples": 0
+    },
+    "trio": {
+      "predictedWinRate": 36.2,
+      "confidence": "low",
+      "historySamples": 0
+    },
+    "squad": {
+      "predictedWinRate": 36.2,
+      "confidence": "low",
+      "historySamples": 0
+    },
+    "other": {
+      "predictedWinRate": 36.2,
+      "confidence": "low",
+      "historySamples": 0
+    }
+  },
+  "mlPrediction": {
+    "byGameType": {
+      "fps": {
+        "winProbability": 50.0,
+        "expectedResult": "L",
+        "confidence": "low",
+        "samplesSeen": 5,
+        "gameSamples": 2,
+        "model": "baseline_fallback",
+        "gameType": "fps"
+      },
+      "sports": {
+        "winProbability": 50.0,
+        "expectedResult": "L",
+        "confidence": "low",
+        "samplesSeen": 5,
+        "gameSamples": 2,
+        "model": "baseline_fallback",
+        "gameType": "sports"
+      },
+      "battle_royale": {
+        "winProbability": 40.0,
+        "expectedResult": "L",
+        "confidence": "low",
+        "samplesSeen": 5,
+        "gameSamples": 0,
+        "model": "baseline_fallback",
+        "gameType": "battle_royale"
+      },
+      "mind": {
+        "winProbability": 1.0,
+        "expectedResult": "L",
+        "confidence": "low",
+        "samplesSeen": 5,
+        "gameSamples": 1,
+        "model": "baseline_fallback",
+        "gameType": "mind"
+      },
+      "other": {
+        "winProbability": 40.0,
+        "expectedResult": "L",
+        "confidence": "low",
+        "samplesSeen": 5,
+        "gameSamples": 0,
+        "model": "baseline_fallback",
+        "gameType": "other"
+      }
+    },
+    "bestGameType": "fps",
+    "bestWinProbability": 50.0
+  },
+  "mlModelInfo": {
+    "generatedAt": "2026-04-24T19:04:48+00:00",
+    "features": [
+      "prev_matches",
+      "prev_win_rate",
+      "prev_draw_rate",
+      "prev_loss_rate",
+      "prev_avg_points",
+      "prev_form5_score",
+      "prev_form10_score",
+      "prev_recent_win_streak",
+      "prev_recent_loss_streak",
+      "prev_game_matches",
+      "prev_game_win_rate",
+      "prev_game_draw_rate",
+      "prev_game_loss_rate",
+      "prev_game_avg_points",
+      "prev_game_form5_score",
+      "is_squad",
+      "game_fps",
+      "game_sports",
+      "game_battle_royale",
+      "game_mind",
+      "game_other"
+    ],
+    "trainSamples": 10,
+    "predictSamples": 10,
+    "status": "fallback",
+    "reason": "Insufficient train rows (<24)",
+    "selectedModel": "baseline_fallback",
+    "candidateScores": {},
+    "cvMetric": "balanced_accuracy",
+    "cvFolds": 0
+  }
+}

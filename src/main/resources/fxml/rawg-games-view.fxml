@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -11,24 +12,76 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+<BorderPane prefHeight="860.0" prefWidth="1380.0" styleClass="root-pane"
+            xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="edu.connexion3a77.controllers.RawgGamesController"
-            styleClass="app-root">
+            fx:controller="edu.connexion3a77.controllers.RawgGamesController">
+
+    <stylesheets>
+        <URL value="@/ajoutProduit.css" />
+        <URL value="@/styles/esportify-theme.css" />
+        <URL value="@/css/rawg-games.css" />
+    </stylesheets>
+
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="65.0" styleClass="top-navbar" BorderPane.alignment="CENTER">
+            <padding><Insets left="20.0" right="30.0" /></padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                    <Label styleClass="logo-text" text="E-" />
+                    <Label styleClass="logo-text, logo-white" text="SPORTIFY" />
+                    <Label style="-fx-text-fill: #ffa500; -fx-background-color: #332100; -fx-padding: 3 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 10px;" text="ADMIN" translateX="10" />
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField prefWidth="350.0" promptText="Rechercher joueurs, equipes, tournois..." styleClass="global-search" />
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="15.0" alignment="CENTER">
+                    <Button onAction="#goToCatalogue" text="Dashboard" styleClass="btn-primary" />
+                    <Button onAction="#handleViewProfile" text="Voir mon profil" styleClass="btn-secondary" />
+                </HBox>
+            </children>
+        </HBox>
+    </top>
 
     <left>
-        <VBox prefWidth="250.0" styleClass="sidebar">
-            <padding>
-                <Insets top="20" right="14" bottom="20" left="14"/>
-            </padding>
-            <Label text="E-SPORTIFY" styleClass="logo-title"/>
-            <Label text="ADMIN" styleClass="logo-badge"/>
-            <Button text="Retour Tournois" onAction="#onBackToAdmin" maxWidth="1.7976931348623157E308" styleClass="menu-btn active"/>
+        <VBox prefWidth="220.0" styleClass="global-sidebar" BorderPane.alignment="CENTER">
+            <children>
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Menu">
+                    <VBox.margin><Insets bottom="10.0" top="10.0" /></VBox.margin>
+                </Button>
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToFrontOffice" styleClass="menu-btn" text="Client (Front)" textFill="#00e5ff" style="-fx-font-weight: bold;" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion fil d'actualite" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion Equipes" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion Tournoi" />
+                <VBox>
+                    <Button maxWidth="1.7976931348623157E308" text="Tournoi" styleClass="sidebar-submenu-btn" onAction="#goToTournoisAdmin" />
+                    <Button maxWidth="1.7976931348623157E308" text="Participations" styleClass="sidebar-submenu-btn" onAction="#goToParticipationsAdmin" />
+                    <Button maxWidth="1.7976931348623157E308" text="Consulter jeux" styleClass="sidebar-submenu-btn, sidebar-submenu-active" />
+                </VBox>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion Boutique" />
+                <VBox>
+                    <Button maxWidth="1.7976931348623157E308" text="Centre de Mailing" styleClass="sidebar-submenu-btn" onAction="#goToMailing" />
+                    <Button maxWidth="1.7976931348623157E308" text="Produits" styleClass="sidebar-submenu-btn" onAction="#goToCatalogue" />
+                    <Button maxWidth="1.7976931348623157E308" text="Categories" styleClass="sidebar-submenu-btn" onAction="#goToAdminCategorie" />
+                    <Button maxWidth="1.7976931348623157E308" text="Paiements" styleClass="sidebar-submenu-btn" onAction="#goToPayments" />
+                    <Button maxWidth="1.7976931348623157E308" text="Prediction CA" styleClass="sidebar-submenu-btn" onAction="#goToRevenuePrediction" />
+                    <Button maxWidth="1.7976931348623157E308" text="Commandes" styleClass="sidebar-submenu-btn" onAction="#goToCommandes" />
+                </VBox>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion comptes" onAction="#goToGestionComptes" />
+                <Region VBox.vgrow="ALWAYS" />
+                <VBox alignment="CENTER" spacing="10">
+                    <padding><Insets bottom="20.0" left="20" right="20"/></padding>
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="theme-toggle-btn" text="Theme" onAction="#handleThemeToggle" />
+                    <Button maxWidth="1.7976931348623157E308" onAction="#handleLogout" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="Deconnexion" />
+                </VBox>
+            </children>
         </VBox>
     </left>
 
     <center>
-        <VBox spacing="16.0" styleClass="main-content">
+        <VBox spacing="16.0" styleClass="main-area-bg">
             <padding>
                 <Insets top="20" right="24" bottom="20" left="24"/>
             </padding>

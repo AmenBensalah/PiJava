@@ -11,89 +11,136 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="edu.connexion3a77.controllers.TournoiUserController"
-            styleClass="app-root">
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="edu.connexion3a77.controllers.TournoiUserController"
+           prefWidth="1280.0" prefHeight="720.0"
+           styleClass="root-pane"
+           stylesheets="@/ajoutProduit.css,@/css/tournoi-user.css">
 
-    <left>
-        <VBox prefWidth="260.0" styleClass="sidebar">
-            <padding>
-                <Insets top="20" right="16" bottom="20" left="16"/>
-            </padding>
-            <Label text="E-SPORTIFY" styleClass="logo-title"/>
-            <Label text="USER" styleClass="logo-badge"/>
-            <Button text="Retour admin" onAction="#onBackToAdmin" maxWidth="1.7976931348623157E308" styleClass="menu-btn"/>
-            <Button text="Rafraichir" onAction="#onRefreshUserData" maxWidth="1.7976931348623157E308" styleClass="menu-btn"/>
-            <Button text="Reinitialiser filtres" onAction="#onResetFilters" maxWidth="1.7976931348623157E308" styleClass="menu-btn"/>
-        </VBox>
-    </left>
-
-    <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" pannable="true" styleClass="content-scroll">
-            <content>
-        <VBox spacing="16.0" styleClass="main-content" fillWidth="true">
-            <padding>
-                <Insets top="20" right="24" bottom="20" left="24"/>
-            </padding>
-
-            <VBox spacing="12.0" styleClass="header-card">
-                <Label text="ESPACE USER" styleClass="header-kicker"/>
-                <Label text="DECROCHE TON TOURNOI" styleClass="header-title"/>
-                <Label text="Consulte les tournois, rejoins et suis tes participations." styleClass="header-subtitle"/>
-                <HBox spacing="10.0" alignment="CENTER_LEFT">
-                    <TextField fx:id="tfSearch" promptText="Rechercher un tournoi..." onKeyReleased="#onSearch" styleClass="field-input" HBox.hgrow="ALWAYS"/>
-                    <ComboBox fx:id="cbFilterTypeTournoi" promptText="Type tournoi" styleClass="field-input" prefWidth="160"/>
-                </HBox>
-            </VBox>
-
-            <VBox spacing="14.0" styleClass="section-card">
-                <Label text="Tournois disponibles" styleClass="section-title"/>
-                <FlowPane fx:id="tournoiCardsPane" hgap="16" vgap="16" prefWrapLength="1100"/>
-            </VBox>
-
-            <VBox spacing="12.0" styleClass="section-card">
-                <Label text="Calendrier de mes tournois inscrits" styleClass="section-title"/>
-                <StackPane fx:id="calendarContainer" minHeight="360.0" prefHeight="420.0" maxHeight="420.0" VBox.vgrow="NEVER"/>
-            </VBox>
-
-            <HBox spacing="18.0" VBox.vgrow="ALWAYS">
-                <VBox spacing="12.0" styleClass="participation-card" prefWidth="420.0">
-                    <Label text="Formulaire de participation" styleClass="section-title"/>
-                    <Label text="ID Tournoi" styleClass="field-label"/>
-                    <TextField fx:id="tfPartTournoiId" promptText="ID du tournoi" styleClass="field-input" disable="true"/>
-                    <Label text="Description" styleClass="field-label"/>
-                    <TextField fx:id="tfPartDescription" promptText="Raison de ta participation" styleClass="field-input"/>
-                    <Label text="Niveau" styleClass="field-label"/>
-                    <ComboBox fx:id="cbPartNiveau" promptText="Selectionner un niveau" styleClass="field-input"/>
-                    <HBox spacing="10.0">
-                        <Button text="Enregistrer" onAction="#onSaveParticipation" styleClass="primary-btn"/>
-                        <Button text="Annuler" onAction="#onCancelParticipationEdit" styleClass="secondary-btn"/>
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" prefHeight="65.0" styleClass="top-navbar" BorderPane.alignment="CENTER">
+                <padding><Insets left="20.0" right="30.0" /></padding>
+                <children>
+                    <HBox alignment="CENTER_LEFT" spacing="5.0">
+                        <Label styleClass="logo-text" text="E-" />
+                        <Label styleClass="logo-text, logo-white" text="SPORTIFY" />
+                        <Label style="-fx-text-fill: #00e5ff; -fx-background-color: #001f3f; -fx-padding: 3 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 10px;" text="STORE" translateX="10" />
                     </HBox>
-                </VBox>
-
-                <VBox spacing="12.0" styleClass="table-card" VBox.vgrow="ALWAYS">
-                    <Label text="Mes participations" styleClass="section-title"/>
-                    <TableView fx:id="participationTable" VBox.vgrow="ALWAYS" styleClass="participation-table">
-                        <columns>
-                            <TableColumn fx:id="colPartId" text="ID" prefWidth="60.0"/>
-                            <TableColumn fx:id="colPartTournoiId" text="Tournoi ID" prefWidth="90.0"/>
-                            <TableColumn fx:id="colPartTournoiNom" text="Tournoi" prefWidth="170.0"/>
-                            <TableColumn fx:id="colPartDescription" text="Description" prefWidth="220.0"/>
-                            <TableColumn fx:id="colPartNiveau" text="Niveau" prefWidth="110.0"/>
-                            <TableColumn fx:id="colPartActions" text="Actions" prefWidth="140.0"/>
-                        </columns>
-                    </TableView>
-                </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <HBox alignment="CENTER_RIGHT" spacing="12.0">
+                        <Button onAction="#handleViewProfile" text="Mon profil" styleClass="btn-secondary" prefWidth="170.0" prefHeight="45.0" />
+                    </HBox>
+                </children>
             </HBox>
+        </top>
 
-            <Label fx:id="userStatusLabel" text="Pret." styleClass="status-label"/>
-        </VBox>
-            </content>
-        </ScrollPane>
-    </center>
-</BorderPane>
+        <left>
+            <VBox prefWidth="260.0" styleClass="advanced-3d-sidebar" BorderPane.alignment="CENTER">
+                <padding><Insets top="30.0" left="20.0" right="20.0" /></padding>
+                <children>
+                    <VBox spacing="8" style="-fx-padding: 0 0 30 0;">
+                        <Label text="MAIN INTERFACE" style="-fx-text-fill: #00e5ff; -fx-font-size: 10px; -fx-font-weight: 900; -fx-letter-spacing: 2;" />
+                        <Label text="DASHBOARD" styleClass="filter-title" style="-fx-font-size: 22px; -fx-text-fill: white;" />
+                        <Region prefHeight="2" style="-fx-background-color: linear-gradient(to right, #00e5ff, transparent); -fx-opacity: 0.5;" />
+                    </VBox>
+
+                    <VBox spacing="15.0" VBox.vgrow="ALWAYS">
+                        <Button onAction="#goToCatalogue" mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu" text="Boutique Core" />
+                        <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu, menu-active" text="Tournois Pro" />
+                        <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu" text="Equipes Elite" />
+                        <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu" text="Flux Reseau" />
+
+                        <Region prefHeight="40" />
+                        <Label text="NEURAL SERVICES" styleClass="filter-label" style="-fx-font-size: 10px; -fx-letter-spacing: 1;" />
+                        <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu-alt" text="Coaching IA" />
+                        <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="btn-3d-menu-alt" text="Analytics" />
+
+                        <Region VBox.vgrow="ALWAYS" />
+                        <VBox styleClass="user-mini-card" spacing="10">
+                            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Region prefWidth="35" prefHeight="35" style="-fx-background-color: #bd00ff; -fx-background-radius: 50%; -fx-effect: dropshadow(gaussian, #bd00ff, 10, 0, 0, 0);" />
+                                <VBox>
+                                    <Label fx:id="currentUserNameLabel" text="PLAYER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px;" />
+                                    <Label fx:id="currentUserRankLabel" text="Rank: Member" style="-fx-text-fill: #bd00ff; -fx-font-size: 10px;" />
+                                </VBox>
+                            </HBox>
+                            <Button onAction="#handleLogout" text="DECONNEXION" styleClass="btn-3d-red-small" prefWidth="200" />
+                        </VBox>
+                    </VBox>
+                </children>
+            </VBox>
+        </left>
+
+        <center>
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" pannable="true" styleClass="transparent-scroll-pane">
+                <content>
+                    <VBox spacing="16.0" styleClass="main-area-bg" fillWidth="true">
+                        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+
+                        <VBox spacing="12.0" styleClass="header-card">
+                            <Label text="ESPACE USER" styleClass="header-kicker"/>
+                            <Label text="DECROCHE TON TOURNOI" styleClass="header-title"/>
+                            <Label text="Consulte les tournois, rejoins et suis tes participations." styleClass="header-subtitle"/>
+                            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                <TextField fx:id="tfSearch" promptText="Rechercher un tournoi..." onKeyReleased="#onSearch" styleClass="field-input" HBox.hgrow="ALWAYS"/>
+                                <ComboBox fx:id="cbFilterTypeTournoi" promptText="Type tournoi" styleClass="field-input" prefWidth="160"/>
+                                <Button text="Rafraichir" onAction="#onRefreshUserData" styleClass="secondary-btn"/>
+                                <Button text="Reset filtres" onAction="#onResetFilters" styleClass="secondary-btn"/>
+                            </HBox>
+                        </VBox>
+
+                        <VBox spacing="14.0" styleClass="section-card">
+                            <Label text="Tournois disponibles" styleClass="section-title"/>
+                            <FlowPane fx:id="tournoiCardsPane" hgap="16" vgap="16" prefWrapLength="1100"/>
+                        </VBox>
+
+                        <VBox spacing="12.0" styleClass="section-card">
+                            <Label text="Calendrier de mes tournois inscrits" styleClass="section-title"/>
+                            <StackPane fx:id="calendarContainer" minHeight="360.0" prefHeight="420.0" maxHeight="420.0" VBox.vgrow="NEVER"/>
+                        </VBox>
+
+                        <HBox spacing="18.0" VBox.vgrow="ALWAYS">
+                            <VBox spacing="12.0" styleClass="participation-card" prefWidth="420.0">
+                                <Label text="Formulaire de participation" styleClass="section-title"/>
+                                <Label text="ID Tournoi" styleClass="field-label"/>
+                                <TextField fx:id="tfPartTournoiId" promptText="ID du tournoi" styleClass="field-input" disable="true"/>
+                                <Label text="Description" styleClass="field-label"/>
+                                <TextField fx:id="tfPartDescription" promptText="Raison de ta participation" styleClass="field-input"/>
+                                <Label text="Niveau" styleClass="field-label"/>
+                                <ComboBox fx:id="cbPartNiveau" promptText="Selectionner un niveau" styleClass="field-input"/>
+                                <HBox spacing="10.0">
+                                    <Button text="Enregistrer" onAction="#onSaveParticipation" styleClass="primary-btn"/>
+                                    <Button text="Annuler" onAction="#onCancelParticipationEdit" styleClass="secondary-btn"/>
+                                </HBox>
+                            </VBox>
+
+                            <VBox spacing="12.0" styleClass="table-card" VBox.vgrow="ALWAYS">
+                                <Label text="Mes participations" styleClass="section-title"/>
+                                <TableView fx:id="participationTable" VBox.vgrow="ALWAYS" styleClass="participation-table">
+                                    <columns>
+                                        <TableColumn fx:id="colPartId" text="ID" prefWidth="60.0"/>
+                                        <TableColumn fx:id="colPartTournoiId" text="Tournoi ID" prefWidth="90.0"/>
+                                        <TableColumn fx:id="colPartTournoiNom" text="Tournoi" prefWidth="170.0"/>
+                                        <TableColumn fx:id="colPartDescription" text="Description" prefWidth="220.0"/>
+                                        <TableColumn fx:id="colPartNiveau" text="Niveau" prefWidth="110.0"/>
+                                        <TableColumn fx:id="colPartActions" text="Actions" prefWidth="140.0"/>
+                                    </columns>
+                                </TableView>
+                            </VBox>
+                        </HBox>
+
+                        <Label fx:id="userStatusLabel" text="Pret." styleClass="status-label"/>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </center>
+    </BorderPane>
+</StackPane>
