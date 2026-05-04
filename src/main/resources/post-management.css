@@ -1,0 +1,272 @@
+.pm-root,
+.editor-root {
+    -fx-background-color: transparent;
+}
+
+.pm-hero {
+    -fx-background-radius: 28;
+    -fx-border-radius: 28;
+    -fx-border-color: rgba(103, 206, 255, 0.18);
+    -fx-effect: dropshadow(gaussian, rgba(34, 196, 255, 0.15), 26, 0.26, 0, 4);
+}
+
+.pm-hero-overlay {
+    -fx-background-color:
+        linear-gradient(to right, rgba(7, 15, 29, 0.94), rgba(12, 20, 39, 0.72) 45%, rgba(58, 22, 84, 0.76)),
+        radial-gradient(center 72% 28%, radius 44%, rgba(205, 91, 255, 0.20), transparent 70%);
+    -fx-background-radius: 28;
+}
+
+.pm-hero-content {
+    -fx-padding: 28;
+}
+
+.pm-kicker,
+.pm-stat-label,
+.pm-mini-label,
+.editor-subtitle {
+    -fx-text-fill: #84a3c9;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+}
+
+.pm-title,
+.editor-title {
+    -fx-text-fill: #f8fcff;
+    -fx-font-size: 34px;
+    -fx-font-weight: 900;
+}
+
+.pm-chip,
+.pm-small-chip,
+.pm-type-badge,
+.editor-badge {
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+    -fx-padding: 8 12 8 12;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+}
+
+.pm-chip,
+.editor-badge {
+    -fx-text-fill: #eaf8ff;
+    -fx-background-color: rgba(11, 31, 43, 0.92);
+    -fx-border-color: rgba(93, 233, 255, 0.26);
+}
+
+.pm-chip.secondary {
+    -fx-text-fill: #c7d7ef;
+    -fx-border-color: rgba(255,255,255,0.08);
+}
+
+.pm-stat-card,
+.pm-main-panel,
+.pm-feed-panel,
+.pm-side-panel,
+.pm-preview-card,
+.pm-mini-card,
+.pm-action-card,
+.pm-activity-card,
+.editor-root {
+    -fx-background-color: linear-gradient(to bottom, rgba(10,16,31,0.96), rgba(8,13,24,0.92));
+    -fx-background-radius: 24;
+    -fx-border-radius: 24;
+    -fx-border-color: rgba(255,255,255,0.06);
+}
+
+.pm-stat-card {
+    -fx-padding: 18;
+    -fx-spacing: 8;
+}
+
+.cyan-card { -fx-border-color: rgba(82, 238, 255, 0.24); }
+.violet-card { -fx-border-color: rgba(207, 113, 255, 0.24); }
+.danger-card { -fx-border-color: rgba(255, 118, 156, 0.24); }
+
+.pm-stat-value,
+.pm-mini-value {
+    -fx-text-fill: #f7fcff;
+    -fx-font-size: 28px;
+    -fx-font-weight: 900;
+}
+
+.pm-stat-sub,
+.pm-selected-meta,
+.pm-activity-text,
+.editor-status {
+    -fx-text-fill: #9bb0cf;
+    -fx-font-size: 12px;
+}
+
+.pm-main-panel,
+.pm-feed-panel,
+.pm-side-panel,
+.editor-root {
+    -fx-padding: 18;
+}
+
+.pm-search-field,
+.editor-input {
+    -fx-background-color: rgba(17, 25, 43, 0.92);
+    -fx-border-color: rgba(90, 241, 255, 0.12);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-text-fill: #f5f9ff;
+    -fx-prompt-text-fill: #7384a3;
+    -fx-font-size: 14px;
+    -fx-padding: 13 15 13 15;
+}
+
+.editor-area { -fx-pref-row-count: 5; }
+
+.pm-filter-button,
+.pm-primary-button,
+.pm-ghost-button,
+.pm-danger-button,
+.media-action-button,
+.media-clear-button {
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-padding: 12 16 12 16;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+}
+
+.pm-filter-button {
+    -fx-text-fill: #dbe9ff;
+    -fx-background-color: rgba(23, 32, 52, 0.92);
+    -fx-border-color: rgba(255,255,255,0.08);
+}
+
+.pm-filter-button.active,
+.pm-primary-button {
+    -fx-text-fill: white;
+    -fx-background-color: linear-gradient(to right, rgba(64, 188, 255, 0.90), rgba(120, 86, 255, 0.86));
+}
+
+.pm-ghost-button {
+    -fx-text-fill: #eef6ff;
+    -fx-background-color: rgba(28, 38, 62, 0.92);
+    -fx-border-color: rgba(255,255,255,0.08);
+}
+
+.pm-danger-button {
+    -fx-text-fill: #ffeef4;
+    -fx-background-color: linear-gradient(to right, rgba(140, 37, 68, 0.94), rgba(211, 64, 103, 0.86));
+}
+
+.media-action-button {
+    -fx-text-fill: #f2fbff;
+    -fx-background-color: linear-gradient(to right, rgba(39, 158, 219, 0.92), rgba(101, 85, 240, 0.84));
+}
+
+.media-clear-button {
+    -fx-text-fill: #fbeef5;
+    -fx-background-color: rgba(60, 23, 39, 0.92);
+    -fx-border-color: rgba(255,255,255,0.08);
+}
+
+.pm-section-title,
+.pm-selected-title {
+    -fx-text-fill: #f4fbff;
+    -fx-font-size: 19px;
+    -fx-font-weight: 800;
+}
+
+.pm-small-chip,
+.pm-type-badge {
+    -fx-text-fill: #75efff;
+    -fx-background-color: rgba(13, 31, 43, 0.92);
+    -fx-border-color: rgba(88, 242, 255, 0.22);
+}
+
+.pm-posts-list {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.pm-posts-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 14 0;
+}
+
+.pm-post-card {
+    -fx-background-color: linear-gradient(to right, rgba(13, 20, 35, 0.96), rgba(15, 24, 43, 0.88));
+    -fx-background-radius: 24;
+    -fx-border-radius: 24;
+    -fx-border-color: rgba(255,255,255,0.06);
+    -fx-padding: 18;
+}
+
+.pm-post-card-selected {
+    -fx-border-color: rgba(84, 239, 255, 0.34);
+    -fx-effect: dropshadow(gaussian, rgba(72, 232, 255, 0.14), 18, 0.22, 0, 2);
+}
+
+.pm-card-title {
+    -fx-text-fill: #f5fbff;
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+}
+
+.pm-card-meta,
+.pm-card-snippet {
+    -fx-text-fill: #9fb3d2;
+    -fx-font-size: 12px;
+}
+
+.pm-card-snippet { -fx-font-size: 13px; }
+
+.pm-card-badge {
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+    -fx-padding: 7 10 7 10;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+}
+
+.pm-badge-text { -fx-text-fill: #b9d4ff; -fx-background-color: rgba(30, 51, 90, 0.92); }
+.pm-badge-media { -fx-text-fill: #7ef1ff; -fx-background-color: rgba(12, 54, 71, 0.92); }
+.pm-badge-event { -fx-text-fill: #ffc37f; -fx-background-color: rgba(84, 50, 18, 0.92); }
+
+.pm-preview-card,
+.pm-mini-card,
+.pm-action-card,
+.pm-activity-card { -fx-padding: 16; }
+
+.pm-media-preview-card {
+    -fx-padding: 12;
+    -fx-background-color: rgba(11, 19, 34, 0.92);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(255,255,255,0.05);
+}
+
+.pm-media-preview {
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+}
+
+.pm-media-hint {
+    -fx-text-fill: #8fa8cb;
+    -fx-font-size: 12px;
+}
+
+.front-media-preview-card {
+    -fx-padding: 12;
+    -fx-background-color: rgba(11, 19, 34, 0.82);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(255,255,255,0.05);
+}
+
+.pm-selected-content {
+    -fx-text-fill: #e7f1ff;
+    -fx-font-size: 13px;
+}
+
+.editor-root { -fx-padding: 22; }
+.editor-title { -fx-font-size: 24px; }

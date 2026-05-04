@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Pos?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="edu.esportify.controllers.FilActualiteController"
+           stylesheets="@styles.css,@ajoutProduit.css,@styles/esportify-theme.css"
+           styleClass="app-root root-pane">
+
+    <Pane styleClass="background-layer"/>
+
+    <VBox fx:id="backOfficeShell" spacing="0" styleClass="shell-root">
+        <StackPane>
+            <Pane styleClass="topbar-bg"/>
+            <ImageView fitWidth="320" preserveRatio="true" StackPane.alignment="CENTER_RIGHT" translateX="10">
+                <image><javafx.scene.image.Image url="@images/dragon.png"/></image>
+                <StackPane.margin><Insets right="-8" top="2"/></StackPane.margin>
+            </ImageView>
+            <HBox styleClass="topbar-content top-navbar" alignment="CENTER_LEFT">
+                <HBox styleClass="topbar-left" alignment="CENTER_LEFT">
+                    <ImageView fitWidth="54" fitHeight="54" preserveRatio="true"><image><javafx.scene.image.Image url="@images/logo5.png"/></image></ImageView>
+                    <Label text="E-SPORTIFY" styleClass="brand"/>
+                    <Label text="ADMIN" styleClass="brand-tag"/>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField promptText="Rechercher joueurs, equipes, tournois..." styleClass="search-input global-search"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <HBox styleClass="topbar-right" alignment="CENTER_RIGHT">
+                    <Button fx:id="dashboardButton" text="Dashboard" onAction="#handleShowDashboard" styleClass="topbar-action"/>
+                    <Button text="Voir mon profil" onAction="#handleOpenProfileScene" styleClass="topbar-action"/>
+                    <Button fx:id="switchToFrontButton" text="FrontOffice" onAction="#handleShowFrontOffice" styleClass="topbar-action secondary-topbar-action"/>
+                </HBox>
+            </HBox>
+        </StackPane>
+
+        <HBox VBox.vgrow="ALWAYS">
+            <VBox fx:id="adminSidebar" styleClass="sidebar sidebar-admin global-sidebar expanded" spacing="0">
+                <Button fx:id="adminMenuButton" text="Menu" onAction="#handleToggleAdminMenu" styleClass="sidebar-toggle menu-button sidebar-modern" maxWidth="Infinity"/>
+                <Separator styleClass="sidebar-separator"/>
+                <VBox styleClass="sidebar-nav" VBox.vgrow="ALWAYS">
+                    <HBox styleClass="sidebar-tree-header" maxWidth="Infinity">
+                    <Button fx:id="adminFilGroupButton" text="Gestion fil d'actualite" onAction="#handleToggleAdminFilGroup" styleClass="sidebar-item sidebar-modern" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                            <graphic><Label text="FIL" styleClass="sidebar-icon"/></graphic>
+                        </Button>
+                        <Label fx:id="adminFilChevron" text="v" styleClass="sidebar-chevron"/>
+                    </HBox>
+                    <VBox fx:id="adminFilSubmenu" styleClass="sidebar-submenu" spacing="6">
+                        <Button fx:id="announcementsButton" text="Gestion des annonces" onAction="#handleShowAnnouncements" styleClass="sidebar-item sidebar-sub sidebar-modern" maxWidth="Infinity">
+                            <graphic><Label text="A" styleClass="sidebar-icon sub-icon"/></graphic>
+                        </Button>
+                        <Button fx:id="postsButton" text="Gestion des publications" onAction="#handleShowPosts" styleClass="sidebar-item sidebar-sub active sidebar-modern" maxWidth="Infinity">
+                            <graphic><Label text="P" styleClass="sidebar-icon sub-icon"/></graphic>
+                        </Button>
+                        <Button fx:id="commentsButton" text="Gestion des commentaires" onAction="#handleShowComments" styleClass="sidebar-item sidebar-sub sidebar-modern" maxWidth="Infinity">
+                            <graphic><Label text="C" styleClass="sidebar-icon sub-icon"/></graphic>
+                        </Button>
+                        <Button fx:id="aiButton" text="Centre IA" onAction="#handleShowAi" styleClass="sidebar-item sidebar-sub sidebar-modern" maxWidth="Infinity">
+                            <graphic><Label text="IA" styleClass="sidebar-icon sub-icon"/></graphic>
+                        </Button>
+                    </VBox>
+                    <Separator styleClass="sidebar-separator"/>
+                    <Button fx:id="adminEquipesButton" text="Gestion Equipes" onAction="#handleAdminEquipes" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
+                        <graphic><Label text="EQ" styleClass="sidebar-icon"/></graphic>
+                    </Button>
+                    <Button fx:id="adminTournoiButton" text="Gestion Tournoi" onAction="#handleAdminTournoi" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
+                        <graphic><Label text="TR" styleClass="sidebar-icon"/></graphic>
+                    </Button>
+                    <Button fx:id="adminBoutiqueButton" text="Gestion Boutique" onAction="#handleAdminBoutique" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
+                        <graphic><Label text="BTQ" styleClass="sidebar-icon"/></graphic>
+                    </Button>
+                    <Button fx:id="adminCommandesButton" text="Gestion Commandes" onAction="#handleAdminCommandes" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
+                        <graphic><Label text="CMD" styleClass="sidebar-icon"/></graphic>
+                    </Button>
+                    <Button fx:id="adminComptesButton" text="Gestion Utilisateurs" onAction="#handleAdminComptes" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
+                        <graphic><Label text="USR" styleClass="sidebar-icon"/></graphic>
+                    </Button>
+                </VBox>
+                <VBox styleClass="sidebar-footer" spacing="14">
+                    <Button text="Theme" styleClass="theme-toggle-btn moon-button" maxWidth="Infinity"/>
+                    <Button fx:id="adminLogoutButton" text="Deconnexion" onAction="#handleLogout" styleClass="sidebar-logout" maxWidth="Infinity"/>
+                </VBox>
+            </VBox>
+
+            <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" pannable="true" styleClass="content-scroll" HBox.hgrow="ALWAYS">
+                <content>
+                    <VBox styleClass="content-wrap" alignment="TOP_CENTER">
+                        <StackPane fx:id="backContentStack" styleClass="content page-root" StackPane.alignment="TOP_CENTER">
+                            <VBox fx:id="dashboardView" spacing="18" styleClass="content-shell page-frame">
+                                <fx:include fx:id="backofficeDashboard" source="BackofficeDashboard.fxml"/>
+                            </VBox>
+
+                            <VBox fx:id="postsView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false">
+                                <fx:include fx:id="postManagementModule" source="PostManagementView.fxml"/>
+                            </VBox>
+
+                            <VBox fx:id="announcementsView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false">
+                                <fx:include fx:id="announcementManagementModule" source="AnnouncementManagementView.fxml"/>
+                            </VBox>
+
+                            <VBox fx:id="commentsView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false">
+                                <fx:include fx:id="commentManagementModule" source="CommentManagementView.fxml"/>
+                            </VBox>
+
+                            <VBox fx:id="aiView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false">
+                                <StackPane styleClass="admin-page-hero"><VBox spacing="8" styleClass="admin-page-hero-inner"><Label text="FIL D'ACTUALITE" styleClass="admin-page-kicker"/><Label text="CENTRE IA" styleClass="admin-page-title"/></VBox></StackPane>
+                            </VBox>
+                        </StackPane>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </HBox>
+    </VBox>
+
+    <VBox fx:id="frontOfficeShell" spacing="0" styleClass="shell-root" visible="false" managed="false">
+        <StackPane>
+            <Pane styleClass="topbar-bg"/>
+            <ImageView fitWidth="320" preserveRatio="true" StackPane.alignment="CENTER_RIGHT" translateX="10">
+                <image><javafx.scene.image.Image url="@images/dragon.png"/></image>
+                <StackPane.margin><Insets right="-8" top="2"/></StackPane.margin>
+            </ImageView>
+            <HBox styleClass="topbar-content top-navbar" alignment="CENTER_LEFT">
+                <HBox styleClass="topbar-left" alignment="CENTER_LEFT">
+                    <ImageView fitWidth="54" fitHeight="54" preserveRatio="true"><image><javafx.scene.image.Image url="@images/logo5.png"/></image></ImageView>
+                    <Label text="E-SPORTIFY" styleClass="brand"/>
+                    <Label fx:id="frontAdminBadgeLabel" text="ADMIN" styleClass="brand-tag" visible="false" managed="false"/>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="frontSearchField" promptText="Rechercher joueurs, equipes, tournois..." styleClass="search-input global-search"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <HBox styleClass="topbar-right" alignment="CENTER_RIGHT" spacing="12">
+                    <StackPane pickOnBounds="false">
+                        <Button fx:id="topbarNotificationsButton" onAction="#handleToggleNotifications" styleClass="topbar-messenger-button">
+                            <graphic>
+                                <StackPane alignment="CENTER">
+                                    <Region styleClass="topbar-notifications-icon"/>
+                                </StackPane>
+                            </graphic>
+                            <tooltip><Tooltip text="Notifications"/></tooltip>
+                        </Button>
+                        <Label fx:id="topbarNotificationsBadgeLabel" text="0" visible="false" managed="false" styleClass="messenger-unread-badge topbar-messenger-badge" StackPane.alignment="TOP_RIGHT"/>
+                    </StackPane>
+                    <StackPane pickOnBounds="false">
+                        <Button fx:id="topbarMessengerButton" onAction="#handleToggleMessenger" styleClass="topbar-messenger-button">
+                            <graphic>
+                                <StackPane alignment="CENTER">
+                                    <Region styleClass="messenger-fab-icon"/>
+                                </StackPane>
+                            </graphic>
+                        </Button>
+                        <Label fx:id="topbarMessengerBadgeLabel" text="0" visible="false" managed="false" styleClass="messenger-unread-badge topbar-messenger-badge" StackPane.alignment="TOP_RIGHT"/>
+                    </StackPane>
+                    <Button styleClass="topbar-messenger-button">
+                        <graphic>
+                            <StackPane alignment="CENTER">
+                                <Region styleClass="topbar-settings-icon"/>
+                            </StackPane>
+                        </graphic>
+                        <tooltip><Tooltip text="Parametres"/></tooltip>
+                    </Button>
+                    <Button fx:id="frontAdminButton" text="Admin" onAction="#handleShowBackOffice" styleClass="topbar-action secondary-topbar-action"/>
+                </HBox>
+            </HBox>
+        </StackPane>
+
+        <HBox VBox.vgrow="ALWAYS">
+            <VBox fx:id="frontSidebar" styleClass="sidebar sidebar-front global-sidebar front-sidebar-minimal expanded" spacing="0">
+                <Button fx:id="frontMenuButton" text="Menu" onAction="#handleToggleFrontMenu" styleClass="sidebar-toggle menu-button sidebar-modern" maxWidth="Infinity"/>
+                <VBox styleClass="sidebar-nav" VBox.vgrow="ALWAYS">
+                    <Button fx:id="frontFeedButton" text="Fil d'actualite" onAction="#handleShowFrontFeed" styleClass="sidebar-item sidebar-modern front-nav-item active" maxWidth="Infinity"/>
+                    <Button fx:id="frontBoutiqueButton" text="Boutique" onAction="#handleFrontBoutique" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity"/>
+                    <Button fx:id="frontTournoisButton" text="Tournois" onAction="#handleFrontEquipes" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity"/>
+                    <Button fx:id="frontCommandesButton" text="Commandes" onAction="#handleFrontCommandes" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity"/>
+                    <Button fx:id="frontEquipesButton" text="Equipes" onAction="#handleFrontEquipes" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity" managed="false" visible="false"/>
+                    <Button fx:id="frontStreamingButton" text="Streaming" onAction="#handleShowFrontStreaming" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity" managed="false" visible="false"/>
+                    <Button fx:id="frontSavedButton" text="Sauvegardes" onAction="#handleShowFrontSaved" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity" managed="false" visible="false">
+                        <graphic><Label text="S" styleClass="sidebar-icon"/></graphic>
+                    </Button>
+                    <Button fx:id="frontProfileButton" text="Profil" onAction="#handleShowFrontProfile" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity"/>
+                </VBox>
+                <VBox styleClass="sidebar-footer" spacing="14">
+                    <Button text="Theme" styleClass="theme-toggle-btn moon-button" maxWidth="Infinity"/>
+                    <Button fx:id="frontLogoutButton" text="Deconnexion" onAction="#handleLogout" styleClass="sidebar-logout" maxWidth="Infinity"/>
+                </VBox>
+            </VBox>
+
+            <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" pannable="true" styleClass="content-scroll" HBox.hgrow="ALWAYS">
+                <content>
+                    <VBox styleClass="content-wrap" alignment="TOP_CENTER">
+                        <StackPane fx:id="frontContentStack" styleClass="content page-root" StackPane.alignment="TOP_CENTER">
+                            <VBox fx:id="frontFeedView" spacing="18" styleClass="content-shell page-frame" VBox.vgrow="ALWAYS">
+                                <HBox styleClass="feed-layout front-layout" spacing="22">
+                                    <VBox styleClass="feed-main" spacing="18" HBox.hgrow="ALWAYS">
+                                        <Label text="Fil d'actualite" styleClass="front-page-title"/>
+                                        <VBox fx:id="frontComposerCard" styleClass="composer-card compact-composer" spacing="12">
+                                            <HBox styleClass="composer-header" alignment="CENTER_LEFT" spacing="14">
+                                                <StackPane styleClass="avatar"><Label fx:id="frontComposerAvatarLabel" text="A" styleClass="avatar-text"/></StackPane>
+                                                <VBox spacing="4">
+                                                    <Label fx:id="frontComposerUserLabel" text="Vous" styleClass="composer-user"/>
+                                                    <Label fx:id="frontComposerStatusLabel" text="Pret a publier" styleClass="composer-helper-text"/>
+                                                </VBox>
+                                                <Region HBox.hgrow="ALWAYS"/>
+                                                <Label fx:id="frontCharCountLabel" text="0 / 5000" styleClass="composer-counter"/>
+                                                <ProgressIndicator fx:id="frontPublishProgress" visible="false" managed="false" prefWidth="22" prefHeight="22" maxWidth="22" maxHeight="22" styleClass="composer-spinner"/>
+                                                <Button fx:id="frontPublishButton" text="Publier" onAction="#handleFrontPublish" styleClass="publish-cta-button"><tooltip><Tooltip text="Publier"/></tooltip></Button>
+                                            </HBox>
+                                            <TextArea fx:id="frontContentArea" promptText="Publier un message, une image ou un lien video..." wrapText="true" prefRowCount="2" styleClass="composer-input compact-textarea"/>
+                                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                                <Button onAction="#handleFrontPickMedia" text="Image" styleClass="media-action-button"><tooltip><Tooltip text="Ajouter une image"/></tooltip></Button>
+                                                <TextField fx:id="frontImageField" promptText="Lien image" styleClass="mini-input" HBox.hgrow="ALWAYS"/>
+                                                <Button onAction="#handleFrontClearImage" text="Retirer" styleClass="media-clear-button"><tooltip><Tooltip text="Retirer l'image"/></tooltip></Button>
+                                                <Button onAction="#handleFrontToggleVideo" text="Video" styleClass="media-action-button"><tooltip><Tooltip text="Ajouter une video"/></tooltip></Button>
+                                                <TextField fx:id="frontVideoField" promptText="Lien video" styleClass="mini-input" HBox.hgrow="ALWAYS"/>
+                                                <Button onAction="#handleFrontClearVideo" text="Retirer" styleClass="media-clear-button"><tooltip><Tooltip text="Retirer la video"/></tooltip></Button>
+                                                <CheckBox fx:id="frontEventCheckBox" text="EVENT" styleClass="chip-check"/>
+                                                <TextField fx:id="frontAuthorIdField" promptText="Auteur ID" styleClass="mini-input short-input" managed="false" visible="false"/>
+                                            </HBox>
+                                            <VBox spacing="8" styleClass="front-media-preview-card">
+                                                <ImageView fx:id="frontMediaPreview" fitWidth="520" fitHeight="180" preserveRatio="true" managed="false" visible="false" styleClass="pm-media-preview"/>
+                                                <Label fx:id="frontMediaHintLabel" text="Ajoutez un lien image ou video pour afficher un apercu." wrapText="true" styleClass="pm-media-hint"/>
+                                            </VBox>
+                                            <HBox fx:id="frontEventFieldsRow" spacing="10" styleClass="event-fields-row" visible="false" managed="false">
+                                                <TextField fx:id="frontEventTitleField" promptText="Titre evenement" styleClass="mini-input" HBox.hgrow="ALWAYS"/>
+                                                <DatePicker fx:id="frontEventDateField" promptText="Date evenement" editable="false" styleClass="mini-input date-input"/>
+                                                <TextField fx:id="frontEventLocationField" promptText="Lieu / lien" styleClass="mini-input" HBox.hgrow="ALWAYS"/>
+                                                <TextField fx:id="frontMaxParticipantsField" promptText="Places" styleClass="mini-input short-input"/>
+                                            </HBox>
+                                        </VBox>
+                                        <HBox spacing="12" styleClass="filters-bar"><Button fx:id="filterAllButton" text="Tout" onAction="#handleFilterAll" styleClass="filter-pill"/><Button fx:id="filterTeamsButton" text="Equipes" onAction="#handleFilterTeams" styleClass="filter-pill"/><Button fx:id="filterPlayersButton" text="Joueurs" onAction="#handleFilterPlayers" styleClass="filter-pill"/><Button fx:id="filterTournamentsButton" text="Tournois" onAction="#handleFilterTournaments" styleClass="filter-pill"/><Button fx:id="filterMediaButton" text="Media" onAction="#handleFilterMedia" styleClass="filter-pill"/><Button fx:id="filterAiButton" text="AI Recommandations" onAction="#handleFilterAiRecommendations" styleClass="filter-pill"/></HBox>
+                                        <VBox fx:id="frontFeedBox" VBox.vgrow="ALWAYS" styleClass="front-feed-list" spacing="16"/>
+                                    </VBox>
+                                    <VBox styleClass="feed-right" spacing="18" prefWidth="350" minWidth="300" maxWidth="390">
+                                        <VBox styleClass="side-panel announcements-panel">
+                                            <VBox spacing="4">
+                                                <Label text="Annonces officielles" styleClass="side-title"/>
+                                                <Label text="Actualites prioritaires de l'equipe Esportify" wrapText="true" styleClass="announcements-subtitle"/>
+                                            </VBox>
+                                            <VBox fx:id="frontAnnouncementsBox" VBox.vgrow="ALWAYS" styleClass="announcements-list" spacing="12"/>
+                                        </VBox>
+                                        <VBox styleClass="side-panel compact"><Label text="Best time to post" styleClass="side-title"/><VBox styleClass="side-inner-card"><Label fx:id="frontBestTimeLabel" text="Heure ideale: 01:00" styleClass="side-main-number"/><Label fx:id="frontBestTimeDescriptionLabel" text="Heure estimee selon les pics d'engagement recents de votre audience." wrapText="true" styleClass="panel-text"/></VBox></VBox>
+                                        <VBox styleClass="side-panel"><Label text="Tendances" styleClass="side-title"/><VBox fx:id="frontTrendingBox" spacing="10"/></VBox>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                            <VBox fx:id="frontPostDetailView" spacing="14" styleClass="content-shell page-frame" visible="false" managed="false">
+                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                    <Button text="Retour au fil" onAction="#handleBackFromPostDetail" styleClass="topbar-action secondary-topbar-action"/>
+                                    <Label fx:id="frontPostDetailHeaderLabel" text="Publication" styleClass="front-page-title"/>
+                                </HBox>
+                                <VBox fx:id="frontPostDetailContainer" spacing="14"/>
+                            </VBox>
+
+                            <VBox fx:id="frontStreamingView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false">
+                                <VBox spacing="10" styleClass="streaming-hero">
+                                    <Label text="Streaming Arena" styleClass="streaming-hero-title"/>
+                                    <Label text="Flux YouTube en direct + highlights recents dans un hub e-sport plus immersif."
+                                           wrapText="true"
+                                           styleClass="streaming-hero-subtitle"/>
+                                    <Label fx:id="streamingStatusLabel" text="Chargement des flux..." styleClass="streaming-status"/>
+                                    <HBox spacing="12" styleClass="streaming-hero-metrics">
+                                        <VBox spacing="3" styleClass="streaming-metric-card">
+                                            <Label fx:id="streamingLiveCountLabel" text="0" styleClass="streaming-metric-value"/>
+                                            <Label text="Lives actifs" styleClass="streaming-metric-label"/>
+                                        </VBox>
+                                        <VBox spacing="3" styleClass="streaming-metric-card">
+                                            <Label fx:id="streamingHighlightCountLabel" text="0" styleClass="streaming-metric-value"/>
+                                            <Label text="Highlights recents" styleClass="streaming-metric-label"/>
+                                        </VBox>
+                                        <VBox spacing="3" styleClass="streaming-metric-card">
+                                            <Label fx:id="streamingLastSyncLabel" text="--:--" styleClass="streaming-metric-value"/>
+                                            <Label text="Dernier refresh" styleClass="streaming-metric-label"/>
+                                        </VBox>
+                                    </HBox>
+                                    <Button text="Rafraichir" onAction="#handleRefreshStreaming" styleClass="primary-button"/>
+                                </VBox>
+                                <HBox spacing="18" alignment="TOP_LEFT">
+                                    <VBox styleClass="streaming-column" HBox.hgrow="ALWAYS" spacing="12">
+                                        <Label text="Lives YouTube" styleClass="streaming-section-title"/>
+                                        <VBox fx:id="streamingLiveBox" spacing="12"/>
+                                    </VBox>
+                                    <VBox styleClass="streaming-column" HBox.hgrow="ALWAYS" spacing="12">
+                                        <Label text="Highlights YouTube" styleClass="streaming-section-title"/>
+                                        <VBox fx:id="streamingHighlightsBox" spacing="12"/>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                            <VBox fx:id="frontSavedView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false"><Label text="Publications sauvegardees" styleClass="front-page-title"/><VBox styleClass="side-panel"><VBox fx:id="frontSavedBox" spacing="16"/></VBox></VBox>
+                            <VBox fx:id="frontProfileView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false"><Label text="Profil" styleClass="front-page-title"/><VBox styleClass="side-panel"><ListView fx:id="frontProfileList" VBox.vgrow="ALWAYS" styleClass="simple-list"/></VBox></VBox>
+                        </StackPane>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </HBox>
+    </VBox>
+
+    <StackPane mouseTransparent="false" pickOnBounds="false">
+        <VBox alignment="TOP_RIGHT" fillWidth="false" mouseTransparent="false" pickOnBounds="false" StackPane.alignment="TOP_RIGHT" spacing="12">
+            <StackPane fx:id="notificationsPopup" visible="false" managed="false" prefWidth="360" maxWidth="360" styleClass="messenger-inbox-popup-shell" StackPane.alignment="TOP_RIGHT">
+                <VBox prefWidth="360" maxWidth="360" styleClass="notifications-popup" spacing="10">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Notifications" styleClass="messenger-popup-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Tout marquer lu" onAction="#handleMarkAllNotificationsRead" styleClass="messenger-link-button"/>
+                    </HBox>
+                    <ListView fx:id="notificationsListView" prefHeight="380" styleClass="notifications-list"/>
+                </VBox>
+            </StackPane>
+            <StackPane fx:id="messengerInboxPopup" visible="false" managed="false" prefWidth="340" maxWidth="340" styleClass="messenger-inbox-popup-shell" StackPane.alignment="TOP_RIGHT">
+                <VBox prefWidth="340" maxWidth="340" styleClass="messenger-inbox-popup" spacing="10">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Discussions" styleClass="messenger-popup-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="messengerSeeAllButton" text="Voir tout" onAction="#handleOpenMessengerFull" styleClass="messenger-see-all-button"/>
+                    </HBox>
+                    <ListView fx:id="messengerInboxList" prefHeight="360" styleClass="messenger-conversation-list messenger-inbox-list"/>
+                </VBox>
+            </StackPane>
+            <StackPane.margin>
+                <Insets top="86" right="12"/>
+            </StackPane.margin>
+        </VBox>
+
+        <VBox alignment="BOTTOM_RIGHT" fillWidth="false" mouseTransparent="false" pickOnBounds="false" StackPane.alignment="BOTTOM_RIGHT" spacing="14">
+            <StackPane fx:id="messengerBubbleWindow" visible="false" managed="false" prefWidth="340" maxWidth="340" styleClass="messenger-bubble-shell" StackPane.alignment="BOTTOM_RIGHT">
+                <VBox prefWidth="340" maxWidth="340" styleClass="messenger-bubble-window" spacing="0">
+                    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="messenger-bubble-header">
+                        <StackPane fx:id="messengerBubbleAvatarPane" styleClass="messenger-avatar">
+                            <Label fx:id="messengerBubbleAvatarLabel" text="M" styleClass="messenger-avatar-text"/>
+                        </StackPane>
+                        <VBox spacing="2">
+                            <Label fx:id="messengerBubbleNameLabel" text="Conversation" styleClass="messenger-peer-name"/>
+                            <Label fx:id="messengerBubbleStatusLabel" text="En ligne" styleClass="messenger-subtitle"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Voir tout" onAction="#handleOpenMessengerFull" styleClass="messenger-link-button"/>
+                        <Button text="X" onAction="#handleCloseMessengerBubble" styleClass="messenger-close-button"/>
+                    </HBox>
+                    <ScrollPane fx:id="messengerBubbleScroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" styleClass="messenger-scroll messenger-bubble-scroll">
+                        <content>
+                            <VBox fx:id="messengerBubbleMessageBox" spacing="10" styleClass="messenger-message-box"/>
+                        </content>
+                    </ScrollPane>
+                    <Label fx:id="messengerBubbleTypingLabel" text="typing..." visible="false" managed="false" styleClass="messenger-typing-label"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="messenger-bubble-composer">
+                        <TextField fx:id="messengerBubbleInputField" promptText="Aa" HBox.hgrow="ALWAYS" styleClass="messenger-input"/>
+                        <Button text="+" onAction="#handleMessengerAttach" styleClass="messenger-mini-button"/>
+                        <Button text="Envoyer" onAction="#handleMessengerSendFromBubble" styleClass="messenger-send-button"/>
+                    </HBox>
+                </VBox>
+            </StackPane>
+
+            <StackPane fx:id="messengerWindow" visible="false" managed="false" prefWidth="700" maxWidth="700" styleClass="messenger-window-shell" StackPane.alignment="BOTTOM_RIGHT">
+                <VBox prefWidth="700" maxWidth="700" styleClass="messenger-window" spacing="0">
+                    <HBox alignment="CENTER_LEFT" styleClass="messenger-header" spacing="12">
+                        <StackPane styleClass="messenger-avatar-large">
+                            <Label fx:id="messengerHeaderAvatarLabel" text="M" styleClass="messenger-avatar-text"/>
+                        </StackPane>
+                        <VBox spacing="3">
+                            <Label text="Messenger" styleClass="messenger-title"/>
+                            <Label fx:id="messengerHeaderSubtitleLabel" text="Conversations actives" styleClass="messenger-subtitle"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="messengerCloseButton" text="X" onAction="#handleCloseMessenger" styleClass="messenger-close-button"/>
+                    </HBox>
+
+                    <HBox styleClass="messenger-body" spacing="0" VBox.vgrow="ALWAYS">
+                        <VBox styleClass="messenger-sidebar" spacing="12">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label text="Chats" styleClass="messenger-section-title"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="+" onAction="#handleStartConversation" styleClass="messenger-mini-button"/>
+                            </HBox>
+                            <TextField fx:id="messengerSearchField" promptText="Rechercher un contact..." styleClass="messenger-search-input"/>
+                            <ListView fx:id="messengerConversationList" VBox.vgrow="ALWAYS" styleClass="messenger-conversation-list"/>
+                        </VBox>
+
+                        <VBox styleClass="messenger-chat-panel" spacing="12" HBox.hgrow="ALWAYS">
+                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="messenger-chat-topbar">
+                                <StackPane styleClass="messenger-avatar">
+                                    <Label fx:id="messengerPeerAvatarLabel" text="M" styleClass="messenger-avatar-text"/>
+                                </StackPane>
+                                <VBox spacing="2">
+                                    <Label fx:id="messengerPeerNameLabel" text="Selectionnez une conversation" styleClass="messenger-peer-name"/>
+                                    <HBox alignment="CENTER_LEFT" spacing="6">
+                                        <Region fx:id="messengerPresenceDot" styleClass="messenger-presence-dot offline"/>
+                                        <Label fx:id="messengerPresenceLabel" text="Hors ligne" styleClass="messenger-presence-label"/>
+                                    </HBox>
+                                </VBox>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="messengerVoiceCallButton" onAction="#handleStartVoiceCall" styleClass="messenger-mini-button messenger-call-button">
+                                    <graphic><Region styleClass="messenger-voice-icon"/></graphic>
+                                    <tooltip><Tooltip text="Appel vocal"/></tooltip>
+                                </Button>
+                                <Button fx:id="messengerVideoCallButton" onAction="#handleStartVideoCall" styleClass="messenger-mini-button messenger-call-button">
+                                    <graphic><Region styleClass="messenger-video-icon"/></graphic>
+                                    <tooltip><Tooltip text="Appel video"/></tooltip>
+                                </Button>
+
+
+                            </HBox>
+
+                            <HBox spacing="10" visible="false" managed="false" fx:id="messengerContactPickerRow">
+                                <ComboBox fx:id="messengerContactPicker" promptText="Choisir un contact..." HBox.hgrow="ALWAYS" styleClass="messenger-contact-picker"/>
+                                <Button text="Ouvrir" onAction="#handleConfirmStartConversation" styleClass="messenger-create-button"/>
+                            </HBox>
+
+                            <Button fx:id="messengerLoadOlderButton" text="Charger les messages precedents" onAction="#handleLoadOlderMessages" styleClass="messenger-load-button" visible="false" managed="false"/>
+
+                            <ScrollPane fx:id="messengerMessageScroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" styleClass="messenger-scroll">
+                                <content>
+                                    <VBox fx:id="messengerMessageBox" spacing="10" styleClass="messenger-message-box"/>
+                                </content>
+                            </ScrollPane>
+
+                            <Label fx:id="messengerTypingLabel" text="typing..." visible="false" managed="false" styleClass="messenger-typing-label"/>
+
+                            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="messenger-composer-row">
+                                <Button text=":)" onAction="#handleMessengerEmoji" styleClass="messenger-mini-button"/>
+                                <TextField fx:id="messengerInputField" promptText="Ecrire un message..." HBox.hgrow="ALWAYS" styleClass="messenger-input"/>
+                                <Button text="+" onAction="#handleMessengerAttach" styleClass="messenger-mini-button"/>
+                                <Button fx:id="messengerSendButton" text="Envoyer" onAction="#handleMessengerSend" styleClass="messenger-send-button"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </StackPane>
+
+        </VBox>
+        <StackPane.margin>
+            <Insets bottom="24" right="24"/>
+        </StackPane.margin>
+    </StackPane>
+</StackPane>
+
+
+
+

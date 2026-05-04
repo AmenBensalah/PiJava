@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="root-pane" stylesheets="@ajoutProduit.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.projetJava.controllers.BackMailingController" prefWidth="1280.0" prefHeight="720.0">
+    
+    <!-- TOP NAVBAR -->
+        <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="65.0" styleClass="top-navbar" BorderPane.alignment="CENTER">
+            <padding><Insets left="20.0" right="30.0" /></padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                    <Label styleClass="logo-text" text="E-" />
+                    <Label styleClass="logo-text, logo-white" text="SPORTIFY" />
+                    <Label style="-fx-text-fill: #ffa500; -fx-background-color: #332100; -fx-padding: 3 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 10px;" text="ADMIN" translateX="10" />
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField prefWidth="350.0" promptText="Rechercher joueurs, equipes, tournois..." styleClass="global-search" />
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="15.0" alignment="CENTER">
+                    <Button onAction="#goToBackListProduit" text="Dashboard" styleClass="btn-primary" />
+                    <Button onAction="#handleViewProfile" text="Voir mon profil" styleClass="btn-secondary" />
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- LEFT SIDEBAR -->
+        <left>
+        <VBox prefWidth="220.0" styleClass="global-sidebar" BorderPane.alignment="CENTER">
+            <children>
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Menu">
+                    <VBox.margin><Insets bottom="10.0" top="10.0" /></VBox.margin>
+                </Button>
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToFrontOffice" styleClass="menu-btn" text="Client (Front)" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToNewsFeed" styleClass="menu-btn" text="Gestion fil d'actualite" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToRawgGames" styleClass="menu-btn" text="Gestion equipes" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion tournoi" />
+                <VBox>
+                    <Button maxWidth="1.7976931348623157E308" text="Tournois" styleClass="sidebar-submenu-btn" onAction="#goToTournoisAdmin" />
+                    <Button maxWidth="1.7976931348623157E308" text="Participations" styleClass="sidebar-submenu-btn" onAction="#goToParticipationsAdmin" />
+                </VBox>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion boutique" />
+                <VBox>
+                    <Button maxWidth="1.7976931348623157E308" text="Centre de mailing" styleClass="sidebar-submenu-btn, sidebar-submenu-active" />
+                    <Button maxWidth="1.7976931348623157E308" text="Produits" styleClass="sidebar-submenu-btn" onAction="#goToBackListProduit" />
+                    <Button maxWidth="1.7976931348623157E308" text="Categories" styleClass="sidebar-submenu-btn" onAction="#goToAdminCategorie" />
+                    <Button maxWidth="1.7976931348623157E308" text="Paiements" styleClass="sidebar-submenu-btn" onAction="#goToPayments" />
+                    <Button maxWidth="1.7976931348623157E308" text="Prediction CA" styleClass="sidebar-submenu-btn" onAction="#goToRevenuePrediction" />
+                    <Button maxWidth="1.7976931348623157E308" text="Commandes" styleClass="sidebar-submenu-btn" onAction="#goToCommandes" />
+                </VBox>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToGestionComptes" styleClass="menu-btn" text="Gestion comptes" />
+                <Region VBox.vgrow="ALWAYS" />
+                <Button maxWidth="1.7976931348623157E308" onAction="#handleLogout" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="Deconnexion" />
+            </children>
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane" mouseTransparent="false">
+            <content>
+                <VBox spacing="25.0" styleClass="main-area-bg" minHeight="1000">
+                    <padding><Insets bottom="40.0" left="150.0" right="150.0" top="60.0" /></padding>
+                    <children>
+                        
+                        <VBox spacing="25" style="-fx-background-color: #151521; -fx-border-color: linear-gradient(to right, #00e5ff, #7000ff); -fx-border-width: 2px; -fx-border-radius: 15px; -fx-background-radius: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0, 229, 255, 0.35), 30, 0, 0, 0);">
+                            <padding><Insets top="40" right="50" bottom="40" left="50"/></padding>
+                            
+                            <VBox spacing="5" alignment="CENTER">
+                                <Label text="TRANSMISSION DIRECTE" style="-fx-text-fill: #00e5ff; -fx-font-size: 28px; -fx-font-weight: 900; -fx-font-family: 'Impact', 'Arial Black', sans-serif; -fx-effect: dropshadow(one-pass-box, #00e5ff, 10, 0, 0, 0); -fx-letter-spacing: 2px;" />
+                                <Label text="Canal de communication prioritaire. Informe instantanement un acheteur via le protocole SMTP E-Sportify." style="-fx-text-fill: #94a3b8; -fx-font-size: 15px; -fx-font-weight: bold;" />
+                            </VBox>
+                            
+                            <VBox spacing="10" style="-fx-margin-top: 30px;">
+                                <Label text="CIBLE (EMAIL DU CLIENT)" style="-fx-text-fill: #ff0055; -fx-font-weight: 900; -fx-font-size: 14px; -fx-font-family: 'Arial Black'; -fx-effect: dropshadow(one-pass-box, #ff0055, 5, 0, 0, 0);" />
+                                <TextField fx:id="tfEmailClient" promptText="nom.prenom@domaine.com" style="-fx-background-color: #0b0b12; -fx-text-fill: white; -fx-border-color: #ff0055; -fx-border-width: 0 0 2 0; -fx-font-size: 16px; -fx-prompt-text-fill: #555566;" prefHeight="50" />
+                            </VBox>
+                            
+                            <VBox spacing="10">
+                                <Label text="OBJET DE LA TRANSMISSION" style="-fx-text-fill: #00e5ff; -fx-font-weight: 900; -fx-font-size: 14px; -fx-font-family: 'Arial Black'; -fx-effect: dropshadow(one-pass-box, #00e5ff, 5, 0, 0, 0);" />
+                                <TextField fx:id="tfSujet" promptText="Sujet du signal..." style="-fx-background-color: #0b0b12; -fx-text-fill: white; -fx-border-color: #00e5ff; -fx-border-width: 0 0 2 0; -fx-font-size: 16px; -fx-prompt-text-fill: #555566;" prefHeight="50" />
+                            </VBox>
+                            
+                            <VBox spacing="10" VBox.vgrow="ALWAYS">
+                                <Label text="CORPS DU MESSAGE (DECRYPTE)" style="-fx-text-fill: #b026ff; -fx-font-weight: 900; -fx-font-size: 14px; -fx-font-family: 'Arial Black'; -fx-effect: dropshadow(one-pass-box, #b026ff, 5, 0, 0, 0);" />
+                                <TextArea fx:id="taMessage" promptText="Saisissez les donnees a transmettre..." 
+                                          style="-fx-control-inner-background: #0b0b12; -fx-text-fill: white; -fx-border-color: #b026ff; -fx-border-width: 2; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-font-size: 15px; -fx-prompt-text-fill: #555566; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" prefHeight="250" wrapText="true" />
+                            </VBox>
+
+                            <HBox alignment="CENTER" spacing="40" style="-fx-padding-top: 30px;">
+                                <Button text="ANNULER" onAction="#goToBackListProduit" prefHeight="55" prefWidth="180" style="-fx-background-color: transparent; -fx-text-fill: #ff3366; -fx-border-color: #ff3366; -fx-border-width: 2px; -fx-border-radius: 30px; -fx-font-weight: 900; -fx-cursor: hand; -fx-font-size: 16px; -fx-effect: dropshadow(one-pass-box, #ff3366, 10, 0, 0, 0);" />
+                                <Button text="INITIALISER L'ENVOI" onAction="#envoyerEmail" prefHeight="55" prefWidth="250" style="-fx-background-color: linear-gradient(to right, #00e5ff, #7000ff); -fx-text-fill: white; -fx-font-weight: 900; -fx-background-radius: 30px; -fx-cursor: hand; -fx-font-size: 16px; -fx-effect: dropshadow(three-pass-box, #7000ff, 20, 0, 0, 0);" />
+                            </HBox>
+                        </VBox>
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.esportify.controllers.PostEditorDialogController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            pannable="true">
+    <content>
+        <VBox spacing="16" styleClass="editor-root">
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="4">
+                    <Label fx:id="dialogTitleLabel" text="Nouveau post" styleClass="editor-title"/>
+                    <Label text="Creation visuelle pour le backoffice" styleClass="editor-subtitle"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="modeBadgeLabel" text="CREATE" styleClass="editor-badge"/>
+            </HBox>
+            <TextArea fx:id="contentArea" promptText="Contenu de la publication" wrapText="true" prefRowCount="5" styleClass="editor-input editor-area"/>
+            <HBox spacing="10">
+                <Button text="Image" onAction="#handleFocusImage" styleClass="media-action-button"/>
+                <TextField fx:id="imageField" promptText="Lien image ou /uploads/..." styleClass="editor-input" HBox.hgrow="ALWAYS"/>
+                <Button text="Retirer" onAction="#handleClearImage" styleClass="media-clear-button"/>
+            </HBox>
+            <HBox spacing="10">
+                <Button text="Video" onAction="#handleFocusVideo" styleClass="media-action-button"/>
+                <TextField fx:id="videoField" promptText="Lien video" styleClass="editor-input" HBox.hgrow="ALWAYS"/>
+                <Button text="Retirer" onAction="#handleClearVideo" styleClass="media-clear-button"/>
+            </HBox>
+            <VBox spacing="8" styleClass="pm-media-preview-card">
+                <ImageView fx:id="mediaPreview" fitWidth="520" fitHeight="180" preserveRatio="true" managed="false" visible="false" styleClass="pm-media-preview"/>
+                <Label fx:id="mediaPreviewHintLabel" text="Aucun media a afficher" wrapText="true" styleClass="pm-media-hint"/>
+            </VBox>
+            <CheckBox fx:id="eventCheckBox" text="Publication evenement" styleClass="editor-check"/>
+            <TextField fx:id="eventTitleField" promptText="Titre evenement" styleClass="editor-input"/>
+            <HBox spacing="10">
+                <DatePicker fx:id="eventDateField" promptText="Date evenement" editable="false" styleClass="editor-input" HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="eventLocationField" promptText="Lieu" styleClass="editor-input" HBox.hgrow="ALWAYS"/>
+            </HBox>
+            <HBox spacing="10">
+                <TextField fx:id="maxParticipantsField" promptText="Places" styleClass="editor-input" HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="authorIdField" promptText="Auteur ID" styleClass="editor-input" HBox.hgrow="ALWAYS"/>
+            </HBox>
+            <Label fx:id="statusLabel" text="Pret" wrapText="true" styleClass="editor-status"/>
+            <HBox spacing="12">
+                <Button text="Annuler" onAction="#handleCancel" styleClass="pm-ghost-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Button text="Enregistrer" onAction="#handleSave" styleClass="pm-primary-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.esportify.controllers.AnnouncementManagementController"
+      stylesheets="@post-management.css"
+      spacing="18"
+      styleClass="pm-root">
+    <StackPane styleClass="pm-hero">
+        <Region styleClass="pm-hero-overlay"/>
+        <HBox alignment="CENTER_LEFT" spacing="24" styleClass="pm-hero-content">
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="ANNONCES" styleClass="pm-kicker"/>
+                <Label text="Broadcast Desk" styleClass="pm-title"/>
+                <HBox spacing="10">
+                    <Label fx:id="heroStatusLabel" text="Canal actif" styleClass="pm-chip"/>
+                    <Label fx:id="heroCountLabel" text="0 annonces" styleClass="pm-chip secondary"/>
+                </HBox>
+            </VBox>
+            <HBox spacing="12">
+                <Button text="Nouvelle annonce" onAction="#handleCreateAnnouncement" styleClass="pm-primary-button"/>
+                <Button text="Actualiser" onAction="#handleRefresh" styleClass="pm-ghost-button"/>
+            </HBox>
+        </HBox>
+    </StackPane>
+
+    <FlowPane hgap="16" vgap="16" prefWrapLength="1200">
+        <VBox styleClass="pm-stat-card cyan-card" prefWidth="220">
+            <Label text="ANNONCES" styleClass="pm-stat-label"/>
+            <Label fx:id="totalAnnouncementsLabel" text="0" styleClass="pm-stat-value"/>
+            <Label fx:id="announcementsDeltaLabel" text="Canal global" styleClass="pm-stat-sub"/>
+        </VBox>
+        <VBox styleClass="pm-stat-card violet-card" prefWidth="220">
+            <Label text="TAGS" styleClass="pm-stat-label"/>
+            <Label fx:id="activeTagsLabel" text="0" styleClass="pm-stat-value"/>
+            <Label fx:id="tagsDeltaLabel" text="Categories actives" styleClass="pm-stat-sub"/>
+        </VBox>
+        <VBox styleClass="pm-stat-card danger-card" prefWidth="220">
+            <Label text="LIENS" styleClass="pm-stat-label"/>
+            <Label fx:id="linkedAnnouncementsLabel" text="0" styleClass="pm-stat-value"/>
+            <Label fx:id="linksDeltaLabel" text="Annonces externes" styleClass="pm-stat-sub"/>
+        </VBox>
+    </FlowPane>
+
+    <HBox spacing="18" VBox.vgrow="ALWAYS">
+        <VBox styleClass="pm-main-panel" spacing="16" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <TextField fx:id="searchField" promptText="Rechercher titre, tag, contenu..." styleClass="pm-search-field" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="filterAllButton" text="Toutes" onAction="#handleFilterAll" styleClass="pm-filter-button active"/>
+                <Button fx:id="filterTaggedButton" text="Tags" onAction="#handleFilterTagged" styleClass="pm-filter-button"/>
+                <Button fx:id="filterLinkedButton" text="Liens" onAction="#handleFilterLinked" styleClass="pm-filter-button"/>
+            </HBox>
+
+            <HBox spacing="16" VBox.vgrow="ALWAYS">
+                <VBox styleClass="pm-feed-panel" spacing="14" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Canal annonces" styleClass="pm-section-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="resultCountLabel" text="0 resultats" styleClass="pm-small-chip"/>
+                    </HBox>
+                    <ListView fx:id="announcementsListView" VBox.vgrow="ALWAYS" styleClass="pm-posts-list"/>
+                </VBox>
+
+                <VBox styleClass="pm-side-panel" spacing="16" prefWidth="360" minWidth="320" maxWidth="380">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Inspecteur" styleClass="pm-section-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="tagBadgeLabel" text="TAG" styleClass="pm-type-badge"/>
+                    </HBox>
+                    <VBox spacing="12" styleClass="pm-preview-card">
+                        <Label fx:id="selectedTitleLabel" text="Selectionnez une annonce" styleClass="pm-selected-title"/>
+                        <Label fx:id="selectedMetaLabel" text="Tag - Date" styleClass="pm-selected-meta"/>
+                        <Label fx:id="selectedContentLabel" text="Le detail de l'annonce apparait ici." wrapText="true" styleClass="pm-selected-content"/>
+                        <VBox spacing="8" styleClass="pm-media-preview-card">
+                            <ImageView fx:id="selectedMediaPreview" fitWidth="300" fitHeight="170" preserveRatio="true" managed="false" visible="false" styleClass="pm-media-preview"/>
+                            <Label fx:id="selectedMediaHintLabel" text="Aucun media a afficher" wrapText="true" styleClass="pm-media-hint"/>
+                        </VBox>
+                    </VBox>
+                    <FlowPane hgap="10" vgap="10">
+                        <VBox styleClass="pm-mini-card" prefWidth="150">
+                            <Label text="Tag" styleClass="pm-mini-label"/>
+                            <Label fx:id="selectedTagLabel" text="-" styleClass="pm-mini-value"/>
+                        </VBox>
+                        <VBox styleClass="pm-mini-card" prefWidth="150">
+                            <Label text="Date" styleClass="pm-mini-label"/>
+                            <Label fx:id="selectedDateLabel" text="-" styleClass="pm-mini-value"/>
+                        </VBox>
+                        <VBox styleClass="pm-mini-card" prefWidth="310">
+                            <Label text="Lien" styleClass="pm-mini-label"/>
+                            <Label fx:id="selectedLinkLabel" text="Aucun" styleClass="pm-mini-value"/>
+                        </VBox>
+                    </FlowPane>
+                    <VBox spacing="10" styleClass="pm-action-card">
+                        <Button text="Ouvrir l'editeur" onAction="#handleEditSelectedAnnouncement" maxWidth="Infinity" styleClass="pm-primary-button"/>
+                        <Button text="Voir les details" onAction="#handleOpenDetailView" maxWidth="Infinity" styleClass="pm-ghost-button"/>
+                        <Button text="Supprimer l'annonce" onAction="#handleDeleteSelectedAnnouncement" maxWidth="Infinity" styleClass="pm-danger-button"/>
+                    </VBox>
+                    <VBox spacing="8" styleClass="pm-activity-card">
+                        <Label text="Signal" styleClass="pm-mini-label"/>
+                        <Label fx:id="activityStatusLabel" text="Broadcast pret" styleClass="pm-activity-text"/>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </HBox>
+</VBox>

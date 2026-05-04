@@ -1,0 +1,10 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="JavaFX App (Direct)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="edu.PROJETPI.MainApp" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <module name="pi_dev_java" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

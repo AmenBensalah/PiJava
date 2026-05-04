@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="760.0" prefWidth="1280.0" styleClass="cart-root"
+            stylesheets="@styles/esportify-theme.css"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.PROJETPI.LigneCommandeController">
+    <center>
+        <VBox spacing="20.0" styleClass="cart-shell">
+            <padding>
+                <Insets bottom="24.0" left="24.0" right="24.0" top="24.0"/>
+            </padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" styleClass="cart-top">
+                    <children>
+                        <Label styleClass="page-title" text="Panier"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label styleClass="cart-chip" text="Etape 2 - verifier les lignes de commande"/>
+                    </children>
+                </HBox>
+                <HBox spacing="20.0">
+                    <children>
+                        <VBox HBox.hgrow="ALWAYS" spacing="16.0">
+                            <children>
+                                <VBox spacing="16.0" styleClass="cart-panel">
+                                    <children>
+                                        <Label styleClass="section-title" text="Lignes du panier"/>
+                                        <TableView fx:id="tableView" styleClass="cart-table" VBox.vgrow="ALWAYS">
+                                            <columns>
+                                                <TableColumn fx:id="colProduitId" prefWidth="110.0" text="Produit ID"/>
+                                                <TableColumn fx:id="colNom" prefWidth="240.0" text="Produit"/>
+                                                <TableColumn fx:id="colQuantite" prefWidth="120.0" text="Quantite"/>
+                                                <TableColumn fx:id="colPrixUnitaire" prefWidth="150.0" text="Prix unitaire"/>
+                                                <TableColumn fx:id="colSousTotal" prefWidth="150.0" text="Sous-total"/>
+                                            </columns>
+                                        </TableView>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                        <VBox prefWidth="360.0" minWidth="360.0" maxWidth="360.0" spacing="18.0" styleClass="cart-summary">
+                            <children>
+                                <Label styleClass="section-title" text="Actions panier"/>
+                                <Label styleClass="metric-label" text="Nouvelle quantite"/>
+                                <HBox alignment="CENTER" spacing="16.0" styleClass="qty-box">
+                                    <children>
+                                        <Button fx:id="decreaseQuantityButton" mnemonicParsing="false" onAction="#decreaseQuantity" styleClass="qty-button" text="−"/>
+                                        <Label fx:id="quantiteValueLabel" styleClass="qty-value" text="0"/>
+                                        <Button fx:id="increaseQuantityButton" mnemonicParsing="false" onAction="#increaseQuantity" styleClass="qty-button" text="+"/>
+                                    </children>
+                                </HBox>
+                                <Label styleClass="metric-label" text="Nombre d'articles"/>
+                                <Label fx:id="totalItemsLabel" styleClass="metric-value" text="0"/>
+                                <Label styleClass="metric-label total" text="Total"/>
+                                <Label fx:id="totalPriceLabel" styleClass="metric-total" text="0.00 TND"/>
+                                <Button mnemonicParsing="false" maxWidth="1.7976931348623157E308" onAction="#removeLigne" styleClass="cart-secondary-button" text="Supprimer la ligne"/>
+                                <Button mnemonicParsing="false" maxWidth="1.7976931348623157E308" onAction="#goToCommande" styleClass="cart-primary-button" text="Continuer vers infos commande"/>
+                                <Button mnemonicParsing="false" maxWidth="1.7976931348623157E308" onAction="#continueShopping" styleClass="cart-ghost-button" text="Retour au catalogue"/>
+                                <Button mnemonicParsing="false" maxWidth="1.7976931348623157E308" onAction="#clearCart" styleClass="cart-danger-button" text="Vider le panier"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

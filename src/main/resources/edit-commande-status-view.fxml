@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER_LEFT" prefHeight="320.0" prefWidth="520.0" spacing="18.0" styleClass="content-shell"
+      stylesheets="@styles/esportify-theme.css"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.PROJETPI.EditCommandeStatusController">
+    <padding>
+        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0"/>
+    </padding>
+    <children>
+        <Label styleClass="page-title" text="Modifier statut"/>
+        <Label fx:id="commandeInfoLabel" styleClass="table-hint" text="Commande"/>
+        <Label styleClass="field-label" text="Nouveau statut"/>
+        <ComboBox fx:id="statutComboBox" prefWidth="250.0" styleClass="dark-text-field"/>
+        <VBox spacing="12.0" styleClass="panel-card">
+            <children>
+                <Button mnemonicParsing="false" onAction="#saveStatus" prefWidth="220.0" styleClass="primary-button" text="Enregistrer"/>
+                <Button mnemonicParsing="false" onAction="#closeWindow" prefWidth="220.0" styleClass="ghost-button" text="Fermer"/>
+            </children>
+        </VBox>
+    </children>
+</VBox>
