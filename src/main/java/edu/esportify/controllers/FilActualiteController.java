@@ -1,5 +1,7 @@
 package edu.esportify.controllers;
 
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.controllers.SceneManager;
 import edu.esportify.entities.Announcement;
 import edu.esportify.entities.Commentaire;
 import edu.esportify.entities.ConversationPreview;
@@ -229,6 +231,7 @@ public class FilActualiteController {
     @FXML private Button frontTournoisButton;
     @FXML private Button frontBoutiqueButton;
     @FXML private Button frontCommandesButton;
+    @FXML private Button frontStreamingButton;
     @FXML private Button frontSavedButton;
     @FXML private Button frontProfileButton;
     @FXML private StackPane frontContentStack;
@@ -320,6 +323,7 @@ public class FilActualiteController {
     @FXML private Button adminEquipesButton;
     @FXML private Button adminTournoiButton;
     @FXML private Button adminBoutiqueButton;
+    @FXML private Button adminCommandesButton;
     @FXML private Button adminComptesButton;
     @FXML private VBox adminFilSubmenu;
     @FXML private Label adminFilChevron;
@@ -360,8 +364,14 @@ public class FilActualiteController {
         configureCommentManagementModule();
         applySidebarState(adminSidebar, false);
         applySidebarState(frontSidebar, false);
-        showFrontOffice();
-        showFrontView(frontFeedView, frontFeedButton);
+        if (isCurrentUserAdmin()) {
+            showBackOffice();
+            setAdminFilSubmenuVisible(true);
+            showBackView(dashboardView, dashboardButton);
+        } else {
+            showFrontOffice();
+            showFrontView(frontFeedView, frontFeedButton);
+        }
     }
 
     @FXML private void handleShowDashboard() { if (showBackOffice()) { showBackView(dashboardView, dashboardButton); } }
@@ -373,17 +383,24 @@ public class FilActualiteController {
     @FXML private void handleShowBackOffice() { if (showBackOffice()) { showBackView(postsView, postsButton); } }
     @FXML private void handleShowFrontFeed() { showFrontOffice(); showFrontView(frontFeedView, frontFeedButton); }
     @FXML private void handleBackFromPostDetail() { showFrontOffice(); showFrontView(frontFeedView, frontFeedButton); }
-    @FXML private void handleShowFrontStreaming() { showFrontOffice(); showFrontView(frontStreamingView, frontTournoisButton); refreshStreamingHub(); }
+    @FXML private void handleShowFrontStreaming() { showFrontOffice(); showFrontView(frontStreamingView, frontStreamingButton); refreshStreamingHub(); }
     @FXML private void handleRefreshStreaming() { refreshStreamingHub(); }
     @FXML private void handleShowFrontSaved() { showFrontOffice(); showFrontView(frontSavedView, frontSavedButton); }
-    @FXML private void handleShowFrontProfile() { showFrontOffice(); showFrontView(frontProfileView, frontProfileButton); }
-    @FXML private void handleFrontEquipes() { showFrontOffice(); markFrontActive(frontEquipesButton); showInfo("Equipes"); }
-    @FXML private void handleFrontBoutique() { showFrontOffice(); markFrontActive(frontBoutiqueButton); showInfo("Boutique"); }
-    @FXML private void handleFrontCommandes() { showFrontOffice(); markFrontActive(frontCommandesButton); showInfo("Commandes"); }
-    @FXML private void handleAdminEquipes() { if (showBackOffice()) { markAdminActive(adminEquipesButton); showInfo("Gestion Equipes"); } }
-    @FXML private void handleAdminTournoi() { if (showBackOffice()) { markAdminActive(adminTournoiButton); showInfo("Gestion Tournoi"); } }
-    @FXML private void handleAdminBoutique() { if (showBackOffice()) { markAdminActive(adminBoutiqueButton); showInfo("Gestion Boutique"); } }
-    @FXML private void handleAdminComptes() { if (showBackOffice()) { markAdminActive(adminComptesButton); showInfo("Gestion Comptes"); } }
+    @FXML private void handleShowFrontProfile() { navigateToScene("/edu/ProjetPI/views/profile.fxml", "Mon Profil"); }
+    @FXML private void handleFrontEquipes() { navigateToScene("/fxml/tournoi-user-view.fxml", "E-Sportify User - Tournois"); }
+    @FXML private void handleFrontBoutique() { navigateToScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique"); }
+    @FXML private void handleFrontCommandes() { navigateToScene("/lignecommande-view.fxml", "Liste des commandes"); }
+    @FXML private void handleAdminEquipes() { if (showBackOffice()) { navigateToScene("/fxml/rawg-games-view.fxml", "E-Sportify Admin - Consulter Jeux"); } }
+    @FXML private void handleAdminTournoi() {
+        if (showBackOffice()) {
+            edu.connexion3a77.controllers.TournoiAdminController.openOn(edu.connexion3a77.controllers.TournoiAdminController.InitialSection.TOURNOIS);
+            navigateToScene("/fxml/tournoi-admin-view.fxml", "Gestion des tournois");
+        }
+    }
+    @FXML private void handleAdminBoutique() { if (showBackOffice()) { navigateToScene("/backListProduit.fxml", "Gestion des produits"); } }
+    @FXML private void handleAdminCommandes() { if (showBackOffice()) { navigateToScene("/commande-view.fxml", "Gestion des commandes"); } }
+    @FXML private void handleAdminComptes() { if (showBackOffice()) { navigateToScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Gestion des comptes"); } }
+    @FXML private void handleOpenProfileScene() { navigateToScene("/edu/ProjetPI/views/profile.fxml", "Mon Profil"); }
     @FXML private void handleFilterAll() { applyFrontFilter(FILTER_ALL, filterAllButton); }
     @FXML private void handleFilterTeams() { applyFrontFilter(FILTER_TEAMS, filterTeamsButton); }
     @FXML private void handleFilterPlayers() { applyFrontFilter(FILTER_PLAYERS, filterPlayersButton); }
@@ -445,6 +462,9 @@ public class FilActualiteController {
     }
     @FXML
     private void handleLogout() {
+        messengerRefreshTimeline.stop();
+        streamingRefreshTimeline.stop();
+        messengerTypingPause.stop();
         activeConversation = null;
         savedPostIds.clear();
         likedPostIds.clear();
@@ -453,11 +473,8 @@ public class FilActualiteController {
         updateNotificationsBadge();
         closeNotificationsPopup();
         notificationsOpen = false;
-        currentUser = userDirectoryService.resolveCurrentUser();
-        refreshAll();
-        showFrontOffice();
-        showFrontView(frontFeedView, frontFeedButton);
-        showInfo("Authentification non integree: session utilisateur appliquee automatiquement.");
+        DashboardSession.clear();
+        SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "E-SPORTIFY : Connexion");
     }
     @FXML private void handleAnnouncementAdd() { handleAnnouncementCreate(); }
     @FXML private void handleAnnouncementUpdate() { handleAnnouncementEdit(); }
@@ -1300,7 +1317,7 @@ public class FilActualiteController {
             case MESSENGER -> handleOpenMessengerFull();
             case STREAMING -> {
                 showFrontOffice();
-                showFrontView(frontStreamingView, frontTournoisButton);
+                showFrontView(frontStreamingView, frontStreamingButton);
                 refreshStreamingHub();
             }
         }
@@ -1558,7 +1575,7 @@ public class FilActualiteController {
             wrap.getChildren().add(bubble);
         }
 
-        Label meta = new Label(formatFrontDate(message.getCreatedAt()) + (mine && message.getSeenAt() != null ? "  â€¢  Vu" : ""));
+        Label meta = new Label(formatFrontDate(message.getCreatedAt()) + (mine && message.getSeenAt() != null ? "  -  Vu" : ""));
         meta.getStyleClass().add("messenger-message-meta");
         wrap.getChildren().add(meta);
         return wrap;
@@ -1931,17 +1948,17 @@ public class FilActualiteController {
             toggleManaged(child, child == targetView);
         }
         markActive(activeButton, frontFeedButton, frontSavedButton, frontProfileButton,
-                frontEquipesButton, frontTournoisButton, frontBoutiqueButton, frontCommandesButton);
+                frontEquipesButton, frontTournoisButton, frontBoutiqueButton, frontCommandesButton, frontStreamingButton);
     }
 
     private void markFrontActive(Button activeButton) {
         markActive(activeButton, frontFeedButton, frontSavedButton, frontProfileButton,
-                frontEquipesButton, frontTournoisButton, frontBoutiqueButton, frontCommandesButton);
+                frontEquipesButton, frontTournoisButton, frontBoutiqueButton, frontCommandesButton, frontStreamingButton);
     }
 
     private void markAdminActive(Button activeButton) {
         markActive(activeButton, adminFilGroupButton, postsButton, announcementsButton, commentsButton, aiButton,
-                adminEquipesButton, adminTournoiButton, adminBoutiqueButton, adminComptesButton);
+                adminEquipesButton, adminTournoiButton, adminBoutiqueButton, adminCommandesButton, adminComptesButton);
     }
 
     private void animateSidebar(VBox sidebar, boolean collapsed) {
@@ -1991,12 +2008,14 @@ public class FilActualiteController {
         setContentDisplay(adminEquipesButton, collapsed);
         setContentDisplay(adminTournoiButton, collapsed);
         setContentDisplay(adminBoutiqueButton, collapsed);
+        setContentDisplay(adminCommandesButton, collapsed);
         setContentDisplay(adminComptesButton, collapsed);
         setContentDisplay(frontFeedButton, collapsed);
         setContentDisplay(frontEquipesButton, collapsed);
         setContentDisplay(frontTournoisButton, collapsed);
         setContentDisplay(frontBoutiqueButton, collapsed);
         setContentDisplay(frontCommandesButton, collapsed);
+        setContentDisplay(frontStreamingButton, collapsed);
         setContentDisplay(frontSavedButton, collapsed);
         setContentDisplay(frontProfileButton, collapsed);
     }
@@ -2152,7 +2171,7 @@ public class FilActualiteController {
         adminFilSubmenu.setVisible(show);
         adminFilSubmenu.setManaged(show);
         if (adminFilChevron != null) {
-            adminFilChevron.setText(show ? "Ã¢â€“Â¾" : "Ã¢â€“Â¸");
+            adminFilChevron.setText(show ? "v" : ">" );
         }
     }
 
@@ -2164,7 +2183,7 @@ public class FilActualiteController {
         adminFilSubmenu.setVisible(show);
         adminFilSubmenu.setManaged(show);
         if (adminFilChevron != null) {
-            adminFilChevron.setText(show ? "â–¾" : "â–¸");
+            adminFilChevron.setText(show ? "v" : ">" );
         }
     }
 
@@ -2826,6 +2845,13 @@ public class FilActualiteController {
         }
     }
 
+    private void navigateToScene(String fxmlPath, String title) {
+        messengerRefreshTimeline.stop();
+        streamingRefreshTimeline.stop();
+        messengerTypingPause.stop();
+        SceneManager.switchScene(fxmlPath, title);
+    }
+
     private void setFrontPublishState(boolean loading, String message) {
         frontPublishInFlight = loading;
         if (frontPublishButton != null) {
@@ -3155,7 +3181,7 @@ public class FilActualiteController {
             for (Commentaire comment : postComments) {
                 VBox commentBox = new VBox(4);
                 commentBox.getStyleClass().add("comment-box");
-                Label meta = new Label(resolveAuthorName(comment.getAuthorId()) + " â€¢ " + formatFrontDate(comment.getCreatedAt()));
+                Label meta = new Label(resolveAuthorName(comment.getAuthorId()) + " - " + formatFrontDate(comment.getCreatedAt()));
                 meta.getStyleClass().add("comment-meta");
                 Label text = new Label(comment.getDisplayContent());
                 text.getStyleClass().add("comment-text");
@@ -3360,7 +3386,7 @@ public class FilActualiteController {
     private Node buildEmptyState(String titleText, String bodyText) {
         VBox box = new VBox(10);
         box.getStyleClass().add("empty-state-card");
-        Label glyph = new Label("â—Ž");
+        Label glyph = new Label("o");
         glyph.getStyleClass().add("empty-state-glyph");
         Label title = new Label(titleText);
         title.getStyleClass().add("empty-state-title");
@@ -3981,7 +4007,7 @@ public class FilActualiteController {
                 for (Commentaire comment : postComments) {
                     VBox commentBox = new VBox(4);
                     commentBox.getStyleClass().add("comment-box");
-                    Label meta = new Label(resolveAuthorName(comment.getAuthorId()) + " â€¢ " + formatFrontDate(comment.getCreatedAt()));
+                    Label meta = new Label(resolveAuthorName(comment.getAuthorId()) + " - " + formatFrontDate(comment.getCreatedAt()));
                     meta.getStyleClass().add("comment-meta");
                     Label text = new Label(comment.getDisplayContent());
                     text.getStyleClass().add("comment-text");
@@ -4052,7 +4078,7 @@ public class FilActualiteController {
             VBox card = new VBox(8);
             card.getStyleClass().add("post-card");
 
-            Label title = new Label("Post #" + item.getPostId() + " â€¢ Auteur #" + item.getAuthorId());
+            Label title = new Label("Post #" + item.getPostId() + " - Auteur #" + item.getAuthorId());
             title.getStyleClass().add("post-author");
 
             Label meta = new Label(formatTableDate(item.getCreatedAt()));

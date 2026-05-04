@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<designModule name="GestionCommandeLigneCommandePayment" version="1.0">
+  <scope>
+    <included>Commande</included>
+    <included>LigneCommande</included>
+    <included>Payment</included>
+    <included>Flux front panier-livraison-paiement-confirmation</included>
+    <included>Controle IA anti-abus sur commande</included>
+    <excluded>Autres modules hors commande/paiement</excluded>
+  </scope>
+
+  <actors>
+    <actor id="client" label="Client" />
+    <actor id="admin" label="Administrateur" />
+    <actor id="stripe" label="Stripe Checkout" />
+    <actor id="ai" label="Moteur IA anti-abus" />
+  </actors>
+
+  <entities>
+    <entity name="Commande" table="commande">
+      <attributes>
+        <attribute name="id" type="int" pk="true" />
+        <attribute name="statut" type="string" values="draft,pending_payment,paid,cancelled" />
+        <attribute name="nom" type="string" nullable="true" />
+        <attribute name="prenom" type="string" nullable="true" />
+        <attribute name="adresse" type="string" nullable="true" />
+        <attribute name="pays" type="string" nullable="true" />
+        <attribute name="gouvernorat" type="string" nullable="true" />
+        <attribute name="codePostal" type="string" nullable="true" />
+        <attribute name="adresseDetail" type="string" nullable="true" />
+        <attribute name="quantite" type="int" nullable="true" />
+        <attribute name="numtel" type="int" nullable="true" />
+        <attribute name="identityKey" type="string" nullable="true" />
+        <attribute name="aiBlocked" type="bool" default="false" />
+        <attribute name="aiRiskScore" type="float" nullable="true" />
+        <attribute name="aiBlockReason" type="string" nullable="true" />
+        <attribute name="aiBlockedAt" type="datetime" nullable="true" />
+        <attribute name="aiBlockUntil" type="datetime" nullable="true" />
+      </attributes>
+    </entity>
+
+    <entity name="LigneCommande" table="ligne_commande">
+      <attributes>
+        <attribute name="id" type="int" pk="true" />
+        <attribute name="quantite" type="int" />
+        <attribute
+          name="prix"
+          type="int"
+          note="Prix snapshot du produit au moment de l'ajout" />
+      </attributes>
+    </entity>
+
+    <entity name="Payment" table="payment">
+      <attributes>
+        <attribute name="id" type="int" pk="true" />
+        <attribute name="amount" type="float" />
+        <attribute name="createdAt" type="datetime" />
+        <attribute name="status" type="string" />
+      </attributes>
+    </entity>
+
+    <entity name="Produit" table="produit" external="true">
+      <attributes>
+        <attribute name="id" type="int" pk="true" />
+        <attribute name="nom" type="string" />
+        <attribute name="prix" type="int" />
+        <attribute name="stock" type="int" />
+      </attributes>
+    </entity>
+  </entities>
+
+  <relations>
+    <relation from="Commande" to="LigneCommande" type="one-to-many" label="contient" />
+    <relation from="LigneCommande" to="Produit" type="many-to-one" label="reference" />
+    <relation from="Commande" to="Payment" type="one-to-many" label="genere" />
+  </relations>
+
+  <useCases>
+    <useCase actor="client" name="Creer une commande" />
+    <useCase actor="client" name="Ajouter un produit a la commande" />
+    <useCase actor="client" name="Modifier ou supprimer une ligne de commande" />
+    <useCase actor="client" name="Saisir informations client" />
+    <useCase actor="client" name="Saisir adresse de livraison" />
+    <useCase actor="client" name="Payer la commande" />
+    <useCase actor="client" name="Consulter resultat de paiement" />
+    <useCase actor="client" name="Consulter historique de commandes" />
+    <useCase actor="admin" name="Consulter liste des commandes" />
+    <useCase actor="admin" name="Consulter liste des paiements" />
+    <useCase actor="ai" name="Evaluer risque d'abus" />
+    <useCase actor="stripe" name="Valider le paiement externe" />
+  </useCases>
+
+  <screens>
+    <screen
+      route="front_order_cart_details"
+      file="templates/front/order/cart_details.html.twig"
+      step="1"
+      title="Panier detaille">
+      <components>
+        <component>Liste des lignes de commande</component>
+        <component>Boutons plus/moins pour quantite</component>
+        <component>Suppression d'une ligne</component>
+        <component>Resume sous-total / total</component>
+      </components>
+    </screen>
+
+    <screen
+      route="front_order_cart"
+      file="templates/front/order/cart.html.twig"
+      step="1"
+      title="Panier + informations client">
+      <components>
+        <component>Recapitulatif des articles</component>
+        <component>Formulaire nom, prenom, quantite, telephone</component>
+        <component>Gestion message de blocage IA</component>
+        <component>CTA vers livraison</component>
+      </components>
+    </screen>
+
+    <screen
+      route="front_order_step2"
+      file="templates/front/order/address.html.twig"
+      step="2"
+      title="Adresse de livraison">
+      <components>
+        <component>Formulaire pays, gouvernorat, code postal, adresse, adresse detail</component>
+        <component>Resume de commande</component>
+        <component>CTA vers paiement</component>
+      </components>
+    </screen>
+
+    <screen
+      route="front_payment_init"
+      file="templates/front/payment/pay.html.twig"
+      step="3"
+      title="Paiement">
+      <components>
+        <component>Bloc recap informations client</component>
+        <component>Bloc recap adresse</component>
+        <component>Choix methode de paiement UI</component>
+        <component>Resume montant total</component>
+        <component>CTA valider la commande</component>
+      </components>
+    </screen>
+
+    <screen
+      route="front_payment_result"
+      file="templates/front/payment/result.html.twig"
+      step="4"
+      title="Confirmation paiement">
+      <components>
+        <component>Etat succes ou erreur</component>
+        <component>Affichage id commande</component>
+        <component>Affichage montant paye</component>
+        <component>Actions retour boutique/panier</component>
+      </components>
+    </screen>
+  </screens>
+
+  <workflow name="FrontCommandePaiement">
+    <step order="1" state="draft">
+      <action>Creation de la commande</action>
+      <controller>OrderActionController::create</controller>
+      <service>OrderService::createOrder</service>
+    </step>
+
+    <step order="2" state="draft">
+      <action>Ajout produits et gestion lignes de commande</action>
+      <controller>OrderActionController::addProduct / updateLine / removeLine</controller>
+      <service>OrderService::addProductToOrder / updateLineQuantity / removeLine</service>
+    </step>
+
+    <step order="3" state="draft">
+      <action>Validation etape client</action>
+      <controller>OrderActionController::step1</controller>
+      <service>UnpaidOrderAbuseDetectionService::assessAndMaybeBlock</service>
+      <decision success="Continuer vers livraison" failure="Bloquer temporairement la commande" />
+    </step>
+
+    <step order="4" state="pending_payment">
+      <action>Validation adresse et confirmation commande</action>
+      <controller>OrderActionController::step2</controller>
+      <service>OrderService::confirmOrder</service>
+    </step>
+
+    <step order="5" state="pending_payment">
+      <action>Creation session Stripe Checkout</action>
+      <controller>PaymentController::process</controller>
+      <service>PaymentService::createCheckoutSession</service>
+    </step>
+
+    <step order="6" state="paid">
+      <action>Confirmation paiement et creation trace payment</action>
+      <controller>PaymentController::success</controller>
+      <service>PaymentService::confirmPayment</service>
+    </step>
+
+    <step order="7" state="paid">
+      <action>Affichage resultat</action>
+      <controller>PaymentController::result</controller>
+    </step>
+  </workflow>
+
+  <businessRules>
+    <rule id="BR1">Une commande commence avec le statut draft.</rule>
+    <rule id="BR2">Une commande doit contenir au moins une ligne avant confirmation.</rule>
+    <rule id="BR3">Une ligne de commande reference un produit et conserve un prix snapshot.</rule>
+    <rule id="BR4">Le total commande est calcule par somme(prix * quantite).</rule>
+    <rule id="BR5">Le passage a pending_payment se fait apres validation client et livraison.</rule>
+    <rule id="BR6">Le paiement est autorise seulement si la commande est pending_payment.</rule>
+    <rule id="BR7">Apres confirmation Stripe payee, la commande passe a paid.</rule>
+    <rule id="BR8">Un enregistrement Payment doit exister pour chaque commande payee.</rule>
+    <rule id="BR9">Le moteur IA peut bloquer temporairement une commande selon score, telephone, user ou identityKey.</rule>
+    <rule id="BR10">Une commande paid nettoie les champs de blocage IA.</rule>
+  </businessRules>
+
+  <designNeeds>
+    <ui>
+      <need>Stepper 4 etapes: Panier, Livraison, Paiement, Confirmation</need>
+      <need>Resume de commande visible dans chaque etape</need>
+      <need>Feedback clair pour succes, erreur et blocage IA</need>
+      <need>Actions de retour entre les etapes sans casser le flux</need>
+      <need>Composants de quantite reutilisables pour ligne de commande</need>
+    </ui>
+
+    <validation>
+      <need>Validation nom, prenom, telephone a l'etape client</need>
+      <need>Validation pays, gouvernorat, code postal, adresse a l'etape livraison</need>
+      <need>Controle du stock lors de modification de quantite</need>
+    </validation>
+
+    <data>
+      <need>Persistance session current_order_id et historique de commandes</need>
+      <need>Synchronisation Commande vers Payment apres paiement confirme</need>
+      <need>Stockage des metadonnees IA dans Commande</need>
+    </data>
+  </designNeeds>
+</designModule>

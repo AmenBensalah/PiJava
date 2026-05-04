@@ -1,5 +1,7 @@
 package edu.esportify.services;
 
+import edu.ProjetPI.controllers.DashboardSession;
+import edu.ProjetPI.entities.User;
 import edu.esportify.entities.UserProfile;
 import edu.esportify.tools.MyConnection;
 
@@ -47,6 +49,23 @@ public class UserDirectoryService {
     }
 
     public UserProfile resolveCurrentUser() {
+        User sessionUser = DashboardSession.getCurrentUser();
+        if (sessionUser != null) {
+            String displayName = firstNonBlank(
+                    sessionUser.getPseudo(),
+                    sessionUser.getFullName(),
+                    extractNameFromEmail(sessionUser.getEmail()),
+                    "User " + sessionUser.getId()
+            );
+            String role = firstNonBlank(sessionUser.getRole(), "USER");
+            return new UserProfile(
+                    sessionUser.getId(),
+                    displayName,
+                    firstNonBlank(sessionUser.getEmail(), ""),
+                    role,
+                    extractAvatar(displayName)
+            );
+        }
         return getUsers().stream().findFirst().orElse(new UserProfile(1, "Vous", "user@esportify.local", "USER", "V"));
     }
 
@@ -95,6 +114,23 @@ public class UserDirectoryService {
             return "U";
         }
         return displayName.substring(0, 1).toUpperCase(Locale.ROOT);
+    }
+
+    private String extractNameFromEmail(String email) {
+        if (email == null || email.isBlank()) {
+            return null;
+        }
+        int at = email.indexOf('@');
+        return at <= 0 ? email : email.substring(0, at);
+    }
+
+    private String firstNonBlank(String... values) {
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value.trim();
+            }
+        }
+        return "";
     }
 
     private Connection getConnection() {

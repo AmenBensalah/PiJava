@@ -12,6 +12,7 @@ target/
 *.iws
 *.iml
 *.ipr
+out/
 
 ### Eclipse ###
 .apt_generated
@@ -34,6 +35,18 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Local config ###
+config/local.properties
+
+### Python ###
+__pycache__/
+*.pyc
+.venv/
+
+### Build Artifacts ###
+*.class
+*.log
 
 ### Mac OS ###
 .DS_Store
