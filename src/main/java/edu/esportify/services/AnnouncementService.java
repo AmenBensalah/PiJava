@@ -190,9 +190,18 @@ public class AnnouncementService implements IService<Announcement> {
         if (value == null || value.isBlank()) {
             return true;
         }
+        if (value.startsWith("/uploads/")) {
+            return true;
+        }
+        if (value.matches("^[A-Za-z]:\\\\.*")) {
+            return true;
+        }
         try {
             URI uri = new URI(value);
-            return "http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme());
+            String scheme = uri.getScheme();
+            return "http".equalsIgnoreCase(scheme)
+                    || "https".equalsIgnoreCase(scheme)
+                    || "file".equalsIgnoreCase(scheme);
         } catch (URISyntaxException e) {
             return false;
         }

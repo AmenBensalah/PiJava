@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.esportify.controllers.PostManagementController"
+      stylesheets="@post-management.css"
+      spacing="18"
+      styleClass="pm-root">
+    <StackPane styleClass="pm-hero">
+        <ImageView fitHeight="220" preserveRatio="false" smooth="true" StackPane.alignment="CENTER">
+            <image><Image url="@images/bg-cyberpunk.jpg"/></image>
+        </ImageView>
+        <Region styleClass="pm-hero-overlay"/>
+        <HBox alignment="CENTER_LEFT" spacing="24" styleClass="pm-hero-content">
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="PUBLICATIONS" styleClass="pm-kicker"/>
+                <Label text="Moderation Studio" styleClass="pm-title"/>
+                <HBox spacing="10">
+                    <Label fx:id="heroStatusLabel" text="Live feed" styleClass="pm-chip"/>
+                    <Label fx:id="heroCountLabel" text="0 posts" styleClass="pm-chip secondary"/>
+                </HBox>
+            </VBox>
+            <HBox spacing="12">
+                <Button text="Nouveau post" onAction="#handleCreatePost" styleClass="pm-primary-button"/>
+                <Button text="Actualiser" onAction="#handleRefresh" styleClass="pm-ghost-button"/>
+            </HBox>
+        </HBox>
+    </StackPane>
+
+    <FlowPane hgap="16" vgap="16" prefWrapLength="1200">
+        <VBox styleClass="pm-stat-card cyan-card" prefWidth="220" minWidth="180">
+            <Label text="POSTS" styleClass="pm-stat-label"/>
+            <Label fx:id="totalPostsLabel" text="0" styleClass="pm-stat-value"/>
+            <Label fx:id="postsDeltaLabel" text="Mur global" styleClass="pm-stat-sub"/>
+        </VBox>
+        <VBox styleClass="pm-stat-card violet-card" prefWidth="220" minWidth="180">
+            <Label text="EVENTS" styleClass="pm-stat-label"/>
+            <Label fx:id="eventPostsLabel" text="0" styleClass="pm-stat-value"/>
+            <Label fx:id="eventDeltaLabel" text="Aucun live" styleClass="pm-stat-sub"/>
+        </VBox>
+        <VBox styleClass="pm-stat-card danger-card" prefWidth="220" minWidth="180">
+            <Label text="MEDIA" styleClass="pm-stat-label"/>
+            <Label fx:id="mediaPostsLabel" text="0" styleClass="pm-stat-value"/>
+            <Label fx:id="mediaDeltaLabel" text="Aucun media" styleClass="pm-stat-sub"/>
+        </VBox>
+        <VBox styleClass="pm-stat-card" prefWidth="260" minWidth="200">
+            <Label text="ENGAGEMENT" styleClass="pm-stat-label"/>
+            <Label fx:id="engagementLabel" text="0%" styleClass="pm-stat-value"/>
+            <Label fx:id="engagementHintLabel" text="Encore calme" styleClass="pm-stat-sub"/>
+        </VBox>
+    </FlowPane>
+
+    <HBox spacing="18" VBox.vgrow="ALWAYS">
+        <VBox styleClass="pm-main-panel" spacing="16" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <TextField fx:id="searchField" promptText="Rechercher un contenu, un auteur, un event..." styleClass="pm-search-field" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="filterAllButton" text="Tous" onAction="#handleFilterAll" styleClass="pm-filter-button active"/>
+                <Button fx:id="filterMediaButton" text="Media" onAction="#handleFilterMedia" styleClass="pm-filter-button"/>
+                <Button fx:id="filterEventsButton" text="Events" onAction="#handleFilterEvents" styleClass="pm-filter-button"/>
+                <Button fx:id="filterTextButton" text="Texte" onAction="#handleFilterText" styleClass="pm-filter-button"/>
+            </HBox>
+
+            <HBox spacing="16" VBox.vgrow="ALWAYS">
+                <VBox styleClass="pm-feed-panel" spacing="14" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Mur de moderation" styleClass="pm-section-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="resultCountLabel" text="0 resultats" styleClass="pm-small-chip"/>
+                    </HBox>
+                    <ListView fx:id="postsListView" VBox.vgrow="ALWAYS" styleClass="pm-posts-list"/>
+                </VBox>
+
+                <VBox styleClass="pm-side-panel" spacing="16" prefWidth="360" minWidth="320" maxWidth="380">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Inspecteur" styleClass="pm-section-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="typeBadgeLabel" text="TYPE" styleClass="pm-type-badge"/>
+                    </HBox>
+
+                    <VBox spacing="12" styleClass="pm-preview-card">
+                        <Label fx:id="selectedTitleLabel" text="Selectionnez une publication" styleClass="pm-selected-title"/>
+                        <Label fx:id="selectedMetaLabel" text="Auteur - Date" styleClass="pm-selected-meta"/>
+                        <Label fx:id="selectedContentLabel" text="Le detail du post apparait ici." wrapText="true" styleClass="pm-selected-content"/>
+                        <VBox spacing="8" styleClass="pm-media-preview-card">
+                            <ImageView fx:id="selectedMediaPreview" fitWidth="300" fitHeight="170" preserveRatio="true" managed="false" visible="false" styleClass="pm-media-preview"/>
+                            <Label fx:id="selectedMediaHintLabel" text="Aucun media a afficher" wrapText="true" styleClass="pm-media-hint"/>
+                        </VBox>
+                    </VBox>
+
+                    <FlowPane hgap="10" vgap="10">
+                        <VBox styleClass="pm-mini-card" prefWidth="150">
+                            <Label text="Auteur" styleClass="pm-mini-label"/>
+                            <Label fx:id="selectedAuthorLabel" text="-" styleClass="pm-mini-value"/>
+                        </VBox>
+                        <VBox styleClass="pm-mini-card" prefWidth="150">
+                            <Label text="Date" styleClass="pm-mini-label"/>
+                            <Label fx:id="selectedDateLabel" text="-" styleClass="pm-mini-value"/>
+                        </VBox>
+                        <VBox styleClass="pm-mini-card" prefWidth="150">
+                            <Label text="Media" styleClass="pm-mini-label"/>
+                            <Label fx:id="selectedMediaLabel" text="Aucun" styleClass="pm-mini-value"/>
+                        </VBox>
+                        <VBox styleClass="pm-mini-card" prefWidth="150">
+                            <Label text="Event" styleClass="pm-mini-label"/>
+                            <Label fx:id="selectedEventLabel" text="Non" styleClass="pm-mini-value"/>
+                        </VBox>
+                    </FlowPane>
+
+                    <VBox spacing="10" styleClass="pm-action-card">
+                        <Button text="Ouvrir l'editeur" onAction="#handleEditSelectedPost" maxWidth="Infinity" styleClass="pm-primary-button"/>
+                        <Button text="Voir les details" onAction="#handleOpenDetailView" maxWidth="Infinity" styleClass="pm-ghost-button"/>
+                        <Button text="Supprimer le post" onAction="#handleDeleteSelectedPost" maxWidth="Infinity" styleClass="pm-danger-button"/>
+                    </VBox>
+
+                    <VBox spacing="8" styleClass="pm-activity-card">
+                        <Label text="Signal" styleClass="pm-mini-label"/>
+                        <Label fx:id="activityStatusLabel" text="Studio pret" styleClass="pm-activity-text"/>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </HBox>
+</VBox>

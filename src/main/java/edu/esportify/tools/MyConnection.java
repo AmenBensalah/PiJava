@@ -51,6 +51,57 @@ public class MyConnection {
                 created_at DATETIME NOT NULL
             )
             """;
+    private static final String POST_LIKES_SCHEMA_SQL = """
+            CREATE TABLE IF NOT EXISTS post_likes (
+                post_id INT NOT NULL,
+                user_id INT NOT NULL,
+                created_at DATETIME NOT NULL,
+                PRIMARY KEY (post_id, user_id)
+            )
+            """;
+    private static final String POST_SAVES_SCHEMA_SQL = """
+            CREATE TABLE IF NOT EXISTS post_saves (
+                post_id INT NOT NULL,
+                user_id INT NOT NULL,
+                created_at DATETIME NOT NULL,
+                PRIMARY KEY (post_id, user_id)
+            )
+            """;
+    private static final String POST_SHARES_SCHEMA_SQL = """
+            CREATE TABLE IF NOT EXISTS post_shares (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                post_id INT NOT NULL,
+                user_id INT NOT NULL,
+                created_at DATETIME NOT NULL
+            )
+            """;
+    private static final String CONVERSATIONS_SCHEMA_SQL = """
+            CREATE TABLE IF NOT EXISTS conversations (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                created_at DATETIME NOT NULL,
+                updated_at DATETIME NOT NULL,
+                last_message_id INT NULL
+            )
+            """;
+    private static final String CONVERSATION_PARTICIPANTS_SCHEMA_SQL = """
+            CREATE TABLE IF NOT EXISTS conversation_participants (
+                conversation_id INT NOT NULL,
+                user_id INT NOT NULL,
+                joined_at DATETIME NOT NULL,
+                PRIMARY KEY (conversation_id, user_id)
+            )
+            """;
+    private static final String MESSAGES_SCHEMA_SQL = """
+            CREATE TABLE IF NOT EXISTS messages (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                conversation_id INT NOT NULL,
+                sender_id INT NOT NULL,
+                content TEXT NULL,
+                attachment_path VARCHAR(255) NULL,
+                created_at DATETIME NOT NULL,
+                seen_at DATETIME NULL
+            )
+            """;
 
     private final String url;
     private final String login;
@@ -92,6 +143,12 @@ public class MyConnection {
             st.executeUpdate(POSTS_SCHEMA_SQL);
             st.executeUpdate(ANNOUNCEMENTS_SCHEMA_SQL);
             st.executeUpdate(COMMENTAIRES_SCHEMA_SQL);
+            st.executeUpdate(POST_LIKES_SCHEMA_SQL);
+            st.executeUpdate(POST_SAVES_SCHEMA_SQL);
+            st.executeUpdate(POST_SHARES_SCHEMA_SQL);
+            st.executeUpdate(CONVERSATIONS_SCHEMA_SQL);
+            st.executeUpdate(CONVERSATION_PARTICIPANTS_SCHEMA_SQL);
+            st.executeUpdate(MESSAGES_SCHEMA_SQL);
         } catch (SQLException e) {
             throw new IllegalStateException("Initialisation de la base impossible: " + e.getMessage(), e);
         }

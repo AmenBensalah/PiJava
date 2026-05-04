@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Pos?>
 
 <StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="edu.esportify.controllers.FilActualiteController"
@@ -37,8 +38,7 @@
         </StackPane>
 
         <HBox VBox.vgrow="ALWAYS">
-            <VBox fx:id="adminSidebar" styleClass="sidebar sidebar-admin expanded" spacing="0"
-                  style="-fx-background-color: linear-gradient(to bottom, #221b57, #3a226e 45%, #26347a 72%, #1b1d4f);">
+            <VBox fx:id="adminSidebar" styleClass="sidebar sidebar-admin expanded" spacing="0">
                 <Button fx:id="adminMenuButton" text="Menu" onAction="#handleToggleAdminMenu" styleClass="sidebar-toggle menu-button sidebar-modern" maxWidth="Infinity"/>
                 <Separator styleClass="sidebar-separator"/>
                 <VBox styleClass="sidebar-nav" VBox.vgrow="ALWAYS">
@@ -67,7 +67,7 @@
                         <graphic><Label text="👥" styleClass="sidebar-icon"/></graphic>
                     </Button>
                     <Button fx:id="adminTournoiButton" text="Gestion Tournoi" onAction="#handleAdminTournoi" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
-                        <graphic><Label text="🏆" styleClass="sidebar-icon"/></graphic>
+                        <graphic><Label text="Live" styleClass="sidebar-icon"/></graphic>
                     </Button>
                     <Button fx:id="adminBoutiqueButton" text="Gestion Boutique" onAction="#handleAdminBoutique" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
                         <graphic><Label text="🛍" styleClass="sidebar-icon"/></graphic>
@@ -78,7 +78,7 @@
                 </VBox>
                 <VBox styleClass="sidebar-footer" spacing="14">
                     <Button text="◐" styleClass="theme-toggle-btn moon-button" maxWidth="Infinity"/>
-                    <Button text="Deconnexion" styleClass="sidebar-logout" maxWidth="Infinity"/>
+                    <Button fx:id="adminLogoutButton" text="Deconnexion" onAction="#handleLogout" styleClass="sidebar-logout" maxWidth="Infinity"/>
                 </VBox>
             </VBox>
 
@@ -87,140 +87,19 @@
                     <VBox styleClass="content-wrap" alignment="TOP_CENTER">
                         <StackPane fx:id="backContentStack" styleClass="content page-root" StackPane.alignment="TOP_CENTER">
                             <VBox fx:id="dashboardView" spacing="18" styleClass="content-shell page-frame">
-                                <StackPane styleClass="admin-hero-card">
-                                    <VBox spacing="8" styleClass="admin-hero-inner">
-                                        <Label text="COMMAND CENTER" styleClass="admin-hero-title"/>
-                                        <Label text="Vue globale du backoffice, performances et activite en temps reel." styleClass="admin-hero-subtitle"/>
-                                    </VBox>
-                                </StackPane>
-                                <HBox spacing="14" styleClass="metrics-row">
-                                    <VBox styleClass="dashboard-metric" HBox.hgrow="ALWAYS"><Label text="UTILISATEURS" styleClass="dashboard-kicker"/><Label fx:id="totalPostsLabel" text="0" styleClass="dashboard-value"/><Label text="Plateforme" styleClass="dashboard-caption"/></VBox>
-                                    <VBox styleClass="dashboard-metric" HBox.hgrow="ALWAYS"><Label text="EQUIPES" styleClass="dashboard-kicker"/><Label fx:id="eventsLabel" text="0" styleClass="dashboard-value"/><Label text="Communautes" styleClass="dashboard-caption"/></VBox>
-                                    <VBox styleClass="dashboard-metric" HBox.hgrow="ALWAYS"><Label text="POSTS / MEDIA" styleClass="dashboard-kicker"/><Label fx:id="mediaLabel" text="0" styleClass="dashboard-value"/><Label text="Fil d'actualite" styleClass="dashboard-caption"/></VBox>
-                                </HBox>
-                                <VBox styleClass="dashboard-chart-card" VBox.vgrow="ALWAYS">
-                                    <Label text="Activite mensuelle" styleClass="panel-title"/>
-                                    <Label fx:id="latestPostLabel" text="Derniere publication" wrapText="true" styleClass="panel-text"/>
-                                    <Pane VBox.vgrow="ALWAYS" styleClass="fake-chart"/>
-                                </VBox>
+                                <fx:include fx:id="backofficeDashboard" source="BackofficeDashboard.fxml"/>
                             </VBox>
 
                             <VBox fx:id="postsView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false">
-                                <StackPane styleClass="admin-page-hero">
-                                    <VBox spacing="8" styleClass="admin-page-hero-inner">
-                                        <Label text="FIL D'ACTUALITE" styleClass="admin-page-kicker"/>
-                                        <Label text="GESTION DES PUBLICATIONS" styleClass="admin-page-title"/>
-                                        <Label text="Moderez et mettez en avant les publications." styleClass="admin-page-lead"/>
-                                        <HBox spacing="14"><Button text="Creer une publication" onAction="#handleAdd" styleClass="hero-button primary"/><Button text="Rafraichir" onAction="#handleRefresh" styleClass="hero-button ghost"/></HBox>
-                                    </VBox>
-                                </StackPane>
-                                <HBox spacing="12" styleClass="admin-tabs-row">
-                                    <Button text="Publications" onAction="#handleShowPosts" styleClass="admin-tab active"/>
-                                    <Button text="Annonces" onAction="#handleShowAnnouncements" styleClass="admin-tab"/>
-                                    <Button text="Commentaires" onAction="#handleShowComments" styleClass="admin-tab"/>
-                                    <Button text="Centre IA" onAction="#handleShowAi" styleClass="admin-tab"/>
-                                </HBox>
-                                <VBox styleClass="search-panel" spacing="14">
-                                    <Label text="Recherche avancee" styleClass="search-panel-title"/>
-                                    <HBox spacing="14" styleClass="filters-grid">
-                                        <VBox spacing="6" HBox.hgrow="ALWAYS"><Label text="CONTENU" styleClass="field-label"/><TextField fx:id="searchField" promptText="Rechercher..." styleClass="search-field"/></VBox>
-                                        <VBox spacing="6" HBox.hgrow="ALWAYS"><Label text="TYPE" styleClass="field-label"/><ComboBox promptText="-- Tous --" styleClass="search-combo"/></VBox>
-                                        <VBox spacing="6" HBox.hgrow="ALWAYS"><Label text="DATE (DU)" styleClass="field-label"/><TextField promptText="jj / mm / aaaa" styleClass="search-field"/></VBox>
-                                        <VBox spacing="6" HBox.hgrow="ALWAYS"><Label text="DATE (AU)" styleClass="field-label"/><TextField promptText="jj / mm / aaaa" styleClass="search-field"/></VBox>
-                                        <VBox spacing="6" HBox.hgrow="ALWAYS"><Label text="PAR PAGE" styleClass="field-label"/><ComboBox promptText="10" styleClass="search-combo"/></VBox>
-                                    </HBox>
-                                    <HBox spacing="12"><Button text="Rechercher" onAction="#handleSearch" styleClass="filter-action-btn primary"/><Button text="Reinitialiser" onAction="#handleRefresh" styleClass="filter-action-btn ghost"/></HBox>
-                                    <HBox spacing="12" styleClass="sort-row"><Label text="Trier :" styleClass="panel-text"/><Button text="Date ?" styleClass="sort-pill"/><Button text="Date ?" styleClass="sort-pill"/><Button text="Type A?Z" styleClass="sort-pill"/><Button text="Type Z?A" styleClass="sort-pill"/></HBox>
-                                </VBox>
-                                <HBox spacing="18" VBox.vgrow="ALWAYS" styleClass="responsive-split">
-                                    <VBox styleClass="form-panel" spacing="14" prefWidth="410" maxWidth="410">
-                                        <Label text="FORMULAIRE PUBLICATION" styleClass="form-panel-title"/>
-                                        <TextArea fx:id="contentArea" promptText="Contenu de la publication" wrapText="true" prefRowCount="5" styleClass="form-input area"/>
-                                        <TextField fx:id="imageField" promptText="Image (/uploads/... ou URL)" styleClass="form-input"/>
-                                        <TextField fx:id="videoField" promptText="Video (https://...)" styleClass="form-input"/>
-                                        <CheckBox fx:id="eventCheckBox" text="Publication evenement" styleClass="form-check"/>
-                                        <TextField fx:id="eventTitleField" promptText="Titre evenement" styleClass="form-input"/>
-                                        <HBox spacing="12"><TextField fx:id="eventDateField" promptText="AAAA-MM-JJ" styleClass="form-input" HBox.hgrow="ALWAYS"/><TextField fx:id="eventLocationField" promptText="Lieu" styleClass="form-input" HBox.hgrow="ALWAYS"/></HBox>
-                                        <HBox spacing="12"><TextField fx:id="maxParticipantsField" promptText="Places" styleClass="form-input" HBox.hgrow="ALWAYS"/><TextField fx:id="authorIdField" promptText="Auteur ID" styleClass="form-input" HBox.hgrow="ALWAYS"/></HBox>
-                                        <HBox spacing="10"><Button text="Ajouter" onAction="#handleAdd" styleClass="hero-button primary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/><Button text="Modifier" onAction="#handleUpdate" styleClass="hero-button ghost" HBox.hgrow="ALWAYS" maxWidth="Infinity"/><Button text="Supprimer" onAction="#handleDelete" styleClass="danger-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/></HBox>
-                                        <Label fx:id="statusLabel" text="Pret" wrapText="true" styleClass="status-label"/>
-                                    </VBox>
-                                    <VBox styleClass="table-panel" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-                                        <TableView fx:id="postsTable" VBox.vgrow="ALWAYS" styleClass="posts-table">
-                                            <columns>
-                                                <TableColumn fx:id="idColumn" text="ID" prefWidth="70"/>
-                                                <TableColumn fx:id="mediaColumn" text="TYPE" prefWidth="120"/>
-                                                <TableColumn fx:id="contentColumn" text="CONTENU" prefWidth="280"/>
-                                                <TableColumn fx:id="eventColumn" text="CATEGORIE" prefWidth="170"/>
-                                                <TableColumn fx:id="authorColumn" text="MEDIA" prefWidth="120"/>
-                                                <TableColumn fx:id="createdAtColumn" text="CREATION" prefWidth="150"/>
-                                            </columns>
-                                        </TableView>
-                                    </VBox>
-                                </HBox>
+                                <fx:include fx:id="postManagementModule" source="PostManagementView.fxml"/>
                             </VBox>
 
                             <VBox fx:id="announcementsView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false">
-                                <StackPane styleClass="admin-page-hero"><VBox spacing="8" styleClass="admin-page-hero-inner"><Label text="FIL D'ACTUALITE" styleClass="admin-page-kicker"/><Label text="GESTION DES ANNONCES" styleClass="admin-page-title"/><Label text="Creez et suivez les annonces du fil d'actualite." styleClass="admin-page-lead"/></VBox></StackPane>
-                                <HBox spacing="12" styleClass="admin-tabs-row"><Button text="Publications" onAction="#handleShowPosts" styleClass="admin-tab"/><Button text="Annonces" onAction="#handleShowAnnouncements" styleClass="admin-tab active"/><Button text="Commentaires" onAction="#handleShowComments" styleClass="admin-tab"/><Button text="Centre IA" onAction="#handleShowAi" styleClass="admin-tab"/></HBox>
-                                <VBox styleClass="search-panel"><Label text="Recherche avancee" styleClass="search-panel-title"/></VBox>
-                                <HBox spacing="18" VBox.vgrow="ALWAYS" styleClass="responsive-split">
-                                    <VBox styleClass="form-panel" spacing="14" prefWidth="410" maxWidth="410">
-                                        <Label text="FORMULAIRE ANNONCE" styleClass="form-panel-title"/>
-                                        <TextField fx:id="announcementTitleField" promptText="Titre" styleClass="form-input"/>
-                                        <TextField fx:id="announcementTagField" promptText="Tag" styleClass="form-input"/>
-                                        <TextField fx:id="announcementLinkField" promptText="Lien (https://...)" styleClass="form-input"/>
-                                        <TextField fx:id="announcementMediaTypeField" promptText="Media type (text/image/video)" styleClass="form-input"/>
-                                        <TextField fx:id="announcementMediaFilenameField" promptText="Media filename" styleClass="form-input"/>
-                                        <TextArea fx:id="announcementContentArea" promptText="Contenu" wrapText="true" prefRowCount="4" styleClass="form-input area"/>
-                                        <HBox spacing="10">
-                                            <Button text="Ajouter" onAction="#handleAnnouncementAdd" styleClass="hero-button primary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-                                            <Button text="Modifier" onAction="#handleAnnouncementUpdate" styleClass="hero-button ghost" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-                                            <Button text="Supprimer" onAction="#handleAnnouncementDelete" styleClass="danger-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-                                        </HBox>
-                                    </VBox>
-                                    <VBox styleClass="table-panel" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-                                        <TableView fx:id="announcementsTable" VBox.vgrow="ALWAYS" styleClass="posts-table">
-                                            <columns>
-                                                <TableColumn fx:id="announcementIdColumn" text="ID" prefWidth="70"/>
-                                                <TableColumn fx:id="announcementTagColumn" text="TAG" prefWidth="120"/>
-                                                <TableColumn fx:id="announcementTitleColumn" text="TITRE" prefWidth="220"/>
-                                                <TableColumn fx:id="announcementLinkColumn" text="LIEN" prefWidth="240"/>
-                                                <TableColumn fx:id="announcementCreatedAtColumn" text="CREATION" prefWidth="150"/>
-                                            </columns>
-                                        </TableView>
-                                    </VBox>
-                                </HBox>
+                                <fx:include fx:id="announcementManagementModule" source="AnnouncementManagementView.fxml"/>
                             </VBox>
 
                             <VBox fx:id="commentsView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false">
-                                <StackPane styleClass="admin-page-hero"><VBox spacing="8" styleClass="admin-page-hero-inner"><Label text="FIL D'ACTUALITE" styleClass="admin-page-kicker"/><Label text="GESTION DES COMMENTAIRES" styleClass="admin-page-title"/></VBox></StackPane>
-                                <HBox spacing="12" styleClass="admin-tabs-row"><Button text="Publications" onAction="#handleShowPosts" styleClass="admin-tab"/><Button text="Annonces" onAction="#handleShowAnnouncements" styleClass="admin-tab"/><Button text="Commentaires" onAction="#handleShowComments" styleClass="admin-tab active"/><Button text="Centre IA" onAction="#handleShowAi" styleClass="admin-tab"/></HBox>
-                                <VBox styleClass="search-panel"><Label text="Recherche avancee" styleClass="search-panel-title"/></VBox>
-                                <HBox spacing="18" VBox.vgrow="ALWAYS" styleClass="responsive-split">
-                                    <VBox styleClass="form-panel" spacing="14" prefWidth="410" maxWidth="410">
-                                        <Label text="FORMULAIRE COMMENTAIRE" styleClass="form-panel-title"/>
-                                        <TextArea fx:id="commentContentArea" promptText="Commentaire" wrapText="true" prefRowCount="4" styleClass="form-input area"/>
-                                        <TextField fx:id="commentAuthorIdField" promptText="Auteur ID" styleClass="form-input"/>
-                                        <TextField fx:id="commentPostIdField" promptText="Publication ID" styleClass="form-input"/>
-                                        <HBox spacing="10">
-                                            <Button text="Ajouter" onAction="#handleCommentAdd" styleClass="hero-button primary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-                                            <Button text="Modifier" onAction="#handleCommentUpdate" styleClass="hero-button ghost" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-                                            <Button text="Supprimer" onAction="#handleCommentDelete" styleClass="danger-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-                                        </HBox>
-                                    </VBox>
-                                    <VBox styleClass="table-panel" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-                                        <TableView fx:id="commentsTable" VBox.vgrow="ALWAYS" styleClass="posts-table">
-                                            <columns>
-                                                <TableColumn fx:id="commentIdColumn" text="ID" prefWidth="70"/>
-                                                <TableColumn fx:id="commentAuthorColumn" text="AUTEUR" prefWidth="120"/>
-                                                <TableColumn fx:id="commentPostColumn" text="POST" prefWidth="90"/>
-                                                <TableColumn fx:id="commentContentColumn" text="COMMENTAIRE" prefWidth="260"/>
-                                                <TableColumn fx:id="commentCreatedAtColumn" text="CREATION" prefWidth="150"/>
-                                            </columns>
-                                        </TableView>
-                                    </VBox>
-                                </HBox>
+                                <fx:include fx:id="commentManagementModule" source="CommentManagementView.fxml"/>
                             </VBox>
 
                             <VBox fx:id="aiView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false">
@@ -244,22 +123,48 @@
                 <HBox styleClass="topbar-left" alignment="CENTER_LEFT">
                     <ImageView fitWidth="54" fitHeight="54" preserveRatio="true"><image><javafx.scene.image.Image url="@images/logo5.png"/></image></ImageView>
                     <Label text="E-SPORTIFY" styleClass="brand"/>
+                    <Label fx:id="frontAdminBadgeLabel" text="ADMIN" styleClass="brand-tag" visible="false" managed="false"/>
                 </HBox>
                 <Region HBox.hgrow="ALWAYS"/>
-                <TextField promptText="Rechercher joueurs, equipes, tournois..." styleClass="search-input"/>
+                <TextField fx:id="frontSearchField" promptText="Rechercher joueurs, equipes, tournois..." styleClass="search-input"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <HBox styleClass="topbar-right" alignment="CENTER_RIGHT" spacing="12">
-                    <Button text="Notifications" styleClass="icon-btn"/>
-                    <Button text="Messages" styleClass="icon-btn"/>
-                    <Button text="Parametres" styleClass="icon-btn"/>
-                    <Button text="Admin" onAction="#handleShowBackOffice" styleClass="topbar-action secondary-topbar-action"/>
+                    <StackPane pickOnBounds="false">
+                        <Button fx:id="topbarNotificationsButton" onAction="#handleToggleNotifications" styleClass="topbar-messenger-button">
+                            <graphic>
+                                <StackPane alignment="CENTER">
+                                    <Region styleClass="topbar-notifications-icon"/>
+                                </StackPane>
+                            </graphic>
+                            <tooltip><Tooltip text="Notifications"/></tooltip>
+                        </Button>
+                        <Label fx:id="topbarNotificationsBadgeLabel" text="0" visible="false" managed="false" styleClass="messenger-unread-badge topbar-messenger-badge" StackPane.alignment="TOP_RIGHT"/>
+                    </StackPane>
+                    <StackPane pickOnBounds="false">
+                        <Button fx:id="topbarMessengerButton" onAction="#handleToggleMessenger" styleClass="topbar-messenger-button">
+                            <graphic>
+                                <StackPane alignment="CENTER">
+                                    <Region styleClass="messenger-fab-icon"/>
+                                </StackPane>
+                            </graphic>
+                        </Button>
+                        <Label fx:id="topbarMessengerBadgeLabel" text="0" visible="false" managed="false" styleClass="messenger-unread-badge topbar-messenger-badge" StackPane.alignment="TOP_RIGHT"/>
+                    </StackPane>
+                    <Button styleClass="topbar-messenger-button">
+                        <graphic>
+                            <StackPane alignment="CENTER">
+                                <Region styleClass="topbar-settings-icon"/>
+                            </StackPane>
+                        </graphic>
+                        <tooltip><Tooltip text="Parametres"/></tooltip>
+                    </Button>
+                    <Button fx:id="frontAdminButton" text="Admin" onAction="#handleShowBackOffice" styleClass="topbar-action secondary-topbar-action"/>
                 </HBox>
             </HBox>
         </StackPane>
 
         <HBox VBox.vgrow="ALWAYS">
-            <VBox fx:id="frontSidebar" styleClass="sidebar sidebar-front expanded" spacing="0"
-                  style="-fx-background-color: linear-gradient(to bottom, #221b57, #3a226e 45%, #26347a 72%, #1b1d4f);">
+            <VBox fx:id="frontSidebar" styleClass="sidebar sidebar-front expanded" spacing="0">
                 <Button fx:id="frontMenuButton" text="Menu" onAction="#handleToggleFrontMenu" styleClass="sidebar-toggle menu-button sidebar-modern" maxWidth="Infinity"/>
                 <VBox styleClass="sidebar-nav" VBox.vgrow="ALWAYS">
                     <Button fx:id="frontFeedButton" text="Fil d'actualite" onAction="#handleShowFrontFeed" styleClass="sidebar-item active sidebar-modern" maxWidth="Infinity">
@@ -268,8 +173,8 @@
                     <Button fx:id="frontEquipesButton" text="Equipes" onAction="#handleFrontEquipes" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
                         <graphic><Label text="👥" styleClass="sidebar-icon"/></graphic>
                     </Button>
-                    <Button fx:id="frontTournoisButton" text="Tournois" onAction="#handleFrontTournois" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
-                        <graphic><Label text="🏆" styleClass="sidebar-icon"/></graphic>
+                    <Button fx:id="frontTournoisButton" text="Streaming" onAction="#handleShowFrontStreaming" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
+                        <graphic><Label text="Live" styleClass="sidebar-icon"/></graphic>
                     </Button>
                     <Button fx:id="frontBoutiqueButton" text="Boutique" onAction="#handleFrontBoutique" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
                         <graphic><Label text="🛍" styleClass="sidebar-icon"/></graphic>
@@ -277,12 +182,16 @@
                     <Button fx:id="frontCommandesButton" text="Commandes" onAction="#handleFrontCommandes" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
                         <graphic><Label text="👜" styleClass="sidebar-icon"/></graphic>
                     </Button>
+                    <Button fx:id="frontSavedButton" text="Sauvegardes" onAction="#handleShowFrontSaved" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
+                        <graphic><Label text="S" styleClass="sidebar-icon"/></graphic>
+                    </Button>
                     <Button fx:id="frontProfileButton" text="Profil" onAction="#handleShowFrontProfile" styleClass="sidebar-item sidebar-modern" maxWidth="Infinity">
                         <graphic><Label text="👤" styleClass="sidebar-icon"/></graphic>
                     </Button>
                 </VBox>
                 <VBox styleClass="sidebar-footer" spacing="14">
                     <Button text="◐" styleClass="theme-toggle-btn moon-button" maxWidth="Infinity"/>
+                    <Button fx:id="frontLogoutButton" text="Deconnexion" onAction="#handleLogout" styleClass="sidebar-logout" maxWidth="Infinity"/>
                 </VBox>
             </VBox>
 
@@ -294,42 +203,101 @@
                                 <HBox styleClass="feed-layout front-layout" spacing="22">
                                     <VBox styleClass="feed-main" spacing="18" HBox.hgrow="ALWAYS">
                                         <Label text="Fil d'actualite" styleClass="front-page-title"/>
-                                        <VBox styleClass="composer-card" spacing="18">
+                                        <VBox fx:id="frontComposerCard" styleClass="composer-card compact-composer" spacing="12">
                                             <HBox styleClass="composer-header" alignment="CENTER_LEFT" spacing="14">
-                                                <StackPane styleClass="avatar"><Label text="A" styleClass="avatar-text"/></StackPane>
-                                                <Label text="Vous" styleClass="composer-user"/>
-                                            </HBox>
-                                            <TextArea fx:id="frontContentArea" promptText="Publier un message, une image ou un lien video..." wrapText="true" prefRowCount="3" styleClass="composer-input"/>
-                                            <HBox spacing="10"><Button text="Images/Videos/Jeux" styleClass="chip-btn"/><TextField fx:id="frontImageField" promptText="Lien image" styleClass="mini-input" HBox.hgrow="ALWAYS"/></HBox>
-                                            <HBox spacing="10"><Button text="Lien video" styleClass="chip-btn"/><TextField fx:id="frontVideoField" promptText="https://..." styleClass="mini-input" HBox.hgrow="ALWAYS"/><CheckBox fx:id="frontEventCheckBox" text="EVENT" styleClass="chip-check"/></HBox>
-                                            <HBox spacing="10"><TextField fx:id="frontEventTitleField" promptText="Titre evenement" styleClass="mini-input" HBox.hgrow="ALWAYS"/><TextField fx:id="frontEventDateField" promptText="AAAA-MM-JJ" styleClass="mini-input date-input"/></HBox>
-                                            <HBox spacing="10"><TextField fx:id="frontEventLocationField" promptText="Lieu / lien" styleClass="mini-input" HBox.hgrow="ALWAYS"/><TextField fx:id="frontMaxParticipantsField" promptText="Places" styleClass="mini-input short-input"/><TextField fx:id="frontAuthorIdField" promptText="Auteur ID" styleClass="mini-input short-input"/></HBox>
-                                            <HBox styleClass="composer-actions" alignment="CENTER_LEFT" spacing="10">
-                                                <Button text="Orthographe" styleClass="chip-btn"/>
-                                                <Button text="Ton pro" styleClass="chip-btn"/>
-                                                <Button text="Version courte" styleClass="chip-btn"/>
-                                                <Button text="Version longue" styleClass="chip-btn"/>
-                                                <Button text="Hashtags IA" styleClass="chip-btn"/>
-                                                <Button text="Analyse IA" styleClass="chip-btn"/>
+                                                <StackPane styleClass="avatar"><Label fx:id="frontComposerAvatarLabel" text="A" styleClass="avatar-text"/></StackPane>
+                                                <VBox spacing="4">
+                                                    <Label fx:id="frontComposerUserLabel" text="Vous" styleClass="composer-user"/>
+                                                    <Label fx:id="frontComposerStatusLabel" text="Pret a publier" styleClass="composer-helper-text"/>
+                                                </VBox>
                                                 <Region HBox.hgrow="ALWAYS"/>
-                                                <Button text="Publier" onAction="#handleFrontPublish" styleClass="publish-btn"/>
+                                                <Label fx:id="frontCharCountLabel" text="0 / 5000" styleClass="composer-counter"/>
+                                                <ProgressIndicator fx:id="frontPublishProgress" visible="false" managed="false" prefWidth="22" prefHeight="22" maxWidth="22" maxHeight="22" styleClass="composer-spinner"/>
+                                                <Button fx:id="frontPublishButton" text="Publier" onAction="#handleFrontPublish" styleClass="publish-cta-button"><tooltip><Tooltip text="Publier"/></tooltip></Button>
+                                            </HBox>
+                                            <TextArea fx:id="frontContentArea" promptText="Publier un message, une image ou un lien video..." wrapText="true" prefRowCount="2" styleClass="composer-input compact-textarea"/>
+                                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                                <Button onAction="#handleFrontPickMedia" text="Image" styleClass="media-action-button"><tooltip><Tooltip text="Ajouter une image"/></tooltip></Button>
+                                                <TextField fx:id="frontImageField" promptText="Lien image" styleClass="mini-input" HBox.hgrow="ALWAYS"/>
+                                                <Button onAction="#handleFrontClearImage" text="Retirer" styleClass="media-clear-button"><tooltip><Tooltip text="Retirer l'image"/></tooltip></Button>
+                                                <Button onAction="#handleFrontToggleVideo" text="Video" styleClass="media-action-button"><tooltip><Tooltip text="Ajouter une video"/></tooltip></Button>
+                                                <TextField fx:id="frontVideoField" promptText="Lien video" styleClass="mini-input" HBox.hgrow="ALWAYS"/>
+                                                <Button onAction="#handleFrontClearVideo" text="Retirer" styleClass="media-clear-button"><tooltip><Tooltip text="Retirer la video"/></tooltip></Button>
+                                                <CheckBox fx:id="frontEventCheckBox" text="EVENT" styleClass="chip-check"/>
+                                                <TextField fx:id="frontAuthorIdField" promptText="Auteur ID" styleClass="mini-input short-input" managed="false" visible="false"/>
+                                            </HBox>
+                                            <VBox spacing="8" styleClass="front-media-preview-card">
+                                                <ImageView fx:id="frontMediaPreview" fitWidth="520" fitHeight="180" preserveRatio="true" managed="false" visible="false" styleClass="pm-media-preview"/>
+                                                <Label fx:id="frontMediaHintLabel" text="Ajoutez un lien image ou video pour afficher un apercu." wrapText="true" styleClass="pm-media-hint"/>
+                                            </VBox>
+                                            <HBox fx:id="frontEventFieldsRow" spacing="10" styleClass="event-fields-row" visible="false" managed="false">
+                                                <TextField fx:id="frontEventTitleField" promptText="Titre evenement" styleClass="mini-input" HBox.hgrow="ALWAYS"/>
+                                                <DatePicker fx:id="frontEventDateField" promptText="Date evenement" editable="false" styleClass="mini-input date-input"/>
+                                                <TextField fx:id="frontEventLocationField" promptText="Lieu / lien" styleClass="mini-input" HBox.hgrow="ALWAYS"/>
+                                                <TextField fx:id="frontMaxParticipantsField" promptText="Places" styleClass="mini-input short-input"/>
                                             </HBox>
                                         </VBox>
-                                        <HBox spacing="12" styleClass="filters-bar"><Button fx:id="filterAllButton" text="Tout" onAction="#handleFilterAll" styleClass="filter-pill"/><Button fx:id="filterTeamsButton" text="Equipes" onAction="#handleFilterTeams" styleClass="filter-pill"/><Button fx:id="filterPlayersButton" text="Joueurs" onAction="#handleFilterPlayers" styleClass="filter-pill"/><Button fx:id="filterTournamentsButton" text="Tournois" onAction="#handleFilterTournaments" styleClass="filter-pill"/><Button fx:id="filterMediaButton" text="Media" onAction="#handleFilterMedia" styleClass="filter-pill"/></HBox>
+                                        <HBox spacing="12" styleClass="filters-bar"><Button fx:id="filterAllButton" text="Tout" onAction="#handleFilterAll" styleClass="filter-pill"/><Button fx:id="filterTeamsButton" text="Equipes" onAction="#handleFilterTeams" styleClass="filter-pill"/><Button fx:id="filterPlayersButton" text="Joueurs" onAction="#handleFilterPlayers" styleClass="filter-pill"/><Button fx:id="filterTournamentsButton" text="Tournois" onAction="#handleFilterTournaments" styleClass="filter-pill"/><Button fx:id="filterMediaButton" text="Media" onAction="#handleFilterMedia" styleClass="filter-pill"/><Button fx:id="filterAiButton" text="AI Recommandations" onAction="#handleFilterAiRecommendations" styleClass="filter-pill"/></HBox>
                                         <VBox fx:id="frontFeedBox" VBox.vgrow="ALWAYS" styleClass="front-feed-list" spacing="16"/>
                                     </VBox>
-                                    <VBox styleClass="feed-right" spacing="18" prefWidth="300" minWidth="240" maxWidth="320">
-                                        <VBox styleClass="side-panel">
-                                            <Label text="Annonces officielles" styleClass="side-title"/>
-                                            <VBox fx:id="frontAnnouncementsBox" VBox.vgrow="ALWAYS" styleClass="front-feed-list" spacing="12"/>
+                                    <VBox styleClass="feed-right" spacing="18" prefWidth="350" minWidth="300" maxWidth="390">
+                                        <VBox styleClass="side-panel announcements-panel">
+                                            <VBox spacing="4">
+                                                <Label text="Annonces officielles" styleClass="side-title"/>
+                                                <Label text="Actualites prioritaires de l'equipe Esportify" wrapText="true" styleClass="announcements-subtitle"/>
+                                            </VBox>
+                                            <VBox fx:id="frontAnnouncementsBox" VBox.vgrow="ALWAYS" styleClass="announcements-list" spacing="12"/>
                                         </VBox>
-                                        <VBox styleClass="side-panel compact"><Label text="Best time to post" styleClass="side-title"/><VBox styleClass="side-inner-card"><Label text="Heure ideale: 01:00" styleClass="side-main-number"/><Label text="Heure estimee selon les pics d'engagement recents de votre audience." wrapText="true" styleClass="panel-text"/></VBox></VBox>
-                                        <VBox styleClass="side-panel"><Label text="Tendances" styleClass="side-title"/><HBox styleClass="trend-row"><Label text="#sport" styleClass="trend-text"/><Label text="8" styleClass="trend-badge"/></HBox><HBox styleClass="trend-row"><Label text="#lectronique" styleClass="trend-text"/><Label text="5" styleClass="trend-badge"/></HBox><HBox styleClass="trend-row"><Label text="#test" styleClass="trend-text"/><Label text="4" styleClass="trend-badge"/></HBox><HBox styleClass="trend-row"><Label text="#tournoi" styleClass="trend-text"/><Label text="4" styleClass="trend-badge"/></HBox><HBox styleClass="trend-row"><Label text="#exemple" styleClass="trend-text"/><Label text="4" styleClass="trend-badge"/></HBox></VBox>
+                                        <VBox styleClass="side-panel compact"><Label text="Best time to post" styleClass="side-title"/><VBox styleClass="side-inner-card"><Label fx:id="frontBestTimeLabel" text="Heure ideale: 01:00" styleClass="side-main-number"/><Label fx:id="frontBestTimeDescriptionLabel" text="Heure estimee selon les pics d'engagement recents de votre audience." wrapText="true" styleClass="panel-text"/></VBox></VBox>
+                                        <VBox styleClass="side-panel"><Label text="Tendances" styleClass="side-title"/><VBox fx:id="frontTrendingBox" spacing="10"/></VBox>
                                     </VBox>
                                 </HBox>
                             </VBox>
 
-                            <VBox fx:id="frontSavedView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false"><Label text="Commandes" styleClass="front-page-title"/><VBox styleClass="side-panel"><ListView fx:id="frontSavedList" VBox.vgrow="ALWAYS" styleClass="simple-list"/></VBox></VBox>
+                            <VBox fx:id="frontPostDetailView" spacing="14" styleClass="content-shell page-frame" visible="false" managed="false">
+                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                    <Button text="Retour au fil" onAction="#handleBackFromPostDetail" styleClass="topbar-action secondary-topbar-action"/>
+                                    <Label fx:id="frontPostDetailHeaderLabel" text="Publication" styleClass="front-page-title"/>
+                                </HBox>
+                                <VBox fx:id="frontPostDetailContainer" spacing="14"/>
+                            </VBox>
+
+                            <VBox fx:id="frontStreamingView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false">
+                                <VBox spacing="10" styleClass="streaming-hero">
+                                    <Label text="Streaming Arena" styleClass="streaming-hero-title"/>
+                                    <Label text="Flux YouTube en direct + highlights recents dans un hub e-sport plus immersif."
+                                           wrapText="true"
+                                           styleClass="streaming-hero-subtitle"/>
+                                    <Label fx:id="streamingStatusLabel" text="Chargement des flux..." styleClass="streaming-status"/>
+                                    <HBox spacing="12" styleClass="streaming-hero-metrics">
+                                        <VBox spacing="3" styleClass="streaming-metric-card">
+                                            <Label fx:id="streamingLiveCountLabel" text="0" styleClass="streaming-metric-value"/>
+                                            <Label text="Lives actifs" styleClass="streaming-metric-label"/>
+                                        </VBox>
+                                        <VBox spacing="3" styleClass="streaming-metric-card">
+                                            <Label fx:id="streamingHighlightCountLabel" text="0" styleClass="streaming-metric-value"/>
+                                            <Label text="Highlights recents" styleClass="streaming-metric-label"/>
+                                        </VBox>
+                                        <VBox spacing="3" styleClass="streaming-metric-card">
+                                            <Label fx:id="streamingLastSyncLabel" text="--:--" styleClass="streaming-metric-value"/>
+                                            <Label text="Dernier refresh" styleClass="streaming-metric-label"/>
+                                        </VBox>
+                                    </HBox>
+                                    <Button text="Rafraîchir" onAction="#handleRefreshStreaming" styleClass="primary-button"/>
+                                </VBox>
+                                <HBox spacing="18" alignment="TOP_LEFT">
+                                    <VBox styleClass="streaming-column" HBox.hgrow="ALWAYS" spacing="12">
+                                        <Label text="Lives YouTube" styleClass="streaming-section-title"/>
+                                        <VBox fx:id="streamingLiveBox" spacing="12"/>
+                                    </VBox>
+                                    <VBox styleClass="streaming-column" HBox.hgrow="ALWAYS" spacing="12">
+                                        <Label text="Highlights YouTube" styleClass="streaming-section-title"/>
+                                        <VBox fx:id="streamingHighlightsBox" spacing="12"/>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                            <VBox fx:id="frontSavedView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false"><Label text="Publications sauvegardees" styleClass="front-page-title"/><VBox styleClass="side-panel"><VBox fx:id="frontSavedBox" spacing="16"/></VBox></VBox>
                             <VBox fx:id="frontProfileView" spacing="18" styleClass="content-shell page-frame" visible="false" managed="false"><Label text="Profil" styleClass="front-page-title"/><VBox styleClass="side-panel"><ListView fx:id="frontProfileList" VBox.vgrow="ALWAYS" styleClass="simple-list"/></VBox></VBox>
                         </StackPane>
                     </VBox>
@@ -337,4 +305,146 @@
             </ScrollPane>
         </HBox>
     </VBox>
+
+    <StackPane mouseTransparent="false" pickOnBounds="false">
+        <VBox alignment="TOP_RIGHT" fillWidth="false" mouseTransparent="false" pickOnBounds="false" StackPane.alignment="TOP_RIGHT" spacing="12">
+            <StackPane fx:id="notificationsPopup" visible="false" managed="false" prefWidth="360" maxWidth="360" styleClass="messenger-inbox-popup-shell" StackPane.alignment="TOP_RIGHT">
+                <VBox prefWidth="360" maxWidth="360" styleClass="notifications-popup" spacing="10">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Notifications" styleClass="messenger-popup-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Tout marquer lu" onAction="#handleMarkAllNotificationsRead" styleClass="messenger-link-button"/>
+                    </HBox>
+                    <ListView fx:id="notificationsListView" prefHeight="380" styleClass="notifications-list"/>
+                </VBox>
+            </StackPane>
+            <StackPane fx:id="messengerInboxPopup" visible="false" managed="false" prefWidth="340" maxWidth="340" styleClass="messenger-inbox-popup-shell" StackPane.alignment="TOP_RIGHT">
+                <VBox prefWidth="340" maxWidth="340" styleClass="messenger-inbox-popup" spacing="10">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Discussions" styleClass="messenger-popup-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="messengerSeeAllButton" text="Voir tout" onAction="#handleOpenMessengerFull" styleClass="messenger-see-all-button"/>
+                    </HBox>
+                    <ListView fx:id="messengerInboxList" prefHeight="360" styleClass="messenger-conversation-list messenger-inbox-list"/>
+                </VBox>
+            </StackPane>
+            <StackPane.margin>
+                <Insets top="86" right="12"/>
+            </StackPane.margin>
+        </VBox>
+
+        <VBox alignment="BOTTOM_RIGHT" fillWidth="false" mouseTransparent="false" pickOnBounds="false" StackPane.alignment="BOTTOM_RIGHT" spacing="14">
+            <StackPane fx:id="messengerBubbleWindow" visible="false" managed="false" prefWidth="340" maxWidth="340" styleClass="messenger-bubble-shell" StackPane.alignment="BOTTOM_RIGHT">
+                <VBox prefWidth="340" maxWidth="340" styleClass="messenger-bubble-window" spacing="0">
+                    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="messenger-bubble-header">
+                        <StackPane fx:id="messengerBubbleAvatarPane" styleClass="messenger-avatar">
+                            <Label fx:id="messengerBubbleAvatarLabel" text="M" styleClass="messenger-avatar-text"/>
+                        </StackPane>
+                        <VBox spacing="2">
+                            <Label fx:id="messengerBubbleNameLabel" text="Conversation" styleClass="messenger-peer-name"/>
+                            <Label fx:id="messengerBubbleStatusLabel" text="En ligne" styleClass="messenger-subtitle"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Voir tout" onAction="#handleOpenMessengerFull" styleClass="messenger-link-button"/>
+                        <Button text="×" onAction="#handleCloseMessengerBubble" styleClass="messenger-close-button"/>
+                    </HBox>
+                    <ScrollPane fx:id="messengerBubbleScroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" styleClass="messenger-scroll messenger-bubble-scroll">
+                        <content>
+                            <VBox fx:id="messengerBubbleMessageBox" spacing="10" styleClass="messenger-message-box"/>
+                        </content>
+                    </ScrollPane>
+                    <Label fx:id="messengerBubbleTypingLabel" text="typing..." visible="false" managed="false" styleClass="messenger-typing-label"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="messenger-bubble-composer">
+                        <TextField fx:id="messengerBubbleInputField" promptText="Aa" HBox.hgrow="ALWAYS" styleClass="messenger-input"/>
+                        <Button text="+" onAction="#handleMessengerAttach" styleClass="messenger-mini-button"/>
+                        <Button text="Envoyer" onAction="#handleMessengerSendFromBubble" styleClass="messenger-send-button"/>
+                    </HBox>
+                </VBox>
+            </StackPane>
+
+            <StackPane fx:id="messengerWindow" visible="false" managed="false" prefWidth="700" maxWidth="700" styleClass="messenger-window-shell" StackPane.alignment="BOTTOM_RIGHT">
+                <VBox prefWidth="700" maxWidth="700" styleClass="messenger-window" spacing="0">
+                    <HBox alignment="CENTER_LEFT" styleClass="messenger-header" spacing="12">
+                        <StackPane styleClass="messenger-avatar-large">
+                            <Label fx:id="messengerHeaderAvatarLabel" text="M" styleClass="messenger-avatar-text"/>
+                        </StackPane>
+                        <VBox spacing="3">
+                            <Label text="Messenger" styleClass="messenger-title"/>
+                            <Label fx:id="messengerHeaderSubtitleLabel" text="Conversations actives" styleClass="messenger-subtitle"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="messengerCloseButton" text="×" onAction="#handleCloseMessenger" styleClass="messenger-close-button"/>
+                    </HBox>
+
+                    <HBox styleClass="messenger-body" spacing="0" VBox.vgrow="ALWAYS">
+                        <VBox styleClass="messenger-sidebar" spacing="12">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label text="Chats" styleClass="messenger-section-title"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="+" onAction="#handleStartConversation" styleClass="messenger-mini-button"/>
+                            </HBox>
+                            <TextField fx:id="messengerSearchField" promptText="Rechercher un contact..." styleClass="messenger-search-input"/>
+                            <ListView fx:id="messengerConversationList" VBox.vgrow="ALWAYS" styleClass="messenger-conversation-list"/>
+                        </VBox>
+
+                        <VBox styleClass="messenger-chat-panel" spacing="12" HBox.hgrow="ALWAYS">
+                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="messenger-chat-topbar">
+                                <StackPane styleClass="messenger-avatar">
+                                    <Label fx:id="messengerPeerAvatarLabel" text="M" styleClass="messenger-avatar-text"/>
+                                </StackPane>
+                                <VBox spacing="2">
+                                    <Label fx:id="messengerPeerNameLabel" text="Selectionnez une conversation" styleClass="messenger-peer-name"/>
+                                    <HBox alignment="CENTER_LEFT" spacing="6">
+                                        <Region fx:id="messengerPresenceDot" styleClass="messenger-presence-dot offline"/>
+                                        <Label fx:id="messengerPresenceLabel" text="Hors ligne" styleClass="messenger-presence-label"/>
+                                    </HBox>
+                                </VBox>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="messengerVoiceCallButton" onAction="#handleStartVoiceCall" styleClass="messenger-mini-button messenger-call-button">
+                                    <graphic><Region styleClass="messenger-voice-icon"/></graphic>
+                                    <tooltip><Tooltip text="Appel vocal"/></tooltip>
+                                </Button>
+                                <Button fx:id="messengerVideoCallButton" onAction="#handleStartVideoCall" styleClass="messenger-mini-button messenger-call-button">
+                                    <graphic><Region styleClass="messenger-video-icon"/></graphic>
+                                    <tooltip><Tooltip text="Appel video"/></tooltip>
+                                </Button>
+
+
+                            </HBox>
+
+                            <HBox spacing="10" visible="false" managed="false" fx:id="messengerContactPickerRow">
+                                <ComboBox fx:id="messengerContactPicker" promptText="Choisir un contact..." HBox.hgrow="ALWAYS" styleClass="messenger-contact-picker"/>
+                                <Button text="Ouvrir" onAction="#handleConfirmStartConversation" styleClass="messenger-create-button"/>
+                            </HBox>
+
+                            <Button fx:id="messengerLoadOlderButton" text="Charger les messages precedents" onAction="#handleLoadOlderMessages" styleClass="messenger-load-button" visible="false" managed="false"/>
+
+                            <ScrollPane fx:id="messengerMessageScroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" styleClass="messenger-scroll">
+                                <content>
+                                    <VBox fx:id="messengerMessageBox" spacing="10" styleClass="messenger-message-box"/>
+                                </content>
+                            </ScrollPane>
+
+                            <Label fx:id="messengerTypingLabel" text="typing..." visible="false" managed="false" styleClass="messenger-typing-label"/>
+
+                            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="messenger-composer-row">
+                                <Button text="☺" onAction="#handleMessengerEmoji" styleClass="messenger-mini-button"/>
+                                <TextField fx:id="messengerInputField" promptText="Ecrire un message..." HBox.hgrow="ALWAYS" styleClass="messenger-input"/>
+                                <Button text="+" onAction="#handleMessengerAttach" styleClass="messenger-mini-button"/>
+                                <Button fx:id="messengerSendButton" text="Envoyer" onAction="#handleMessengerSend" styleClass="messenger-send-button"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </StackPane>
+
+        </VBox>
+        <StackPane.margin>
+            <Insets bottom="24" right="24"/>
+        </StackPane.margin>
+    </StackPane>
 </StackPane>
+
+
+
+

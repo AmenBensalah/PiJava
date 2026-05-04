@@ -16,6 +16,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class FilActualiteService implements IService<FilActualite> {
     private final MyConnection myConnection;
@@ -157,6 +162,58 @@ public class FilActualiteService implements IService<FilActualite> {
             throw new IllegalStateException("Erreur base de donnees: " + e.getMessage(), e);
         }
         return data;
+    }
+
+    public List<FilActualite> getRecommendedPosts(int userId) {
+        List<Integer> recommendedIds = new ArrayList<>();
+        try {
+            ProcessBuilder pb = new ProcessBuilder("python", "recommender.py", String.valueOf(userId));
+            pb.directory(new java.io.File(System.getProperty("user.dir"))); // Project root
+            pb.redirectErrorStream(true);
+            Process process = pb.start();
+            
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String output = reader.readLine();
+            process.waitFor();
+            
+            if (output != null && !output.trim().isEmpty()) {
+                Gson gson = new Gson();
+                recommendedIds = gson.fromJson(output, new TypeToken<List<Integer>>(){}.getType());
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        // Fetch posts from DB
+        List<FilActualite> recommendations = new ArrayList<>();
+        if (!recommendedIds.isEmpty()) {
+            StringBuilder query = new StringBuilder("SELECT * FROM posts WHERE id IN (");
+            for (int i = 0; i < recommendedIds.size(); i++) {
+                query.append("?");
+                if (i < recommendedIds.size() - 1) query.append(",");
+            }
+            query.append(") ORDER BY created_at DESC");
+            
+            try (PreparedStatement pst = getConnection().prepareStatement(query.toString())) {
+                for (int i = 0; i < recommendedIds.size(); i++) {
+                    pst.setInt(i + 1, recommendedIds.get(i));
+                }
+                try (ResultSet rs = pst.executeQuery()) {
+                    while (rs.next()) {
+                        recommendations.add(mapResult(rs));
+                    }
+                }
+            } catch (SQLException e) {
+                throw new IllegalStateException("Erreur base de donnees: " + e.getMessage(), e);
+            }
+        }
+
+        if (recommendations.isEmpty()) {
+            List<FilActualite> fallback = getData();
+            return fallback.size() <= 5 ? fallback : fallback.subList(0, 5);
+        }
+
+        return recommendations;
     }
 
     public void clearAll() {

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.esportify.controllers.CommentEditorDialogController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            pannable="true">
+    <content>
+        <VBox spacing="16" styleClass="editor-root">
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="4">
+                    <Label fx:id="dialogTitleLabel" text="Nouveau commentaire" styleClass="editor-title"/>
+                    <Label text="Edition du flux commentaires" styleClass="editor-subtitle"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="modeBadgeLabel" text="CREATE" styleClass="editor-badge"/>
+            </HBox>
+            <TextArea fx:id="contentArea" promptText="Commentaire" wrapText="true" prefRowCount="5" styleClass="editor-input editor-area"/>
+            <TextField fx:id="authorIdField" promptText="Auteur ID" styleClass="editor-input"/>
+            <TextField fx:id="postIdField" promptText="Publication ID" styleClass="editor-input"/>
+            <Label fx:id="statusLabel" text="Pret" wrapText="true" styleClass="editor-status"/>
+            <HBox spacing="12">
+                <Button text="Annuler" onAction="#handleCancel" styleClass="pm-ghost-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Button text="Enregistrer" onAction="#handleSave" styleClass="pm-primary-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

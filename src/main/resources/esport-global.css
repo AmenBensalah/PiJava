@@ -1,0 +1,392 @@
+/* ============================================================================
+   E-Sportify Global Theme
+   Theme: Dark / E-sport / Futuriste / Cyberpunk
+   Purpose: Global JavaFX skin without requiring custom style classes in FXML
+   ============================================================================ */
+
+.root {
+    /* Global palette */
+    -fx-base: #0c1018;
+    -fx-background: #0a0d14;
+    -fx-control-inner-background: #121826;
+    -fx-control-inner-background-alt: #161d2d;
+    -fx-accent: #39f0ff;
+    -fx-focus-color: #39f0ff;
+    -fx-faint-focus-color: rgba(57, 240, 255, 0.18);
+
+    /* Text colors */
+    -fx-text-fill: #eef6ff;
+    -fx-dark-text-color: #e8f3ff;
+    -fx-mid-text-color: #b8c6da;
+    -fx-light-text-color: #7f92ae;
+
+    /* Main application background */
+    -fx-background-color:
+        radial-gradient(center 18% 10%, radius 45%, rgba(57, 240, 255, 0.08), transparent 60%),
+        radial-gradient(center 82% 14%, radius 40%, rgba(162, 89, 255, 0.08), transparent 62%),
+        linear-gradient(to bottom, #080b12 0%, #0b0f18 45%, #090d15 100%);
+
+    /* Default typography */
+    -fx-font-family: "Segoe UI", "Inter", sans-serif;
+    -fx-font-size: 13px;
+}
+
+/* ============================================================================
+   Labels
+   Clean, bright typography for readability on dark surfaces
+   ============================================================================ */
+
+.label {
+    -fx-text-fill: #edf5ff;
+}
+
+/* ============================================================================
+   Buttons
+   Dark glassy surfaces with neon outlines and strong hover feedback
+   ============================================================================ */
+
+.button {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(24, 31, 47, 0.96), rgba(14, 19, 31, 0.96));
+    -fx-text-fill: #f5fbff;
+    -fx-font-weight: 700;
+    -fx-padding: 10 16 10 16;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-border-color: rgba(57, 240, 255, 0.28);
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(57, 240, 255, 0.18), 14, 0.20, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color:
+        linear-gradient(to right, rgba(25, 54, 78, 0.98), rgba(59, 28, 96, 0.96));
+    -fx-border-color: rgba(162, 89, 255, 0.55);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(162, 89, 255, 0.28), 18, 0.24, 0, 1);
+}
+
+.button:pressed {
+    -fx-background-color:
+        linear-gradient(to right, rgba(16, 84, 102, 0.98), rgba(116, 42, 158, 0.96));
+    -fx-border-color: rgba(255, 128, 64, 0.65);
+    -fx-effect: dropshadow(gaussian, rgba(255, 128, 64, 0.30), 12, 0.18, 0, 0);
+    -fx-translate-y: 1;
+}
+
+.button:focused {
+    -fx-border-color: #39f0ff;
+    -fx-effect: dropshadow(gaussian, rgba(57, 240, 255, 0.34), 18, 0.28, 0, 0);
+}
+
+/* ============================================================================
+   Text Inputs
+   Dark fields with soft neon focus rings
+   ============================================================================ */
+
+.text-field,
+.password-field,
+.text-area,
+.spinner .text-field {
+    -fx-background-color: rgba(14, 20, 32, 0.94);
+    -fx-text-fill: #f3f8ff;
+    -fx-prompt-text-fill: #7588a6;
+    -fx-highlight-fill: rgba(57, 240, 255, 0.40);
+    -fx-highlight-text-fill: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-border-color: rgba(57, 240, 255, 0.16);
+    -fx-padding: 10 12 10 12;
+}
+
+.text-area .content {
+    -fx-background-color: transparent;
+}
+
+.text-field:focused,
+.password-field:focused,
+.text-area:focused,
+.spinner .text-field:focused {
+    -fx-border-color: #39f0ff;
+    -fx-background-color: rgba(12, 18, 30, 0.98);
+    -fx-effect: dropshadow(gaussian, rgba(57, 240, 255, 0.25), 14, 0.22, 0, 0);
+}
+
+/* ============================================================================
+   ScrollPane + ScrollBars
+   Thin, discreet dark scrollbars that blend into the theme
+   ============================================================================ */
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical,
+.scroll-bar:horizontal {
+    -fx-padding: 2;
+}
+
+.scroll-bar:vertical .track,
+.scroll-bar:horizontal .track {
+    -fx-background-color: rgba(12, 16, 24, 0.72);
+    -fx-background-radius: 999;
+}
+
+.scroll-bar:vertical .thumb,
+.scroll-bar:horizontal .thumb {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(58, 240, 255, 0.44), rgba(142, 86, 255, 0.44));
+    -fx-background-radius: 999;
+}
+
+.scroll-bar:vertical .thumb:hover,
+.scroll-bar:horizontal .thumb:hover {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(58, 240, 255, 0.66), rgba(255, 128, 64, 0.54));
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+/* ============================================================================
+   ComboBox
+   Dark dropdowns with clear selection and neon focus styling
+   ============================================================================ */
+
+.combo-box {
+    -fx-background-color: rgba(14, 20, 32, 0.94);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(57, 240, 255, 0.16);
+    -fx-border-width: 1;
+    -fx-padding: 2 4 2 4;
+}
+
+.combo-box:focused {
+    -fx-border-color: #39f0ff;
+    -fx-effect: dropshadow(gaussian, rgba(57, 240, 255, 0.22), 14, 0.20, 0, 0);
+}
+
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #eef6ff;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 12;
+}
+
+.combo-box .arrow {
+    -fx-background-color: #39f0ff;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #111826;
+    -fx-border-color: rgba(57, 240, 255, 0.18);
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #edf6ff;
+}
+
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: rgba(57, 240, 255, 0.10);
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected,
+.combo-box-popup .list-view .list-cell:filled:selected:hover {
+    -fx-background-color:
+        linear-gradient(to right, rgba(22, 98, 118, 0.90), rgba(82, 38, 134, 0.90));
+    -fx-text-fill: white;
+}
+
+/* ============================================================================
+   TableView
+   Professional dark-grid tables with neon-selected rows
+   ============================================================================ */
+
+.table-view {
+    -fx-background-color: rgba(10, 14, 22, 0.94);
+    -fx-control-inner-background: rgba(13, 18, 28, 0.96);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(57, 240, 255, 0.14);
+    -fx-table-cell-border-color: rgba(255, 255, 255, 0.04);
+    -fx-padding: 0;
+}
+
+.table-view .column-header-background {
+    -fx-background-color:
+        linear-gradient(to right, rgba(16, 26, 42, 0.98), rgba(20, 16, 44, 0.98));
+    -fx-background-radius: 18 18 0 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #9ddfff;
+    -fx-font-weight: 800;
+    -fx-font-size: 12px;
+}
+
+.table-row-cell {
+    -fx-background-color: rgba(12, 17, 27, 0.96);
+    -fx-text-background-color: #edf6ff;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: rgba(15, 21, 33, 0.96);
+}
+
+.table-row-cell:hover {
+    -fx-background-color: rgba(34, 54, 86, 0.72);
+}
+
+.table-row-cell:selected {
+    -fx-background-color:
+        linear-gradient(to right, rgba(18, 95, 116, 0.90), rgba(87, 42, 140, 0.92));
+    -fx-table-cell-border-color: rgba(255, 255, 255, 0.06);
+}
+
+.table-cell {
+    -fx-text-fill: #edf6ff;
+    -fx-padding: 10 12 10 12;
+}
+
+/* ============================================================================
+   ListView / TreeView / Selection controls
+   Extends dark mode consistency to other standard data containers
+   ============================================================================ */
+
+.list-view,
+.tree-view {
+    -fx-background-color: rgba(10, 14, 22, 0.94);
+    -fx-control-inner-background: rgba(13, 18, 28, 0.96);
+    -fx-border-color: rgba(57, 240, 255, 0.14);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+}
+
+.list-cell,
+.tree-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #edf6ff;
+}
+
+.list-cell:filled:selected,
+.tree-cell:selected {
+    -fx-background-color:
+        linear-gradient(to right, rgba(18, 95, 116, 0.90), rgba(87, 42, 140, 0.92));
+    -fx-text-fill: white;
+}
+
+/* ============================================================================
+   CheckBox / RadioButton
+   Keeps small interaction controls aligned with neon accent palette
+   ============================================================================ */
+
+.check-box,
+.radio-button {
+    -fx-text-fill: #edf6ff;
+}
+
+.check-box .box,
+.radio-button .radio {
+    -fx-background-color: rgba(14, 20, 32, 0.94);
+    -fx-border-color: rgba(57, 240, 255, 0.24);
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.check-box:selected .mark,
+.radio-button:selected .dot {
+    -fx-background-color: #39f0ff;
+}
+
+/* ============================================================================
+   Tabs
+   Optional but useful global polish for most JavaFX apps
+   ============================================================================ */
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: rgba(10, 14, 22, 0.92);
+}
+
+.tab-pane .tab {
+    -fx-background-color: rgba(18, 25, 38, 0.96);
+    -fx-background-radius: 12 12 0 0;
+    -fx-border-color: rgba(57, 240, 255, 0.12);
+    -fx-border-radius: 12 12 0 0;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color:
+        linear-gradient(to right, rgba(20, 87, 104, 0.92), rgba(82, 38, 134, 0.92));
+    -fx-border-color: rgba(57, 240, 255, 0.26);
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: #dce9f8;
+    -fx-font-weight: 700;
+}
+
+/* ============================================================================
+   Tooltips / Context Menus
+   Small details that complete the premium software feel
+   ============================================================================ */
+
+.tooltip {
+    -fx-background-color: rgba(14, 20, 32, 0.96);
+    -fx-text-fill: #eef6ff;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(57, 240, 255, 0.20);
+    -fx-effect: dropshadow(gaussian, rgba(57, 240, 255, 0.16), 14, 0.20, 0, 2);
+}
+
+.context-menu {
+    -fx-background-color: rgba(12, 18, 30, 0.98);
+    -fx-border-color: rgba(57, 240, 255, 0.18);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+.menu-item:focused {
+    -fx-background-color:
+        linear-gradient(to right, rgba(18, 95, 116, 0.90), rgba(87, 42, 140, 0.92));
+}
+
+.menu-item .label {
+    -fx-text-fill: #edf6ff;
+}

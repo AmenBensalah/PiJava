@@ -19,6 +19,7 @@ public class MainFX extends Application {
         double targetH = Math.min(900, bounds.getHeight() * 0.92);
 
         Scene scene = new Scene(content, targetW, targetH);
+        scene.getStylesheets().add(getClass().getResource("/esport-global.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
         stage.setTitle("E-SPORTIFY JavaFX");
