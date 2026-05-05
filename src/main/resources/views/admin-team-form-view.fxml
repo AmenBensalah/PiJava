@@ -18,9 +18,10 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.esportify.controllers.AdminTeamFormController"
             fitToWidth="true"
-            styleClass="page-scroll">
+            stylesheets="@../styles/app.css"
+            styleClass="page-scroll transparent-scroll-pane admin-team-form-scroll">
     <content>
-        <VBox spacing="24" styleClass="content-layer page admin-reference-page">
+        <VBox spacing="24" styleClass="content-layer page admin-reference-page admin-team-form-page">
             <children>
                 <VBox spacing="14" styleClass="hero-card admin-reference-hero admin-team-editor-hero">
                     <children>
@@ -38,11 +39,16 @@
 
                 <HBox spacing="22" styleClass="workspace-row">
                     <children>
-                        <VBox spacing="18" styleClass="admin-form-shell admin-premium-form-shell admin-team-editor-shell" HBox.hgrow="ALWAYS">
+                        <VBox spacing="20" styleClass="admin-team-panel admin-form-shell admin-premium-form-shell admin-team-editor-shell" HBox.hgrow="ALWAYS">
                             <children>
                                 <HBox alignment="CENTER_LEFT" spacing="14">
                                     <children>
-                                        <Label text="Edition equipe" styleClass="admin-search-title"/>
+                                        <VBox spacing="4">
+                                            <children>
+                                                <Label text="Edition equipe" styleClass="admin-search-title"/>
+                                                <Label text="Renseignez une fiche complete et propre pour le back-office." styleClass="admin-team-panel-subtitle"/>
+                                            </children>
+                                        </VBox>
                                         <Region HBox.hgrow="ALWAYS"/>
                                         <Button text="Nouveau" onAction="#onNewTeam" styleClass="admin-ghost-button"/>
                                         <Button fx:id="saveButton" text="Enregistrer" onAction="#onSave" styleClass="admin-glow-button"/>
@@ -50,40 +56,104 @@
                                     </children>
                                 </HBox>
 
-                                <GridPane hgap="16" vgap="16" styleClass="admin-editor-grid">
+                                <GridPane hgap="18" vgap="18" styleClass="admin-editor-grid admin-team-form-grid">
                                     <columnConstraints>
                                         <ColumnConstraints percentWidth="33.3"/>
                                         <ColumnConstraints percentWidth="33.3"/>
                                         <ColumnConstraints percentWidth="33.4"/>
                                     </columnConstraints>
                                     <children>
-                                        <TextField fx:id="nameField" promptText="Nom equipe" styleClass="field admin-search-field admin-elevated-field" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                                        <TextField fx:id="tagField" promptText="Tag" styleClass="field admin-search-field admin-elevated-field" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                                        <ComboBox fx:id="regionBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo admin-search-field admin-elevated-field" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-                                        <TextField fx:id="classementField" promptText="Classement" styleClass="field admin-search-field admin-elevated-field" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                                        <TextField fx:id="maxMembersField" promptText="Max membres" styleClass="field admin-search-field admin-elevated-field" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                                        <TextField fx:id="discordField" promptText="Lien Discord" styleClass="field admin-search-field admin-elevated-field" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                                        <ComboBox fx:id="visibilityBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo admin-search-field admin-elevated-field" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                                        <ComboBox fx:id="statusBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo admin-search-field admin-elevated-field" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                                        <TextField fx:id="logoField" promptText="URL logo" styleClass="field admin-search-field admin-elevated-field" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                                        <VBox spacing="7" styleClass="admin-form-group" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label text="Nom de l'equipe" styleClass="admin-form-group-label"/>
+                                                <TextField fx:id="nameField" promptText="Nom equipe" styleClass="field admin-search-field admin-elevated-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" styleClass="admin-form-group" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label text="Tag" styleClass="admin-form-group-label"/>
+                                                <TextField fx:id="tagField" promptText="Tag" styleClass="field admin-search-field admin-elevated-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" styleClass="admin-form-group" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                            <children>
+                                                <Label text="Region" styleClass="admin-form-group-label"/>
+                                                <ComboBox fx:id="regionBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo admin-search-field admin-elevated-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" styleClass="admin-form-group" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                            <children>
+                                                <Label text="Classement" styleClass="admin-form-group-label"/>
+                                                <TextField fx:id="classementField" promptText="Classement" styleClass="field admin-search-field admin-elevated-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" styleClass="admin-form-group" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                            <children>
+                                                <Label text="Nombre maximum" styleClass="admin-form-group-label"/>
+                                                <TextField fx:id="maxMembersField" promptText="Max membres" styleClass="field admin-search-field admin-elevated-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" styleClass="admin-form-group" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                            <children>
+                                                <Label text="Discord" styleClass="admin-form-group-label"/>
+                                                <TextField fx:id="discordField" promptText="Lien Discord" styleClass="field admin-search-field admin-elevated-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" styleClass="admin-form-group" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                                            <children>
+                                                <Label text="Visibilite" styleClass="admin-form-group-label"/>
+                                                <ComboBox fx:id="visibilityBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo admin-search-field admin-elevated-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" styleClass="admin-form-group" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                            <children>
+                                                <Label text="Statut" styleClass="admin-form-group-label"/>
+                                                <ComboBox fx:id="statusBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo admin-search-field admin-elevated-field"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" styleClass="admin-form-group" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                            <children>
+                                                <Label text="Logo" styleClass="admin-form-group-label"/>
+                                                <TextField fx:id="logoField" promptText="URL logo" styleClass="field admin-search-field admin-elevated-field"/>
+                                            </children>
+                                        </VBox>
                                     </children>
                                 </GridPane>
 
-                                <TextArea fx:id="descriptionArea" prefRowCount="7" promptText="Description du groupe" styleClass="text-area admin-editor-area admin-team-editor-area"/>
+                                <VBox spacing="8" styleClass="admin-form-group">
+                                    <children>
+                                        <Label text="Description" styleClass="admin-form-group-label"/>
+                                        <TextArea fx:id="descriptionArea" prefRowCount="7" promptText="Description du groupe" styleClass="text-area admin-editor-area admin-team-editor-area"/>
+                                    </children>
+                                </VBox>
                                 <Label fx:id="infoLabel" styleClass="muted-label"/>
                             </children>
                         </VBox>
 
                         <VBox prefWidth="320" minWidth="320" spacing="18" styleClass="dashboard-side-column">
                             <children>
-                                <VBox spacing="16" styleClass="side-panel-card admin-team-preview-card">
+                                <VBox spacing="16" styleClass="admin-team-panel side-panel-card admin-team-preview-card">
                                     <children>
-                                        <Label text="Apercu equipe" styleClass="section-title"/>
-                                        <ImageView fx:id="spotlightImageView" fitWidth="286" fitHeight="168" preserveRatio="false"/>
+                                        <VBox spacing="4">
+                                            <children>
+                                                <Label text="Apercu equipe" styleClass="section-title"/>
+                                                <Label text="Vision instantanee du rendu final admin." styleClass="admin-team-panel-subtitle" wrapText="true"/>
+                                            </children>
+                                        </VBox>
+                                        <ImageView fx:id="spotlightImageView" fitWidth="286" fitHeight="176" preserveRatio="false" styleClass="admin-team-preview-visual"/>
                                         <Label fx:id="spotlightTitleLabel" styleClass="card-title"/>
                                         <Label fx:id="spotlightTagLabel" styleClass="chip-active"/>
-                                        <Label fx:id="spotlightMetaLabel" styleClass="muted-label"/>
-                                        <Label fx:id="spotlightDescriptionLabel" wrapText="true" styleClass="muted-label"/>
+                                        <HBox spacing="10" styleClass="admin-preview-stat-row">
+                                            <children>
+                                                <VBox spacing="2" styleClass="admin-preview-kpi" HBox.hgrow="ALWAYS">
+                                                    <children>
+                                                        <Label text="Statut" styleClass="admin-preview-label"/>
+                                                        <Label fx:id="spotlightMetaLabel" styleClass="admin-preview-value" wrapText="true"/>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </HBox>
+                                        <Label fx:id="spotlightDescriptionLabel" wrapText="true" styleClass="muted-label admin-preview-description"/>
                                     </children>
                                 </VBox>
                             </children>

@@ -4,6 +4,8 @@ import edu.PROJETPI.AdminDashboardController;
 import edu.ProjetPI.controllers.DashboardSession;
 import edu.ProjetPI.controllers.SceneManager;
 import edu.connexion3a77.controllers.TournoiAdminController;
+import edu.esportify.navigation.AppNavigator;
+import edu.esportify.navigation.AppSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -81,7 +83,19 @@ public class BackMailingController {
 
     @FXML
     void goToRawgGames(ActionEvent event) {
-        SceneManager.switchScene("/fxml/rawg-games-view.fxml", "Gestion des equipes");
+        goToTeamsAdmin(event);
+    }
+
+    @FXML
+    void goToTeamsAdmin(ActionEvent event) {
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.TEAMS);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
+    }
+
+    @FXML
+    void goToManagerRequestsAdmin(ActionEvent event) {
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.REQUESTS);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
     }
 
     @FXML

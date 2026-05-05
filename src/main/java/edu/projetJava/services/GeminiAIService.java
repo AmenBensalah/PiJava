@@ -1,5 +1,6 @@
 package edu.projetJava.services;
 
+import edu.esportify.config.EnvConfig;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -7,12 +8,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class GeminiAIService {
-    private static final String API_KEY = "AIzaSyDPdkCzEkJZUtYKyWUZhsFQzREGUt9DVxc";
-    private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + API_KEY;
+    private static final String DEFAULT_API_KEY = "AIzaSyDPdkCzEkJZUtYKyWUZhsFQzREGUt9DVxc";
 
     public static String getResponse(String userMessage) {
         try {
-            URL url = new URL(API_URL);
+            String apiKey = EnvConfig.get("GEMINI_API_KEY", DEFAULT_API_KEY);
+            URL url = new URL("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");

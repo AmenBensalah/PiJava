@@ -1,5 +1,6 @@
 package edu.PROJETPI.services;
 
+import edu.esportify.config.EnvConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -16,7 +17,7 @@ public final class StripeConfig {
 
     public static String getSecretKey() {
         return firstNonBlank(
-                System.getenv("STRIPE_SECRET_KEY"),
+                EnvConfig.get("STRIPE_SECRET_KEY"),
                 System.getProperty("stripe.secret.key"),
                 PROPERTIES.getProperty("stripe.secret.key")
         );
@@ -24,7 +25,7 @@ public final class StripeConfig {
 
     public static String getSuccessUrl() {
         return firstNonBlank(
-                System.getenv("STRIPE_SUCCESS_URL"),
+                EnvConfig.get("STRIPE_SUCCESS_URL"),
                 System.getProperty("stripe.success.url"),
                 PROPERTIES.getProperty("stripe.success.url"),
                 DEFAULT_SUCCESS_URL
@@ -33,7 +34,7 @@ public final class StripeConfig {
 
     public static String getCancelUrl() {
         return firstNonBlank(
-                System.getenv("STRIPE_CANCEL_URL"),
+                EnvConfig.get("STRIPE_CANCEL_URL"),
                 System.getProperty("stripe.cancel.url"),
                 PROPERTIES.getProperty("stripe.cancel.url"),
                 DEFAULT_CANCEL_URL
@@ -42,7 +43,7 @@ public final class StripeConfig {
 
     public static String getCurrency() {
         return firstNonBlank(
-                System.getenv("STRIPE_CURRENCY"),
+                EnvConfig.get("STRIPE_CURRENCY"),
                 System.getProperty("stripe.currency"),
                 PROPERTIES.getProperty("stripe.currency"),
                 DEFAULT_CURRENCY

@@ -7,6 +7,8 @@ import edu.ProjetPI.services.GoogleOAuthService;
 import edu.ProjetPI.services.UserService;
 import edu.ProjetPI.tools.UserValidationRules;
 import edu.PROJETPI.services.OrderSession;
+import edu.esportify.navigation.AppNavigator;
+import edu.esportify.navigation.AppSession;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -168,12 +170,32 @@ public class LoginController {
     }
 
     private static void redirectAfterLogin(User user) {
+        AppSession.getInstance().login(mapLegacyUser(user));
+
         if (isAdmin(user)) {
-            SceneManager.switchScene("/FilActualiteView.fxml", "E-SPORTIFY : Fil d'actualite - Backoffice");
+            if (AppNavigator.isReady()) {
+                AppNavigator.goToAdmin();
+            } else {
+                SceneManager.switchScene("/views/admin-layout-view.fxml", "E-SPORTIFY : Admin");
+            }
             return;
         }
 
-        SceneManager.switchScene("/FilActualiteView.fxml", "E-SPORTIFY : Fil d'actualite");
+        if (isManager(user)) {
+            if (AppNavigator.isReady()) {
+                AppNavigator.goToManager();
+            } else {
+                SceneManager.switchScene("/views/manager-layout-view.fxml", "E-SPORTIFY : Manager");
+            }
+            return;
+        }
+
+        AppSession.getInstance().setPendingUserHomeSection(AppSession.UserHomeSection.STORE);
+        if (AppNavigator.isReady()) {
+            AppNavigator.goToUserHome(AppSession.UserHomeSection.STORE);
+        } else {
+            SceneManager.switchScene("/views/user-layout-view.fxml", "E-SPORTIFY : Boutique");
+        }
     }
 
     private static boolean isAdmin(User user) {
@@ -182,5 +204,39 @@ public class LoginController {
         return "admin@admin.com".equalsIgnoreCase(email)
                 || "ROLE_ADMIN".equalsIgnoreCase(role)
                 || "ADMIN".equalsIgnoreCase(role);
+    }
+
+    private static boolean isManager(User user) {
+        String role = user.getRole();
+        return "ROLE_MANAGER".equalsIgnoreCase(role)
+                || "ROLE_ORGANISATEUR".equalsIgnoreCase(role)
+                || "MANAGER".equalsIgnoreCase(role);
+    }
+
+    private static edu.esportify.entities.User mapLegacyUser(User legacyUser) {
+        edu.esportify.entities.User user = new edu.esportify.entities.User();
+        user.setId(legacyUser.getId());
+        user.setUsername(firstNonBlank(legacyUser.getPseudo(), extractNameFromEmail(legacyUser.getEmail()), "user"));
+        user.setFirstName(firstNonBlank(legacyUser.getFullName(), legacyUser.getPseudo(), "User"));
+        user.setEmail(legacyUser.getEmail());
+        user.setRole(edu.esportify.entities.UserRole.fromValue(legacyUser.getRole()));
+        user.setActive(true);
+        return user;
+    }
+
+    private static String firstNonBlank(String... values) {
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value.trim();
+            }
+        }
+        return "";
+    }
+
+    private static String extractNameFromEmail(String email) {
+        if (email == null || email.isBlank() || !email.contains("@")) {
+            return "";
+        }
+        return email.substring(0, email.indexOf('@'));
     }
 }

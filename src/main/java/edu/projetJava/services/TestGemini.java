@@ -1,17 +1,19 @@
 package edu.projetJava.services;
 
+import edu.esportify.config.EnvConfig;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class TestGemini {
-    private static final String API_KEY = "AIzaSyBny7McZPfvUKJqlTNj2UW5H_kF5yaQB-w";
+    private static final String DEFAULT_API_KEY = "AIzaSyBny7McZPfvUKJqlTNj2UW5H_kF5yaQB-w";
     public static void main(String[] args) {
         String m = "gemini-flash-latest";
         System.out.println("Testing " + m);
         try {
-            URL url = new URL("https://generativelanguage.googleapis.com/v1beta/models/" + m + ":generateContent?key=" + API_KEY);
+            String apiKey = EnvConfig.get("TEST_GEMINI_API_KEY", EnvConfig.get("GEMINI_API_KEY", DEFAULT_API_KEY));
+            URL url = new URL("https://generativelanguage.googleapis.com/v1beta/models/" + m + ":generateContent?key=" + apiKey);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="edu.esportify.controllers.RegisterController"
+           styleClass="login-page">
+    <children>
+        <ImageView fitWidth="1480" fitHeight="800" preserveRatio="false" styleClass="login-background-image">
+            <image>
+                <Image url="@../images/bg-cyberpunk.jpg"/>
+            </image>
+        </ImageView>
+        <StackPane styleClass="login-page-overlay">
+            <children>
+                <VBox alignment="CENTER" maxWidth="560" spacing="18" styleClass="login-glass-card">
+                    <children>
+                        <ImageView fitWidth="24" fitHeight="24">
+                            <image>
+                                <Image url="@../images/logo5.png"/>
+                            </image>
+                        </ImageView>
+                        <Label text="E-SPORTIFY" styleClass="login-brand"/>
+                        <Label text="CREER UN COMPTE" styleClass="login-heading"/>
+                        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="login-field-row">
+                            <children>
+                                <Label text="N" styleClass="login-field-prefix"/>
+                                <TextField fx:id="fullNameField" promptText="Nom complet" HBox.hgrow="ALWAYS" styleClass="login-input-control"/>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="login-field-row">
+                            <children>
+                                <Label text="U" styleClass="login-field-prefix"/>
+                                <TextField fx:id="pseudoField" promptText="Pseudo" HBox.hgrow="ALWAYS" styleClass="login-input-control"/>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="login-field-row">
+                            <children>
+                                <Label text="E" styleClass="login-field-prefix"/>
+                                <TextField fx:id="emailField" promptText="Email" HBox.hgrow="ALWAYS" styleClass="login-input-control"/>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="login-field-row">
+                            <children>
+                                <Label text="PW" styleClass="login-field-prefix"/>
+                                <PasswordField fx:id="passwordField" promptText="Mot de passe" onAction="#onRegister" HBox.hgrow="ALWAYS" styleClass="login-input-control"/>
+                            </children>
+                        </HBox>
+                        <Button maxWidth="1.7976931348623157E308" onAction="#onRegister" text="CREER LE COMPTE" styleClass="login-submit-button"/>
+                        <Button maxWidth="1.7976931348623157E308" onAction="#onFaceId" text="CAPTURE FACE ID" styleClass="ghost-button"/>
+                        <Button maxWidth="1.7976931348623157E308" onAction="#onBackToLogin" text="RETOUR A LA CONNEXION" styleClass="login-text-button"/>
+                        <Label fx:id="infoLabel" maxWidth="1.7976931348623157E308" styleClass="login-status-pill" wrapText="true"/>
+                    </children>
+                    <padding>
+                        <Insets top="28" right="34" bottom="28" left="34"/>
+                    </padding>
+                </VBox>
+            </children>
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16"/>
+            </padding>
+        </StackPane>
+    </children>
+</StackPane>

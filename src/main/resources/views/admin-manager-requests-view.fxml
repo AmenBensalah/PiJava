@@ -18,106 +18,109 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.esportify.controllers.AdminManagerRequestsController"
             fitToWidth="true"
-            styleClass="page-scroll">
+            hbarPolicy="NEVER"
+            stylesheets="@../ajoutProduit.css"
+            styleClass="page-scroll transparent-scroll-pane">
     <content>
-        <VBox spacing="22" styleClass="content-layer page admin-reference-page">
+        <VBox spacing="25.0" styleClass="main-area-bg" minHeight="960.0">
             <children>
-                <VBox spacing="12" styleClass="hero-card admin-reference-hero">
+                <HBox prefHeight="140.0" styleClass="boutique-banner" alignment="CENTER_LEFT">
+                    <padding><Insets left="34.0" right="34.0" /></padding>
                     <children>
-                        <Label text="ADMIN" styleClass="admin-eyebrow"/>
-                        <Label text="DEMANDES DE MANAGER" styleClass="admin-reference-title"/>
-                        <Label text="Consultez les demandes envoyees par les utilisateurs avec le meme affichage premium que la liste des equipes." styleClass="admin-reference-subtitle" wrapText="true"/>
-                    </children>
-                </VBox>
-
-                <HBox spacing="14">
-                    <children>
-                        <Label text="Vue premium" styleClass="admin-filter-pill is-active"/>
-                        <Label text="Demandes centralisees" styleClass="admin-filter-pill"/>
-                        <Label text="Suppression rapide" styleClass="admin-filter-pill"/>
+                        <VBox alignment="CENTER_LEFT" spacing="6.0" HBox.hgrow="ALWAYS">
+                            <Label style="-fx-text-fill: #00e5ff; -fx-font-size: 11px; -fx-font-weight: bold;" text="ADMIN" />
+                            <Label styleClass="banner-title" text="GESTION DES DEMANDES MANAGER" />
+                            <Label styleClass="banner-subtitle" text="Consultez, acceptez, refusez ou supprimez les demandes manager dans ce meme design admin." wrapText="true" />
+                        </VBox>
+                        <HBox spacing="14.0" alignment="CENTER_RIGHT">
+                            <Button fx:id="refreshButton" onAction="#onRefresh" text="Rafraichir" styleClass="btn-secondary" prefWidth="130.0" prefHeight="45.0" />
+                        </HBox>
                     </children>
                 </HBox>
 
-                <VBox fx:id="searchShell" spacing="16" styleClass="admin-search-shell admin-premium-search-shell">
+                <HBox spacing="12.0" alignment="CENTER_LEFT">
                     <children>
-                        <HBox alignment="CENTER_LEFT">
-                            <children>
-                                <VBox spacing="4">
-                                    <children>
-                                        <Label text="Recherche avancee" styleClass="admin-search-title"/>
-                                        <Label text="Filtrez rapidement par utilisateur, niveau, email ou statut." styleClass="admin-reference-subtitle"/>
-                                    </children>
-                                </VBox>
-                            </children>
-                        </HBox>
-                        <GridPane hgap="14" vgap="14">
+                        <Label text="Validation manager" styleClass="cat-pill cat-pill-active" />
+                        <Label text="Recherche rapide" styleClass="cat-pill" />
+                        <Label text="Actions directes" styleClass="cat-pill" />
+                    </children>
+                </HBox>
+
+                <VBox fx:id="searchShell" styleClass="advanced-search-box" spacing="15.0">
+                    <padding><Insets top="20.0" right="25.0" bottom="20.0" left="25.0"/></padding>
+                    <children>
+                        <Label text="Recherche avancee" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+                        <GridPane hgap="18.0" vgap="14.0">
                             <columnConstraints>
-                                <ColumnConstraints percentWidth="42"/>
-                                <ColumnConstraints percentWidth="26"/>
-                                <ColumnConstraints percentWidth="32"/>
+                                <ColumnConstraints percentWidth="42.0" />
+                                <ColumnConstraints percentWidth="24.0" />
+                                <ColumnConstraints percentWidth="34.0" />
                             </columnConstraints>
                             <children>
-                                <TextField fx:id="keywordField" promptText="Utilisateur, email, niveau ou motivation" styleClass="field admin-search-field admin-elevated-field" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                                <ComboBox fx:id="statusFilterBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo admin-search-field admin-elevated-field" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                                <HBox spacing="12" styleClass="admin-search-actions" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
                                     <children>
-                                        <Button fx:id="searchButton" text="Rechercher" onAction="#onSearch" styleClass="admin-glow-button"/>
-                                        <Button fx:id="resetButton" text="Reinitialiser" onAction="#onResetFilters" styleClass="admin-ghost-button"/>
-                                        <Button fx:id="refreshButton" text="Rafraichir" onAction="#onRefresh" styleClass="admin-ghost-button"/>
+                                        <Label text="UTILISATEUR / EMAIL / NIVEAU" styleClass="filter-label" />
+                                        <TextField fx:id="keywordField" promptText="Utilisateur, email, niveau ou motivation" styleClass="filter-input" />
+                                    </children>
+                                </VBox>
+                                <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                    <children>
+                                        <Label text="STATUT" styleClass="filter-label" />
+                                        <ComboBox fx:id="statusFilterBox" maxWidth="1.7976931348623157E308" styleClass="filter-input" />
+                                    </children>
+                                </VBox>
+                                <HBox spacing="12.0" alignment="BOTTOM_LEFT" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                    <children>
+                                        <Button fx:id="searchButton" onAction="#onSearch" text="Rechercher" styleClass="btn-rechercher" prefWidth="140.0" prefHeight="45.0" />
+                                        <Button fx:id="resetButton" onAction="#onResetFilters" text="Reinitialiser" styleClass="btn-reinitialiser" prefWidth="150.0" prefHeight="45.0" />
                                     </children>
                                 </HBox>
                             </children>
                         </GridPane>
-                        <HBox spacing="10" alignment="CENTER_LEFT">
+                        <HBox spacing="14.0" alignment="CENTER_LEFT">
                             <children>
-                                <Label text="Trier :" styleClass="muted-label"/>
-                                <Button fx:id="sortDateDescButton" text="Date desc" onAction="#onSortDateDesc" styleClass="admin-sort-pill admin-sort-button"/>
-                                <Button fx:id="sortDateAscButton" text="Date asc" onAction="#onSortDateAsc" styleClass="admin-sort-pill admin-sort-button"/>
-                                <Button fx:id="sortIdDescButton" text="ID desc" onAction="#onSortIdDesc" styleClass="admin-sort-pill admin-sort-button"/>
-                                <Button fx:id="sortIdAscButton" text="ID asc" onAction="#onSortIdAsc" styleClass="admin-sort-pill admin-sort-button"/>
+                                <Label text="Trier :" styleClass="side-label" />
+                                <Button fx:id="sortDateDescButton" onAction="#onSortDateDesc" text="Date desc" styleClass="sort-pill" />
+                                <Button fx:id="sortDateAscButton" onAction="#onSortDateAsc" text="Date asc" styleClass="sort-pill" />
+                                <Button fx:id="sortIdDescButton" onAction="#onSortIdDesc" text="ID desc" styleClass="sort-pill" />
+                                <Button fx:id="sortIdAscButton" onAction="#onSortIdAsc" text="ID asc" styleClass="sort-pill" />
                             </children>
                         </HBox>
                     </children>
                 </VBox>
 
-                <HBox fx:id="tableToolbar" alignment="CENTER_LEFT" spacing="14" styleClass="admin-table-toolbar">
+                <VBox fx:id="tableToolbar" styleClass="filter-panel" spacing="14.0">
+                    <padding><Insets top="18.0" right="18.0" bottom="18.0" left="18.0"/></padding>
                     <children>
-                        <VBox spacing="4">
+                        <HBox alignment="CENTER_LEFT">
                             <children>
-                                <Label text="Registre des demandes manager" styleClass="admin-search-title"/>
-                                <Label text="Accepter et Refuser restent statiques. Supprimer retire vraiment la demande." styleClass="admin-reference-subtitle"/>
+                                <VBox spacing="4.0">
+                                    <children>
+                                        <Label text="Registre des demandes manager" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: 900;" />
+                                        <Label text="Validez les profils et mettez a jour le role manager depuis cette meme table." style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;" />
+                                    </children>
+                                </VBox>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="infoLabel" text="Chargement des demandes..." style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;" />
                             </children>
-                        </VBox>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Label fx:id="infoLabel" text="Chargement des demandes..." styleClass="muted-label"/>
-                    </children>
-                </HBox>
+                        </HBox>
 
-                <TableView fx:id="requestsTable" minHeight="420" styleClass="manager-table admin-reference-table admin-teams-table">
-                    <columns>
-                        <TableColumn fx:id="idColumn" prefWidth="86" text="ID"/>
-                        <TableColumn fx:id="usernameColumn" prefWidth="220" text="UTILISATEUR"/>
-                        <TableColumn fx:id="emailColumn" prefWidth="270" text="EMAIL"/>
-                        <TableColumn fx:id="niveauColumn" prefWidth="140" text="NIVEAU"/>
-                        <TableColumn fx:id="motivationColumn" prefWidth="420" text="MOTIVATION"/>
-                        <TableColumn fx:id="statusColumn" prefWidth="126" text="STATUT"/>
-                        <TableColumn fx:id="dateColumn" prefWidth="170" text="DATE"/>
-                        <TableColumn fx:id="actionsColumn" prefWidth="260" text="ACTIONS"/>
-                    </columns>
-                </TableView>
-
-                <HBox alignment="CENTER" spacing="10" styleClass="admin-pagination-shell">
-                    <children>
-                        <Button text="&lt;" styleClass="admin-page-button"/>
-                        <Button text="1" styleClass="admin-page-button active"/>
-                        <Button text="2" styleClass="admin-page-button"/>
-                        <Button text="&gt;" styleClass="admin-page-button"/>
+                        <TableView fx:id="requestsTable" minHeight="460.0" styleClass="admin-reference-table admin-teams-table">
+                            <columns>
+                                <TableColumn fx:id="idColumn" prefWidth="86" text="ID"/>
+                                <TableColumn fx:id="usernameColumn" prefWidth="220" text="UTILISATEUR"/>
+                                <TableColumn fx:id="emailColumn" prefWidth="270" text="EMAIL"/>
+                                <TableColumn fx:id="niveauColumn" prefWidth="140" text="NIVEAU"/>
+                                <TableColumn fx:id="motivationColumn" prefWidth="420" text="MOTIVATION"/>
+                                <TableColumn fx:id="statusColumn" prefWidth="126" text="STATUT"/>
+                                <TableColumn fx:id="dateColumn" prefWidth="170" text="DATE"/>
+                                <TableColumn fx:id="actionsColumn" prefWidth="260" text="ACTIONS"/>
+                            </columns>
+                        </TableView>
                     </children>
-                </HBox>
+                </VBox>
             </children>
-            <padding>
-                <Insets top="26" right="28" bottom="32" left="28"/>
-            </padding>
+            <padding><Insets bottom="40.0" left="34.0" right="34.0" top="26.0" /></padding>
         </VBox>
     </content>
 </ScrollPane>

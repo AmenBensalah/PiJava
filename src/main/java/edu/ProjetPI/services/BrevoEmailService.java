@@ -1,5 +1,6 @@
 package edu.ProjetPI.services;
 
+import edu.esportify.config.EnvConfig;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -121,7 +122,7 @@ public class BrevoEmailService {
     }
 
     private static String setting(String key, String defaultValue) {
-        String fromEnv = System.getenv().getOrDefault(key, "").trim();
+        String fromEnv = EnvConfig.get(key, "").trim();
         if (!fromEnv.isBlank()) {
             return fromEnv;
         }
@@ -137,46 +138,11 @@ public class BrevoEmailService {
     }
 
     private static Map<String, String> loadLocalConfig() {
-        Map<String, String> values = new HashMap<>();
-        loadDotEnvFile(Path.of(".env"), values);
-        loadDotEnvFile(Path.of("PiJava", ".env"), values);
-        return values;
+        return new HashMap<>();
     }
 
     private static void loadDotEnvFile(Path path, Map<String, String> values) {
-        if (!Files.exists(path)) {
-            return;
-        }
-        try {
-            List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-            for (String rawLine : lines) {
-                if (rawLine == null) {
-                    continue;
-                }
-                String line = rawLine.trim();
-                if (line.isEmpty() || line.startsWith("#")) {
-                    continue;
-                }
-                int idx = line.indexOf('=');
-                if (idx <= 0) {
-                    continue;
-                }
-                String key = line.substring(0, idx).trim();
-                String value = line.substring(idx + 1).trim();
-                if (value.length() >= 2) {
-                    boolean quoted = (value.startsWith("\"") && value.endsWith("\""))
-                            || (value.startsWith("'") && value.endsWith("'"));
-                    if (quoted) {
-                        value = value.substring(1, value.length() - 1);
-                    }
-                }
-                if (!key.isBlank()) {
-                    values.putIfAbsent(key, value);
-                }
-            }
-        } catch (Exception ignored) {
-            // Ignore local config parse errors; env vars remain the primary source.
-        }
+        // Deprecated: .env loading is now centralized in EnvConfig.
     }
 
     private static String jsonEscape(String value) {

@@ -9,6 +9,7 @@ import edu.connexion3a77.entities.Tournoi;
 import edu.connexion3a77.services.DemandeParticipationService;
 import edu.connexion3a77.services.TournoiService;
 import edu.connexion3a77.ui.SceneNavigator;
+import edu.esportify.navigation.AppNavigator;
 import edu.ProjetPI.controllers.DashboardSession;
 import edu.ProjetPI.controllers.SceneManager;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -101,12 +102,17 @@ public class TournoiUserController {
 
     @FXML
     private void goToCatalogue(ActionEvent event) {
-        SceneManager.switchScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique");
+        AppNavigator.goToUserHome(edu.esportify.navigation.AppSession.UserHomeSection.STORE);
     }
 
     @FXML
     private void goToNewsFeed(ActionEvent event) {
         SceneManager.switchScene("/FilActualiteView.fxml", "E-SPORTIFY : Fil d'actualite");
+    }
+
+    @FXML
+    private void goToTeams(ActionEvent event) {
+        AppNavigator.goToUserHome(edu.esportify.navigation.AppSession.UserHomeSection.TEAMS);
     }
 
     @FXML

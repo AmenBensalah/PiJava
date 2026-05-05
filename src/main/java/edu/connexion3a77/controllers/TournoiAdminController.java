@@ -341,6 +341,23 @@ public class TournoiAdminController {
     }
 
     @FXML
+    private void goToRawgGames(ActionEvent event) {
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
+    }
+
+    @FXML
+    private void goToTeamsAdmin(ActionEvent event) {
+        edu.esportify.navigation.AppSession.getInstance().setPendingAdminSection(edu.esportify.navigation.AppSession.AdminSection.TEAMS);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
+    }
+
+    @FXML
+    private void goToManagerRequestsAdmin(ActionEvent event) {
+        edu.esportify.navigation.AppSession.getInstance().setPendingAdminSection(edu.esportify.navigation.AppSession.AdminSection.REQUESTS);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
+    }
+
+    @FXML
     private void goToGestionComptes(ActionEvent event) {
         SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Gestion des comptes");
     }

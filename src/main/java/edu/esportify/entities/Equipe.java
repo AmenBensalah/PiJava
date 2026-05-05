@@ -16,6 +16,10 @@ public class Equipe {
     private boolean isActive;
     private String discordInviteUrl;
     private String managerUsername;
+    private LocalDateTime bannedUntil;
+    private String banReason;
+    private String banDetails;
+    private String bannedByAdmin;
 
     public Equipe() {
         this.dateCreation = LocalDateTime.now();
@@ -134,6 +138,53 @@ public class Equipe {
 
     public void setManagerUsername(String managerUsername) {
         this.managerUsername = managerUsername;
+    }
+
+    public LocalDateTime getBannedUntil() {
+        return bannedUntil;
+    }
+
+    public void setBannedUntil(LocalDateTime bannedUntil) {
+        this.bannedUntil = bannedUntil;
+    }
+
+    public String getBanReason() {
+        return banReason;
+    }
+
+    public void setBanReason(String banReason) {
+        this.banReason = banReason;
+    }
+
+    public String getBanDetails() {
+        return banDetails;
+    }
+
+    public void setBanDetails(String banDetails) {
+        this.banDetails = banDetails;
+    }
+
+    public String getBannedByAdmin() {
+        return bannedByAdmin;
+    }
+
+    public void setBannedByAdmin(String bannedByAdmin) {
+        this.bannedByAdmin = bannedByAdmin;
+    }
+
+    public boolean isCurrentlyBanned() {
+        return bannedUntil != null && bannedUntil.isAfter(LocalDateTime.now());
+    }
+
+    public boolean isAvailable() {
+        return isActive && !isCurrentlyBanned();
+    }
+
+    public void clearBan() {
+        bannedUntil = null;
+        banReason = null;
+        banDetails = null;
+        bannedByAdmin = null;
     }
 
     @Override

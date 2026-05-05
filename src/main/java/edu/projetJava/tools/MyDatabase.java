@@ -1,5 +1,6 @@
 package edu.projetJava.tools;
 
+import edu.esportify.config.EnvConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -62,7 +63,7 @@ public class MyDatabase {
     }
 
     private static String setting(String envKey, String configuredValue, String defaultValue) {
-        String env = System.getenv(envKey);
+        String env = EnvConfig.get(envKey);
         if (env != null && !env.isBlank()) {
             return env.trim();
         }

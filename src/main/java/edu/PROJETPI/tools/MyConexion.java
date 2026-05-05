@@ -1,5 +1,6 @@
 package edu.PROJETPI.tools;
 
+import edu.esportify.config.EnvConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -174,7 +175,7 @@ public class MyConexion {
             return systemValue;
         }
 
-        String envValue = trimToNull(System.getenv("PROJETPI_DB"));
+        String envValue = trimToNull(EnvConfig.get("PROJETPI_DB"));
         if (envValue != null) {
             return envValue;
         }
@@ -184,7 +185,7 @@ public class MyConexion {
             return genericSystem;
         }
 
-        String genericEnv = trimToNull(System.getenv("PIJAVA_DB_NAME"));
+        String genericEnv = trimToNull(EnvConfig.get("PIJAVA_DB_NAME"));
         if (genericEnv != null) {
             return genericEnv;
         }
@@ -228,7 +229,7 @@ public class MyConexion {
     }
 
     private static String setting(String envKey, String configuredValue, String defaultValue) {
-        String env = trimToNull(System.getenv(envKey));
+        String env = trimToNull(EnvConfig.get(envKey));
         if (env != null) {
             return env;
         }

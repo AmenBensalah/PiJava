@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="root-pane" stylesheets="@ajoutProduit.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.projetJava.controllers.BackTeamsDashboardController" prefWidth="1280.0" prefHeight="720.0">
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="65.0" styleClass="top-navbar" BorderPane.alignment="CENTER">
+            <padding><Insets left="20.0" right="30.0" /></padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                    <Label styleClass="logo-text" text="E-" />
+                    <Label styleClass="logo-text, logo-white" text="SPORTIFY" />
+                    <Label style="-fx-text-fill: #ffa500; -fx-background-color: #332100; -fx-padding: 3 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 10px;" text="ADMIN" translateX="10" />
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField prefWidth="350.0" promptText="Rechercher joueurs, equipes, tournois..." styleClass="global-search" />
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="15.0" alignment="CENTER">
+                    <Button onAction="#goToBackListProduit" text="Dashboard" styleClass="btn-primary" />
+                    <Button onAction="#handleViewProfile" text="Voir mon profil" styleClass="btn-secondary" />
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox prefWidth="220.0" styleClass="global-sidebar" BorderPane.alignment="CENTER">
+            <children>
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Menu">
+                    <VBox.margin><Insets bottom="10.0" top="10.0" /></VBox.margin>
+                </Button>
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToFrontOffice" styleClass="menu-btn" text="Client (Front)" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToNewsFeed" styleClass="menu-btn" text="Gestion fil d'actualite" />
+                <Button fx:id="teamManagementMenuButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showTeams" styleClass="menu-btn" text="Gestion equipes" />
+                <VBox fx:id="teamSubmenuBox" visible="false" managed="false">
+                    <Button fx:id="teamsListButton" maxWidth="1.7976931348623157E308" text="Liste des equipes" styleClass="sidebar-submenu-btn" onAction="#showTeams" />
+                    <Button fx:id="managerRequestsButton" maxWidth="1.7976931348623157E308" text="Demande manager" styleClass="sidebar-submenu-btn" onAction="#showManagerRequests" />
+                </VBox>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion tournoi" />
+                <VBox>
+                    <Button maxWidth="1.7976931348623157E308" text="Tournois" styleClass="sidebar-submenu-btn" onAction="#goToTournoisAdmin" />
+                    <Button maxWidth="1.7976931348623157E308" text="Participations" styleClass="sidebar-submenu-btn" onAction="#goToParticipationsAdmin" />
+                </VBox>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion boutique" />
+                <VBox>
+                    <Button maxWidth="1.7976931348623157E308" text="Centre de mailing" styleClass="sidebar-submenu-btn" onAction="#goToMailing" />
+                    <Button maxWidth="1.7976931348623157E308" text="Produits" styleClass="sidebar-submenu-btn" onAction="#goToBackListProduit" />
+                    <Button maxWidth="1.7976931348623157E308" text="Categories" styleClass="sidebar-submenu-btn" onAction="#goToAdminCategorie" />
+                    <Button maxWidth="1.7976931348623157E308" text="Paiements" styleClass="sidebar-submenu-btn" onAction="#goToPayments" />
+                    <Button maxWidth="1.7976931348623157E308" text="Prediction CA" styleClass="sidebar-submenu-btn" onAction="#goToRevenuePrediction" />
+                    <Button maxWidth="1.7976931348623157E308" text="Commandes" styleClass="sidebar-submenu-btn" onAction="#goToCommandes" />
+                </VBox>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToGestionComptes" styleClass="menu-btn" text="Gestion comptes" />
+                <Region VBox.vgrow="ALWAYS" />
+                <VBox alignment="CENTER" spacing="10">
+                    <padding><Insets bottom="20.0" left="20" right="20"/></padding>
+                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="theme-toggle-btn" text="Theme" />
+                    <Button mnemonicParsing="false" onAction="#handleLogout" prefWidth="1.7976931348623157E308" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="Deconnexion" />
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentContainer" styleClass="main-area-bg" />
+    </center>
+</BorderPane>

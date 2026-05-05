@@ -1,72 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:id="rootPane"
-            fx:controller="edu.esportify.controllers.UserLayoutController"
-            styleClass="app-shell">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="18" styleClass="topbar">
-            <children>
-                <Button fx:id="menuToggleButton" text="Menu" onAction="#onToggleSidebar" styleClass="admin-topbar-menu-button"/>
-                <Label fx:id="pageTitleLabel" text="Hub Equipes" styleClass="card-title"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <TextField fx:id="searchField" styleClass="top-search"/>
-                <Button text="🔔" styleClass="icon-button"/>
-                <Button text="⌘" styleClass="icon-button"/>
-                <Button text="👤" styleClass="icon-button"/>
-            </children>
-        </HBox>
-    </top>
-    <left>
-        <VBox fx:id="sidebarContainer" spacing="14" styleClass="sidebar">
-            <children>
-                <VBox styleClass="sidebar-brand">
-                    <children>
-                        <HBox alignment="CENTER_LEFT" spacing="12">
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="edu.esportify.controllers.UserLayoutController"
+           prefWidth="1280.0" prefHeight="720.0"
+           styleClass="root-pane"
+           stylesheets="@/ajoutProduit.css,@/styles/app.css">
+
+    <BorderPane fx:id="rootPane">
+        <top>
+            <HBox alignment="CENTER_LEFT" prefHeight="65.0" styleClass="top-navbar" BorderPane.alignment="CENTER">
+                <padding><Insets left="20.0" right="30.0" /></padding>
+                <children>
+                    <HBox alignment="CENTER_LEFT" spacing="5.0">
+                        <Label styleClass="logo-text" text="E-" />
+                        <Label styleClass="logo-text, logo-white" text="SPORTIFY" />
+                        <Label style="-fx-text-fill: #00e5ff; -fx-background-color: #001f3f; -fx-padding: 3 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 10px;" text="STORE" translateX="10" />
+                    </HBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="searchField" prefWidth="460.0" promptText="Rechercher..." styleClass="global-search" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <HBox alignment="CENTER_RIGHT" spacing="12.0">
+                        <Button onAction="#onAccount" text="Mon profil" styleClass="btn-secondary" prefWidth="170.0" prefHeight="45.0" />
+                    </HBox>
+                </children>
+            </HBox>
+        </top>
+
+        <left>
+            <VBox fx:id="sidebarContainer" prefWidth="220.0" styleClass="global-sidebar" BorderPane.alignment="CENTER">
+                <children>
+                    <Button fx:id="menuToggleButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onToggleSidebar" styleClass="menu-btn" text="Menu">
+                        <VBox.margin><Insets bottom="10.0" top="10.0" /></VBox.margin>
+                    </Button>
+                    <Button fx:id="feedButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onFeed" styleClass="menu-btn" text="Fil d'actualite" />
+                    <Button fx:id="storeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onStore" styleClass="menu-btn" text="Boutique" />
+                    <Button fx:id="teamButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onTeam" styleClass="menu-btn" text="Equipe" />
+                    <Button fx:id="tournamentsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onTournaments" styleClass="menu-btn" text="Tournois" />
+                    <Button fx:id="ordersButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onOrders" styleClass="menu-btn" text="Commandes" />
+                    <Button fx:id="accountButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAccount" styleClass="menu-btn" text="Profil" />
+                    <Region VBox.vgrow="ALWAYS" />
+                    <VBox alignment="CENTER" spacing="10">
+                        <padding><Insets bottom="20.0" left="20" right="20"/></padding>
+                        <VBox spacing="6" styleClass="user-mini-card" prefWidth="180">
                             <children>
-                                <ImageView fitWidth="18" fitHeight="18">
-                                    <image><Image url="@../images/logo5.png"/></image>
-                                </ImageView>
-                                <Label text="E-SPORTIFY" styleClass="sidebar-brand-title"/>
+                                <Label fx:id="accountNameLabel" styleClass="card-title"/>
+                                <Label fx:id="accountRoleLabel" styleClass="muted-label"/>
                             </children>
-                        </HBox>
-                    </children>
-                </VBox>
-                <Label text="GENERAL MENU" styleClass="sidebar-menu-button"/>
-                <VBox spacing="4">
-                    <children>
-                        <Button fx:id="feedButton" maxWidth="1.7976931348623157E308" onAction="#onFeed" text="📰   Fil d'actualite" styleClass="sidebar-nav-button"/>
-                        <Button fx:id="teamButton" maxWidth="1.7976931348623157E308" onAction="#onTeam" text="🎮   Equipe" styleClass="sidebar-nav-button"/>
-                        <Button fx:id="tournamentsButton" maxWidth="1.7976931348623157E308" onAction="#onTournaments" text="🏆   Tournois" styleClass="sidebar-nav-button"/>
-                        <Button fx:id="storeButton" maxWidth="1.7976931348623157E308" onAction="#onStore" text="🛒   Boutique" styleClass="sidebar-nav-button"/>
-                        <Button fx:id="ordersButton" maxWidth="1.7976931348623157E308" onAction="#onOrders" text="🎁   Commande" styleClass="sidebar-nav-button"/>
-                        <Button fx:id="accountButton" maxWidth="1.7976931348623157E308" onAction="#onAccount" text="👤   Mon compte" styleClass="sidebar-nav-button"/>
-                    </children>
-                </VBox>
-                <Region VBox.vgrow="ALWAYS"/>
-                <VBox spacing="6" styleClass="sidebar-account-card">
-                    <children>
-                        <Label fx:id="accountNameLabel" styleClass="card-title"/>
-                        <Label fx:id="accountRoleLabel" styleClass="muted-label"/>
-                    </children>
-                </VBox>
-                <Button onAction="#onLogout" text="Logout" styleClass="sidebar-logout-button"/>
-            </children>
-        </VBox>
-    </left>
-    <center>
-        <StackPane fx:id="contentContainer" styleClass="admin-content-host"/>
-    </center>
-</BorderPane>
+                        </VBox>
+                        <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="theme-toggle-btn" text="Theme" />
+                        <Button onAction="#onLogout" text="Deconnexion" styleClass="btn-3d-red-small" prefWidth="200" />
+                    </VBox>
+                </children>
+            </VBox>
+        </left>
+
+        <center>
+            <StackPane fx:id="contentContainer" styleClass="main-area-bg" BorderPane.alignment="CENTER" />
+        </center>
+    </BorderPane>
+</StackPane>

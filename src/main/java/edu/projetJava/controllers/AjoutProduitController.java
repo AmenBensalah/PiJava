@@ -21,6 +21,7 @@ import edu.projetJava.services.CategorieService;
 import edu.projetJava.services.ProduitService;
 import edu.PROJETPI.services.OrderSession;
 import edu.PROJETPI.tools.AlertUtils;
+import edu.esportify.navigation.AppNavigator;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -37,6 +38,7 @@ import edu.ProjetPI.controllers.DashboardSession;
 import edu.ProjetPI.controllers.SceneManager;
 
 public class AjoutProduitController implements Initializable {
+    private boolean openRecommendationsOnReady;
 
     @FXML private FlowPane produitsContainer;
     @FXML private HBox categoryPillsContainer;
@@ -65,6 +67,17 @@ public class AjoutProduitController implements Initializable {
             ex.printStackTrace();
             return null;
         });
+        if (openRecommendationsOnReady) {
+            javafx.application.Platform.runLater(() -> voirRecommandationsIA(null));
+        }
+    }
+
+    public void openRecommendationsPage() {
+        if (produitsContainer == null) {
+            openRecommendationsOnReady = true;
+            return;
+        }
+        voirRecommandationsIA(null);
     }
 
     private void bindCurrentUserCard() {
@@ -235,12 +248,17 @@ public class AjoutProduitController implements Initializable {
 
     @FXML
     void goToTournoisUser(ActionEvent event) {
-        SceneManager.switchScene("/fxml/tournoi-user-view.fxml", "E-Sportify User - Tournois");
+        AppNavigator.goToUserHome(edu.esportify.navigation.AppSession.UserHomeSection.TOURNAMENTS);
     }
 
     @FXML
     void goToNewsFeed(ActionEvent event) {
         SceneManager.switchScene("/FilActualiteView.fxml", "E-SPORTIFY : Fil d'actualite");
+    }
+
+    @FXML
+    void goToTeams(ActionEvent event) {
+        AppNavigator.goToUserHome(edu.esportify.navigation.AppSession.UserHomeSection.TEAMS);
     }
 
     private VBox createProductCard(Produit p) {

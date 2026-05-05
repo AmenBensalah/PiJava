@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Control;
@@ -48,10 +50,10 @@ public class TeamFormController implements ManagerContentController {
     @FXML private Label heroTitleLabel;
     @FXML private VBox formShell;
     @FXML private TextField nomField;
-    @FXML private TextField classementField;
+    @FXML private ComboBox<String> classementBox;
     @FXML private TextField tagField;
     @FXML private ComboBox<String> regionBox;
-    @FXML private TextField maxMembersField;
+    @FXML private Spinner<Integer> maxMembersSpinner;
     @FXML private TextField logoField;
     @FXML private TextField discordField;
     @FXML private ComboBox<String> visibiliteBox;
@@ -69,10 +71,10 @@ public class TeamFormController implements ManagerContentController {
     private void initialize() {
         ensureStyleClass(formShell, "coord-card", "form-shell", "admin-premium-form-shell");
         ensureStyleClass(nomField, "field", "admin-search-field", "admin-elevated-field");
-        ensureStyleClass(classementField, "field", "admin-search-field", "admin-elevated-field");
+        ensureStyleClass(classementBox, "dark-combo", "admin-search-field", "admin-elevated-field");
         ensureStyleClass(tagField, "field", "admin-search-field", "admin-elevated-field");
         ensureStyleClass(regionBox, "dark-combo", "admin-search-field", "admin-elevated-field");
-        ensureStyleClass(maxMembersField, "field", "admin-search-field", "admin-elevated-field");
+        ensureStyleClass(maxMembersSpinner, "dark-combo", "admin-search-field", "admin-elevated-field");
         ensureStyleClass(logoField, "field", "admin-search-field", "admin-elevated-field");
         ensureStyleClass(discordField, "field", "admin-search-field", "admin-elevated-field");
         ensureStyleClass(visibiliteBox, "dark-combo", "admin-search-field", "admin-elevated-field");
@@ -81,8 +83,12 @@ public class TeamFormController implements ManagerContentController {
         ensureStyleClass(cancelButton, "admin-ghost-button");
         ensureStyleClass(saveButton, "admin-glow-button");
 
+        classementBox.getItems().setAll(FormOptions.RANKS);
+        classementBox.setValue("Debutant");
         regionBox.getItems().setAll(CONTINENTS);
         regionBox.setValue("Europe");
+        maxMembersSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 5));
+        maxMembersSpinner.setEditable(true);
         visibiliteBox.getItems().setAll("Publique", "Privee");
         statutBox.getItems().setAll("Active", "Inactive");
         visibiliteBox.setValue("Publique");
@@ -105,10 +111,10 @@ public class TeamFormController implements ManagerContentController {
 
         if (editMode) {
             nomField.setText(safe(currentEquipe.getNomEquipe()));
-            classementField.setText(safe(currentEquipe.getClassement()));
+            classementBox.setValue(FormOptions.fallbackRank(currentEquipe.getClassement()));
             tagField.setText(safe(currentEquipe.getTag()));
             regionBox.setValue(resolveRegion(currentEquipe.getRegion()));
-            maxMembersField.setText(String.valueOf(currentEquipe.getMaxMembers()));
+            maxMembersSpinner.getValueFactory().setValue(Math.max(1, currentEquipe.getMaxMembers()));
             logoField.setText(safe(currentEquipe.getLogo()));
             discordField.setText(safe(currentEquipe.getDiscordInviteUrl()));
             visibiliteBox.setValue(currentEquipe.isPrivate() ? "Privee" : "Publique");
@@ -146,7 +152,7 @@ public class TeamFormController implements ManagerContentController {
     private void onSave() {
         clearValidationState();
         String nom = safe(nomField.getText()).trim();
-        String classement = safe(classementField.getText()).trim();
+        String classement = safe(classementBox.getValue()).trim();
         String tag = safe(tagField.getText()).trim();
         String discord = safe(discordField.getText()).trim();
         String description = safe(descriptionArea.getText()).trim();
@@ -157,15 +163,13 @@ public class TeamFormController implements ManagerContentController {
             return;
         }
 
-        int maxMembers;
-        try {
-            maxMembers = Integer.parseInt(safe(maxMembersField.getText()).trim());
-        } catch (NumberFormatException e) {
-            showValidationError(new ValidationResult("Max members doit etre un nombre.", maxMembersField));
+        Integer maxMembers = maxMembersSpinner.getValue();
+        if (maxMembers == null) {
+            showValidationError(new ValidationResult("Le compteur des membres est obligatoire.", maxMembersSpinner));
             return;
         }
         if (maxMembers <= 0) {
-            showValidationError(new ValidationResult("Max members doit etre superieur a 0.", maxMembersField));
+            showValidationError(new ValidationResult("Le compteur des membres doit etre superieur a 0.", maxMembersSpinner));
             return;
         }
 
@@ -205,7 +209,7 @@ public class TeamFormController implements ManagerContentController {
             return new ValidationResult("Une equipe avec ce nom existe deja.", nomField);
         }
         if (classement.isBlank()) {
-            return new ValidationResult("Le classement est obligatoire.", classementField);
+            return new ValidationResult("Le classement est obligatoire.", classementBox);
         }
         if (tag.isBlank()) {
             return new ValidationResult("Le tag est obligatoire.", tagField);
@@ -250,10 +254,10 @@ public class TeamFormController implements ManagerContentController {
         if (candidatureService.getByEquipe(created.getId()).isEmpty()) {
             Candidature candidature = new Candidature();
             candidature.setPseudoJoueur("Nova");
-            candidature.setNiveau("Diamond");
-            candidature.setRolePrefere("Support");
+            candidature.setNiveau("Gold");
+            candidature.setRolePrefere("Joueur");
             candidature.setRegion(safe(created.getRegion()));
-            candidature.setDisponibilite("Soirs");
+            candidature.setDisponibilite("Soir");
             candidature.setMotivation("Je veux rejoindre un roster stable.");
             candidature.setEquipeId(created.getId());
             candidature.setStatut("En attente");
@@ -264,10 +268,10 @@ public class TeamFormController implements ManagerContentController {
 
     private void clearFields() {
         nomField.clear();
-        classementField.clear();
+        classementBox.setValue("Debutant");
         tagField.clear();
         regionBox.setValue("Europe");
-        maxMembersField.clear();
+        maxMembersSpinner.getValueFactory().setValue(5);
         logoField.clear();
         discordField.clear();
         descriptionArea.clear();
@@ -305,7 +309,7 @@ public class TeamFormController implements ManagerContentController {
     }
 
     private void clearValidationState() {
-        clearInvalidStyle(nomField, classementField, tagField, maxMembersField, logoField, discordField, descriptionArea, regionBox, visibiliteBox, statutBox);
+        clearInvalidStyle(nomField, classementBox, tagField, maxMembersSpinner, logoField, discordField, descriptionArea, regionBox, visibiliteBox, statutBox);
         infoLabel.setText("");
     }
 

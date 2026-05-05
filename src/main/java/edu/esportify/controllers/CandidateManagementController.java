@@ -24,7 +24,7 @@ public class CandidateManagementController implements ManagerContentController {
     @FXML private TableView<Candidature> candidatureTable;
     @FXML private TableColumn<Candidature, String> pseudoColumn;
     @FXML private TableColumn<Candidature, String> niveauColumn;
-    @FXML private TableColumn<Candidature, String> roleColumn;
+    @FXML private TableColumn<Candidature, String> disponibiliteColumn;
     @FXML private TableColumn<Candidature, String> statutColumn;
     @FXML private TableColumn<Candidature, Void> actionColumn;
     @FXML private Label emptyLabel;
@@ -33,7 +33,7 @@ public class CandidateManagementController implements ManagerContentController {
     private void initialize() {
         pseudoColumn.setCellValueFactory(data -> new SimpleStringProperty(safe(data.getValue().getPseudoJoueur())));
         niveauColumn.setCellValueFactory(data -> new SimpleStringProperty(safe(data.getValue().getNiveau())));
-        roleColumn.setCellValueFactory(data -> new SimpleStringProperty(safe(data.getValue().getRolePrefere())));
+        disponibiliteColumn.setCellValueFactory(data -> new SimpleStringProperty(safe(data.getValue().getDisponibilite())));
         statutColumn.setCellValueFactory(data -> new SimpleStringProperty(safe(data.getValue().getStatut())));
         actionColumn.setCellFactory(param -> new ActionCell());
     }

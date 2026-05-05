@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.VBox?>
 
 <ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
@@ -48,7 +49,7 @@
                                         <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
                                             <children>
                                                 <Label text="Classement" styleClass="field-label"/>
-                                                <TextField fx:id="classementField" promptText="Classement" styleClass="field"/>
+                                                <ComboBox fx:id="classementBox" maxWidth="1.7976931348623157E308" styleClass="dark-combo"/>
                                             </children>
                                         </VBox>
                                         <VBox spacing="8" GridPane.columnIndex="2" GridPane.rowIndex="0">
@@ -65,8 +66,8 @@
                                         </VBox>
                                         <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                             <children>
-                                                <Label text="Max members" styleClass="field-label"/>
-                                                <TextField fx:id="maxMembersField" promptText="Max members" styleClass="field"/>
+                                                <Label text="Membres equipe" styleClass="field-label"/>
+                                                <Spinner fx:id="maxMembersSpinner" maxWidth="1.7976931348623157E308" styleClass="dark-combo"/>
                                             </children>
                                         </VBox>
                                         <VBox spacing="8" GridPane.columnIndex="2" GridPane.rowIndex="1">

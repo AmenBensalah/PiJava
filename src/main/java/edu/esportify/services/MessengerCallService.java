@@ -1,5 +1,6 @@
 package edu.esportify.services;
 
+import edu.esportify.config.EnvConfig;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -11,7 +12,7 @@ public class MessengerCallService {
         String roomName = "esportify-chat-" + conversationId;
         String displayName = peerDisplayName == null || peerDisplayName.isBlank() ? "Esportify User" : peerDisplayName;
 
-        String dailyBase = trimToNull(System.getenv(DAILY_ROOM_BASE_URL_ENV));
+        String dailyBase = trimToNull(EnvConfig.get(DAILY_ROOM_BASE_URL_ENV));
         if (dailyBase != null) {
             String base = dailyBase.endsWith("/") ? dailyBase.substring(0, dailyBase.length() - 1) : dailyBase;
             String query = "?name=" + URLEncoder.encode(displayName, StandardCharsets.UTF_8);

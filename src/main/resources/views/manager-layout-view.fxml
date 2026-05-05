@@ -49,12 +49,7 @@
                 <Label text="GENERAL MENU" styleClass="sidebar-menu-button"/>
                 <VBox spacing="4">
                     <children>
-                        <Button fx:id="feedButton" maxWidth="1.7976931348623157E308" onAction="#onFeed" text="📰   Fil d'actualite" styleClass="sidebar-nav-button"/>
                         <Button fx:id="teamButton" maxWidth="1.7976931348623157E308" onAction="#onTeam" text="🎮   Equipe" styleClass="sidebar-nav-button"/>
-                        <Button fx:id="tournamentsButton" maxWidth="1.7976931348623157E308" onAction="#onTournaments" text="🏆   Tournois" styleClass="sidebar-nav-button"/>
-                        <Button fx:id="storeButton" maxWidth="1.7976931348623157E308" onAction="#onStore" text="🛒   Boutique" styleClass="sidebar-nav-button"/>
-                        <Button fx:id="ordersButton" maxWidth="1.7976931348623157E308" onAction="#onOrders" text="🎁   Commande" styleClass="sidebar-nav-button"/>
-                        <Button fx:id="accountButton" maxWidth="1.7976931348623157E308" onAction="#onAccount" text="👤   Mon compte" styleClass="sidebar-nav-button"/>
                     </children>
                 </VBox>
                 <Region VBox.vgrow="ALWAYS"/>

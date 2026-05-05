@@ -1,5 +1,6 @@
 package edu.esportify.services;
 
+import edu.esportify.config.EnvConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -155,7 +156,7 @@ public class StreamingIntegrationService {
     }
 
     private String resolveApiKey() {
-        String envValue = trimToNull(System.getenv(YOUTUBE_API_KEY_ENV));
+        String envValue = trimToNull(EnvConfig.get(YOUTUBE_API_KEY_ENV));
         if (envValue != null) {
             return envValue;
         }

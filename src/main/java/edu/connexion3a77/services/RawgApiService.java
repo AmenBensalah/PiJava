@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.connexion3a77.entities.RawgGame;
+import edu.esportify.config.EnvConfig;
 
 import java.io.IOException;
 import java.net.URI;
@@ -82,7 +83,7 @@ public class RawgApiService {
     }
 
     private String resolveApiKey() {
-        String envKey = System.getenv("RAWG_API_KEY");
+        String envKey = EnvConfig.get("RAWG_API_KEY");
         if (envKey != null && !envKey.isBlank()) {
             return envKey.trim();
         }

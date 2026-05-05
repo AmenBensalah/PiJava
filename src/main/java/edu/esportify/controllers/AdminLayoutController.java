@@ -1,7 +1,10 @@
 package edu.esportify.controllers;
 
+import edu.PROJETPI.AdminDashboardController;
+import edu.connexion3a77.controllers.TournoiAdminController;
 import edu.esportify.entities.Equipe;
 import edu.esportify.entities.ManagerRequest;
+import edu.esportify.entities.UserRole;
 import edu.esportify.navigation.AppNavigator;
 import edu.esportify.navigation.AppSession;
 import edu.esportify.services.EquipeService;
@@ -11,10 +14,14 @@ import java.time.LocalDateTime;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.event.ActionEvent;
@@ -27,6 +34,15 @@ public class AdminLayoutController {
         TEAMS,
         TEAM_EDITOR,
         REQUESTS,
+        ACCOUNTS,
+        TOURNAMENTS,
+        PARTICIPATIONS,
+        STORE_PRODUCTS,
+        STORE_CATEGORIES,
+        PAYMENTS,
+        FORECAST,
+        ORDERS,
+        PROFILE,
         PLACEHOLDER
     }
 
@@ -39,13 +55,23 @@ public class AdminLayoutController {
     @FXML private StackPane contentContainer;
     @FXML private VBox sidebarContainer;
     @FXML private Accordion sidebarAccordion;
+    @FXML private TitledPane feedGroupPane;
+    @FXML private TitledPane teamsGroupPane;
+    @FXML private TitledPane tournamentsGroupPane;
+    @FXML private TitledPane storeGroupPane;
+    @FXML private TitledPane accountsGroupPane;
     @FXML private Button menuToggleButton;
     @FXML private Button feedButton;
     @FXML private Button overviewButton;
     @FXML private Button teamsButton;
     @FXML private Button requestsButton;
     @FXML private Button tournamentsButton;
+    @FXML private Button participationsButton;
     @FXML private Button storeButton;
+    @FXML private Button categoriesButton;
+    @FXML private Button paymentsButton;
+    @FXML private Button forecastButton;
+    @FXML private Button ordersButton;
     @FXML private Button accountsButton;
     @FXML private Label accountNameLabel;
     @FXML private Label accountRoleLabel;
@@ -53,6 +79,11 @@ public class AdminLayoutController {
 
     @FXML
     private void initialize() {
+        if (AppSession.getInstance().getCurrentUser() == null
+                || AppSession.getInstance().getCurrentUser().getRole() != UserRole.ADMIN) {
+            AppNavigator.goToLogin();
+            return;
+        }
         accountNameLabel.setText(valueOrDefault(AppSession.getInstance().getUsername(), "admin"));
         accountRoleLabel.setText(valueOrDefault(AppSession.getInstance().getRole(), "Admin") + " account");
         try {
@@ -64,7 +95,7 @@ public class AdminLayoutController {
             sidebarAccordion.setExpandedPane(sidebarAccordion.getPanes().get(1));
         }
         applySidebarState();
-        showOverview();
+        openPendingAdminSection();
     }
 
     @FXML
@@ -88,6 +119,46 @@ public class AdminLayoutController {
     }
 
     @FXML
+    private void onAccounts() {
+        showAccounts();
+    }
+
+    @FXML
+    private void onTournaments() {
+        showTournaments();
+    }
+
+    @FXML
+    private void onParticipations() {
+        showParticipations();
+    }
+
+    @FXML
+    private void onStoreProducts() {
+        showStoreProducts();
+    }
+
+    @FXML
+    private void onStoreCategories() {
+        showStoreCategories();
+    }
+
+    @FXML
+    private void onPayments() {
+        showPayments();
+    }
+
+    @FXML
+    private void onForecast() {
+        showForecast();
+    }
+
+    @FXML
+    private void onOrders() {
+        showOrders();
+    }
+
+    @FXML
     private void onToggleSidebar() {
         sidebarVisible = !sidebarVisible;
         applySidebarState();
@@ -103,7 +174,7 @@ public class AdminLayoutController {
 
     @FXML
     private void onProfile() {
-        contentBadgeLabel.setText("Profil");
+        showProfile();
     }
 
     @FXML
@@ -133,6 +204,58 @@ public class AdminLayoutController {
         setCenter("/views/admin-manager-requests-view.fxml", AdminView.REQUESTS);
     }
 
+    public void showAccounts() {
+        setCenter("/views/admin-accounts-view.fxml", AdminView.ACCOUNTS);
+    }
+
+    public void showTournaments() {
+        TournoiAdminController.openOn(TournoiAdminController.InitialSection.TOURNOIS);
+        setLegacyCenter("/fxml/tournoi-admin-view.fxml", AdminView.TOURNAMENTS);
+    }
+
+    public void showParticipations() {
+        TournoiAdminController.openOn(TournoiAdminController.InitialSection.PARTICIPATIONS);
+        setLegacyCenter("/fxml/tournoi-admin-view.fxml", AdminView.PARTICIPATIONS);
+    }
+
+    public void showStoreProducts() {
+        setLegacyCenter("/backListProduit.fxml", AdminView.STORE_PRODUCTS);
+    }
+
+    public void showStoreCategories() {
+        setLegacyCenter("/backListCategorie.fxml", AdminView.STORE_CATEGORIES);
+    }
+
+    public void showPayments() {
+        AdminDashboardController.openOn(AdminDashboardController.InitialSection.PAIEMENTS);
+        setLegacyCenter("/admin-dashboard-view.fxml", AdminView.PAYMENTS);
+    }
+
+    public void showForecast() {
+        AdminDashboardController.openOn(AdminDashboardController.InitialSection.PREDICTION_CA);
+        setLegacyCenter("/admin-dashboard-view.fxml", AdminView.FORECAST);
+    }
+
+    public void showOrders() {
+        AdminDashboardController.openOn(AdminDashboardController.InitialSection.COMMANDES);
+        setLegacyCenter("/admin-dashboard-view.fxml", AdminView.ORDERS);
+    }
+
+    public void showProfile() {
+        setLegacyCenter("/edu/ProjetPI/views/profile.fxml", AdminView.PROFILE);
+    }
+
+    private void openPendingAdminSection() {
+        AppSession.AdminSection section = AppSession.getInstance().getPendingAdminSection();
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.STORE);
+        switch (section) {
+            case OVERVIEW -> showOverview();
+            case TEAMS -> showTeams();
+            case REQUESTS -> showRequests();
+            case STORE -> showStoreProducts();
+        }
+    }
+
     private void setCenter(String viewPath, AdminView activeView) {
         try {
             FXMLLoader loader = AppNavigator.createLoader(viewPath);
@@ -150,19 +273,41 @@ public class AdminLayoutController {
         }
     }
 
+    private void setLegacyCenter(String viewPath, AdminView activeView) {
+        try {
+            FXMLLoader loader = AppNavigator.createLoader(viewPath);
+            Node root = loader.load();
+            Node content = extractLegacyContent(root);
+            StackPane wrapper = buildLegacyWrapper(root, content, activeView);
+            contentContainer.getChildren().setAll(wrapper);
+            updateActiveNav(activeView);
+        } catch (Exception e) {
+            System.out.println("Impossible d'integrer " + viewPath + ": " + e.getMessage());
+            contentContainer.getChildren().setAll(buildFallbackContent(viewPath));
+            updateActiveNav(activeView);
+        }
+    }
+
     private void updateActiveNav(AdminView activeView) {
         removeActive(feedButton);
         overviewButton.getStyleClass().remove("nav-button-active");
         teamsButton.getStyleClass().remove("nav-button-active");
         requestsButton.getStyleClass().remove("nav-button-active");
         removeActive(tournamentsButton);
+        removeActive(participationsButton);
         removeActive(storeButton);
+        removeActive(categoriesButton);
+        removeActive(paymentsButton);
+        removeActive(forecastButton);
+        removeActive(ordersButton);
         removeActive(accountsButton);
+        updateActiveGroup(null);
 
         switch (activeView) {
             case FEED -> {
                 contentBadgeLabel.setText("Fil d'actualite");
                 feedButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(feedGroupPane);
             }
             case OVERVIEW -> {
                 contentBadgeLabel.setText("Dashboard");
@@ -171,18 +316,114 @@ public class AdminLayoutController {
             case TEAMS -> {
                 contentBadgeLabel.setText("Gestion equipes");
                 teamsButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(teamsGroupPane);
             }
             case TEAM_EDITOR -> {
                 contentBadgeLabel.setText("Edition equipe");
                 teamsButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(teamsGroupPane);
             }
             case REQUESTS -> {
                 contentBadgeLabel.setText("Demandes");
                 requestsButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(teamsGroupPane);
+            }
+            case ACCOUNTS -> {
+                contentBadgeLabel.setText("Comptes");
+                accountsButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(accountsGroupPane);
+            }
+            case TOURNAMENTS -> {
+                contentBadgeLabel.setText("Tournois");
+                tournamentsButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(tournamentsGroupPane);
+            }
+            case PARTICIPATIONS -> {
+                contentBadgeLabel.setText("Participations");
+                participationsButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(tournamentsGroupPane);
+            }
+            case STORE_PRODUCTS -> {
+                contentBadgeLabel.setText("Produits");
+                storeButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(storeGroupPane);
+            }
+            case STORE_CATEGORIES -> {
+                contentBadgeLabel.setText("Categories");
+                categoriesButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(storeGroupPane);
+            }
+            case PAYMENTS -> {
+                contentBadgeLabel.setText("Paiements");
+                paymentsButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(storeGroupPane);
+            }
+            case FORECAST -> {
+                contentBadgeLabel.setText("Prediction CA");
+                forecastButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(storeGroupPane);
+            }
+            case ORDERS -> {
+                contentBadgeLabel.setText("Commandes");
+                ordersButton.getStyleClass().add("nav-button-active");
+                updateActiveGroup(storeGroupPane);
+            }
+            case PROFILE -> {
+                contentBadgeLabel.setText("Profil");
             }
             case PLACEHOLDER -> {
             }
         }
+    }
+
+    private Node extractLegacyContent(Node root) {
+        if (root instanceof BorderPane borderPane) {
+            Node center = borderPane.getCenter();
+            if (center != null) {
+                borderPane.setCenter(null);
+                return center;
+            }
+        }
+        if (root instanceof StackPane stackPane) {
+            for (Node child : stackPane.getChildren()) {
+                if (child instanceof BorderPane borderPane) {
+                    Node center = borderPane.getCenter();
+                    if (center != null) {
+                        borderPane.setCenter(null);
+                        return center;
+                    }
+                }
+            }
+        }
+        if (root instanceof Pane pane) {
+            pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        }
+        return root;
+    }
+
+    private StackPane buildLegacyWrapper(Node root, Node content, AdminView activeView) {
+        StackPane wrapper = new StackPane(content);
+        wrapper.getStyleClass().add("admin-legacy-host");
+
+        if (root instanceof Parent parentRoot) {
+            wrapper.getStylesheets().addAll(parentRoot.getStylesheets());
+            wrapper.getStyleClass().addAll(parentRoot.getStyleClass());
+            if (parentRoot.getStyle() != null && !parentRoot.getStyle().isBlank()) {
+                wrapper.setStyle(parentRoot.getStyle());
+            }
+        }
+
+        if (content instanceof Region region) {
+            region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        }
+
+        switch (activeView) {
+            case TOURNAMENTS, PARTICIPATIONS -> wrapper.getStyleClass().add("admin-legacy-tournament");
+            case PAYMENTS, FORECAST, ORDERS -> wrapper.getStyleClass().add("admin-legacy-command");
+            default -> wrapper.getStyleClass().add("admin-legacy-generic");
+        }
+
+        return wrapper;
     }
 
     private void ensureDemoData() {
@@ -191,12 +432,6 @@ public class AdminLayoutController {
             equipeService.addEntity(createTeam("Atlas Vortex", "ATV", "North America", "Master", "manager_beta", true, true, LocalDateTime.now().minusDays(18)));
             equipeService.addEntity(createTeam("Solar Reign", "SLR", "Asia", "Immortal", "manager_gamma", false, true, LocalDateTime.now().minusDays(12)));
             equipeService.addEntity(createTeam("Blaze Unit", "BLZ", "Europe", "Ascendant", "manager_delta", false, false, LocalDateTime.now().minusDays(7)));
-        }
-
-        if (managerRequestService.getData().isEmpty()) {
-            managerRequestService.addEntity(createRequest("zriga", "rayenborgi@gmail.com", "Pro", "Je veux gerer une equipe competitive et encadrer les recrutements.", "En attente", LocalDateTime.now().minusDays(4)));
-            managerRequestService.addEntity(createRequest("nova.manager", "nova@esportify.gg", "Legendaire", "Experience en management esport et animation de roster.", "Acceptee", LocalDateTime.now().minusDays(8)));
-            managerRequestService.addEntity(createRequest("echo.strat", "echo@esportify.gg", "Heroique", "Je souhaite ouvrir une nouvelle structure sur Valorant.", "Refusee", LocalDateTime.now().minusDays(2)));
         }
 
         if (recrutementService.getData().isEmpty()) {
@@ -225,17 +460,6 @@ public class AdminLayoutController {
         return equipe;
     }
 
-    private ManagerRequest createRequest(String username, String email, String niveau, String motivation, String status, LocalDateTime createdAt) {
-        ManagerRequest request = new ManagerRequest();
-        request.setUsername(username);
-        request.setEmail(email);
-        request.setNiveau(niveau);
-        request.setMotivation(motivation);
-        request.setStatus(status);
-        request.setCreatedAt(createdAt);
-        return request;
-    }
-
     private edu.esportify.entities.Recrutement createAnnouncement(String title, String status, String description, int equipeId, String equipeNom, LocalDateTime createdAt) {
         edu.esportify.entities.Recrutement recrutement = new edu.esportify.entities.Recrutement();
         recrutement.setNomRec(title);
@@ -250,6 +474,30 @@ public class AdminLayoutController {
     private void removeActive(Button button) {
         if (button != null) {
             button.getStyleClass().remove("nav-button-active");
+        }
+    }
+
+    private void updateActiveGroup(TitledPane activePane) {
+        setGroupActive(feedGroupPane, activePane == feedGroupPane);
+        setGroupActive(teamsGroupPane, activePane == teamsGroupPane);
+        setGroupActive(tournamentsGroupPane, activePane == tournamentsGroupPane);
+        setGroupActive(storeGroupPane, activePane == storeGroupPane);
+        setGroupActive(accountsGroupPane, activePane == accountsGroupPane);
+        if (sidebarAccordion != null && activePane != null) {
+            sidebarAccordion.setExpandedPane(activePane);
+        }
+    }
+
+    private void setGroupActive(TitledPane pane, boolean active) {
+        if (pane == null) {
+            return;
+        }
+        pane.getStyleClass().remove("is-active");
+        if (active) {
+            pane.setExpanded(true);
+            if (!pane.getStyleClass().contains("is-active")) {
+                pane.getStyleClass().add("is-active");
+            }
         }
     }
 

@@ -1,7 +1,9 @@
 package edu.esportify.controllers;
 
 import edu.esportify.entities.ManagerRequest;
+import edu.esportify.entities.UserRole;
 import edu.esportify.services.ManagerRequestService;
+import edu.esportify.services.UserService;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
@@ -13,10 +15,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -31,6 +35,7 @@ public class AdminManagerRequestsController implements AdminContentController {
     }
 
     private final ManagerRequestService managerRequestService = new ManagerRequestService();
+    private final UserService userService = new UserService();
 
     private SortMode currentSortMode = SortMode.DATE_DESC;
     private ManagerRequest selectedRequest;
@@ -38,7 +43,7 @@ public class AdminManagerRequestsController implements AdminContentController {
     @FXML private TextField keywordField;
     @FXML private javafx.scene.control.ComboBox<String> statusFilterBox;
     @FXML private VBox searchShell;
-    @FXML private HBox tableToolbar;
+    @FXML private VBox tableToolbar;
     @FXML private Button searchButton;
     @FXML private Button resetButton;
     @FXML private Button refreshButton;
@@ -64,22 +69,22 @@ public class AdminManagerRequestsController implements AdminContentController {
     }
 
     private void configure() {
-        ensureStyleClass(searchShell, "admin-search-shell", "admin-premium-search-shell");
-        ensureStyleClass(tableToolbar, "admin-table-toolbar");
-        ensureStyleClass(keywordField, "field", "admin-search-field", "admin-elevated-field");
-        ensureStyleClass(statusFilterBox, "dark-combo", "admin-search-field", "admin-elevated-field");
-        ensureStyleClass(searchButton, "admin-glow-button");
-        ensureStyleClass(resetButton, "admin-ghost-button");
-        ensureStyleClass(refreshButton, "admin-ghost-button");
-        ensureStyleClass(sortDateDescButton, "admin-sort-pill", "admin-sort-button");
-        ensureStyleClass(sortDateAscButton, "admin-sort-pill", "admin-sort-button");
-        ensureStyleClass(sortIdDescButton, "admin-sort-pill", "admin-sort-button");
-        ensureStyleClass(sortIdAscButton, "admin-sort-pill", "admin-sort-button");
+        ensureStyleClass(searchShell, "advanced-search-box");
+        ensureStyleClass(tableToolbar, "filter-panel");
+        ensureStyleClass(keywordField, "filter-input");
+        ensureStyleClass(statusFilterBox, "filter-input");
+        ensureStyleClass(searchButton, "btn-rechercher");
+        ensureStyleClass(resetButton, "btn-reinitialiser");
+        ensureStyleClass(refreshButton, "btn-secondary");
+        ensureStyleClass(sortDateDescButton, "sort-pill");
+        ensureStyleClass(sortDateAscButton, "sort-pill");
+        ensureStyleClass(sortIdDescButton, "sort-pill");
+        ensureStyleClass(sortIdAscButton, "sort-pill");
 
         if (!requestsTable.getStyleClass().contains("admin-teams-table")) {
             requestsTable.getStyleClass().add("admin-teams-table");
         }
-        requestsTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        requestsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         requestsTable.setPlaceholder(new Label("Aucune demande manager disponible."));
         applyColumnWidths();
 
@@ -120,15 +125,15 @@ public class AdminManagerRequestsController implements AdminContentController {
     }
 
     private void applyColumnWidths() {
-        setColumnWidth(idColumn, 86);
-        setColumnWidth(usernameColumn, 220);
-        setColumnWidth(emailColumn, 270);
-        setColumnWidth(niveauColumn, 140);
-        setColumnWidth(motivationColumn, 420);
-        setColumnWidth(statusColumn, 126);
-        setColumnWidth(dateColumn, 170);
-        setColumnWidth(actionsColumn, 260);
-        requestsTable.setMinWidth(1692);
+        setColumnWidth(idColumn, 70);
+        setColumnWidth(usernameColumn, 160);
+        setColumnWidth(emailColumn, 210);
+        setColumnWidth(niveauColumn, 110);
+        setColumnWidth(motivationColumn, 250);
+        setColumnWidth(statusColumn, 110);
+        setColumnWidth(dateColumn, 145);
+        setColumnWidth(actionsColumn, 240);
+        requestsTable.setMinWidth(0);
     }
 
     private void setColumnWidth(TableColumn<?, ?> column, double width) {
@@ -274,13 +279,31 @@ public class AdminManagerRequestsController implements AdminContentController {
         }
         request.setStatus(status);
         managerRequestService.updateEntity(request.getId(), request);
+        if ("Acceptee".equalsIgnoreCase(status)) {
+            boolean promoted = promoteUserToManager(request);
+            if (!promoted) {
+                updateInfo("Demande acceptee mais utilisateur introuvable pour changement de role.");
+            }
+        }
         refreshTable();
         ManagerRequest refreshedRequest = managerRequestService.getById(request.getId());
         if (refreshedRequest != null) {
             requestsTable.getSelectionModel().select(refreshedRequest);
             selectedRequest = refreshedRequest;
         }
-        updateInfo("Statut de la demande #" + request.getId() + " mis a jour: " + status + ".");
+        if (!"Acceptee".equalsIgnoreCase(status)) {
+            updateInfo("Statut de la demande #" + request.getId() + " mis a jour: " + status + ".");
+        }
+    }
+
+    private boolean promoteUserToManager(ManagerRequest request) {
+        boolean updatedByUsername = userService.updateRoleByUsernameOrEmail(request.getUsername(), UserRole.MANAGER);
+        boolean updatedByEmail = updatedByUsername || userService.updateRoleByUsernameOrEmail(request.getEmail(), UserRole.MANAGER);
+        if (updatedByEmail) {
+            updateInfo("Demande #" + request.getId() + " acceptee et role utilisateur passe a Manager.");
+            return true;
+        }
+        return false;
     }
 
     private String resolveStatusStyle() {
@@ -305,7 +328,7 @@ public class AdminManagerRequestsController implements AdminContentController {
     }
 
     private String trimText(String value) {
-        return value.length() > 68 ? value.substring(0, 68) + "..." : value;
+        return value.length() > 52 ? value.substring(0, 52) + "..." : value;
     }
 
     private String safe(String value) {
@@ -316,13 +339,17 @@ public class AdminManagerRequestsController implements AdminContentController {
         private final Button acceptButton = new Button("Accepter");
         private final Button rejectButton = new Button("Refuser");
         private final Button deleteButton = new Button("Supprimer");
-        private final HBox box = new HBox(10, acceptButton, rejectButton, deleteButton);
+        private final FlowPane box = new FlowPane(8, 8, acceptButton, rejectButton, deleteButton);
 
         private RequestActionCell() {
             acceptButton.getStyleClass().addAll("admin-inline-action", "is-info");
             rejectButton.getStyleClass().addAll("admin-inline-action", "is-neutral");
             deleteButton.getStyleClass().addAll("admin-inline-action", "is-danger");
+            acceptButton.setPrefWidth(86);
+            rejectButton.setPrefWidth(82);
+            deleteButton.setPrefWidth(92);
             box.setAlignment(Pos.CENTER_LEFT);
+            box.setPrefWrapLength(250);
 
             acceptButton.setOnAction(event -> {
                 ManagerRequest request = getTableView().getItems().get(getIndex());
@@ -387,6 +414,7 @@ public class AdminManagerRequestsController implements AdminContentController {
             }
             setAlignment(alignment);
             setContentDisplay(ContentDisplay.TEXT_ONLY);
+            setTextOverrun(OverrunStyle.ELLIPSIS);
             setText(item);
             getStyleClass().removeAll("admin-id-cell", "admin-date-cell");
             if (!styleClass.isBlank() && !getStyleClass().contains(styleClass)) {
@@ -414,6 +442,8 @@ public class AdminManagerRequestsController implements AdminContentController {
 
             Label userLabel = new Label(safe(request.getUsername()));
             userLabel.getStyleClass().add("admin-team-name");
+            userLabel.setTextOverrun(OverrunStyle.ELLIPSIS);
+            userLabel.setMaxWidth(110);
 
             VBox content = new VBox(4, userLabel);
             HBox box = new HBox(12, initials, content);

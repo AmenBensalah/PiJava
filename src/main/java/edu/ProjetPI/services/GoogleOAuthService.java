@@ -2,6 +2,7 @@ package edu.ProjetPI.services;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import edu.esportify.config.EnvConfig;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -265,7 +266,7 @@ public class GoogleOAuthService {
     }
 
     private static String setting(String key, String defaultValue) {
-        String fromEnv = System.getenv().getOrDefault(key, "").trim();
+        String fromEnv = EnvConfig.get(key, "").trim();
         if (!fromEnv.isBlank()) {
             return fromEnv;
         }
@@ -281,46 +282,11 @@ public class GoogleOAuthService {
     }
 
     private static Map<String, String> loadLocalConfig() {
-        Map<String, String> values = new HashMap<>();
-        loadDotEnvFile(Path.of(".env"), values);
-        loadDotEnvFile(Path.of("PiJava", ".env"), values);
-        return values;
+        return new HashMap<>();
     }
 
     private static void loadDotEnvFile(Path path, Map<String, String> values) {
-        if (!Files.exists(path)) {
-            return;
-        }
-        try {
-            List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-            for (String rawLine : lines) {
-                if (rawLine == null) {
-                    continue;
-                }
-                String line = rawLine.trim();
-                if (line.isEmpty() || line.startsWith("#")) {
-                    continue;
-                }
-                int idx = line.indexOf('=');
-                if (idx <= 0) {
-                    continue;
-                }
-                String k = line.substring(0, idx).trim();
-                String v = line.substring(idx + 1).trim();
-                if (v.length() >= 2) {
-                    boolean quoted = (v.startsWith("\"") && v.endsWith("\""))
-                            || (v.startsWith("'") && v.endsWith("'"));
-                    if (quoted) {
-                        v = v.substring(1, v.length() - 1);
-                    }
-                }
-                if (!k.isBlank()) {
-                    values.putIfAbsent(k, v);
-                }
-            }
-        } catch (Exception ignored) {
-            // Ignore malformed local file and fallback to env/system properties.
-        }
+        // Deprecated: .env loading is now centralized in EnvConfig.
     }
 
     public record GoogleProfile(String email, String name, String sub, String pictureUrl) {

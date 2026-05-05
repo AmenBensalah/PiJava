@@ -1409,6 +1409,21 @@
     -fx-background-radius: 18;
 }
 
+.admin-accordion .titled-pane.is-active > .title {
+    -fx-background-color: linear-gradient(to right, rgba(72, 200, 255, 0.28), rgba(141, 97, 255, 0.18));
+    -fx-border-color: rgba(96, 220, 255, 0.26);
+    -fx-border-radius: 18;
+    -fx-background-radius: 18;
+}
+
+.admin-accordion .titled-pane.is-active > .title > .text {
+    -fx-fill: #ffffff;
+}
+
+.admin-accordion .titled-pane.is-active > .title > .arrow-button .arrow {
+    -fx-background-color: #ffffff;
+}
+
 .admin-accordion .titled-pane > *.content {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -1441,6 +1456,7 @@
     -fx-background-color: linear-gradient(to right, rgba(56, 170, 255, 0.30), rgba(97, 120, 255, 0.26));
     -fx-border-color: rgba(82, 207, 255, 0.42);
     -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(88, 205, 255, 0.20), 14, 0.14, 0, 3);
 }
 
 .admin-theme-card {
@@ -1482,6 +1498,316 @@
 
 .admin-content-host.is-expanded {
     -fx-padding: 0;
+}
+
+.admin-content-host > .admin-legacy-host {
+    -fx-background-color: transparent;
+    -fx-alignment: TOP_CENTER;
+    -fx-padding: 18 22 22 22;
+}
+
+.admin-content-host > .admin-legacy-host > * {
+    -fx-max-width: 100%;
+    -fx-max-height: 100%;
+}
+
+.admin-content-host > .admin-legacy-host .content-scroll,
+.admin-content-host > .admin-legacy-host .content-scroll > .viewport,
+.admin-content-host > .admin-legacy-host .page-scroll,
+.admin-content-host > .admin-legacy-host .page-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command {
+    -fx-background-color: transparent;
+    -fx-padding: 10 14 14 14;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command > * {
+    -fx-background-color: transparent;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .admin-center-background,
+.admin-content-host > .admin-legacy-host.admin-legacy-command .command-background-layer,
+.admin-content-host > .admin-legacy-host.admin-legacy-command .command-background-layer > .viewport,
+.admin-content-host > .admin-legacy-host.admin-legacy-command .content-shell.command-admin-shell {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .content-shell.command-admin-shell {
+    -fx-padding: 4 6 20 6;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .command-admin-hero {
+    -fx-min-height: 136;
+    -fx-background-radius: 24;
+    -fx-border-radius: 24;
+    -fx-padding: 22 24 22 24;
+    -fx-effect: dropshadow(gaussian, rgba(3, 8, 20, 0.46), 28, 0.18, 0, 14);
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .command-admin-hero .page-title {
+    -fx-font-size: 32px;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .command-admin-hero .page-subtitle {
+    -fx-font-size: 15px;
+    -fx-text-fill: #c9d6ea;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .command-refresh-button {
+    -fx-padding: 11 18 11 18;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .command-admin-content-card {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(4, 10, 24, 0.94), rgba(8, 14, 29, 0.96));
+    -fx-border-color: rgba(110, 154, 255, 0.16);
+    -fx-background-radius: 24;
+    -fx-border-radius: 24;
+    -fx-padding: 22;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .command-admin-content-card .admin-filter-card {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(14, 21, 40, 0.82), rgba(10, 16, 31, 0.9));
+    -fx-border-color: rgba(109, 147, 230, 0.16);
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+    -fx-padding: 20;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .command-admin-content-card .section-title {
+    -fx-font-size: 18px;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .table-view.command-admin-table,
+.admin-content-host > .admin-legacy-host.admin-legacy-command .table-view.payment-data-table {
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 8;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .table-view.command-admin-table .table-cell,
+.admin-content-host > .admin-legacy-host.admin-legacy-command .table-view.payment-data-table .table-cell {
+    -fx-font-size: 13px;
+    -fx-padding: 10 12 10 12;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .prediction-card {
+    -fx-background-color:
+        linear-gradient(to bottom right, rgba(26, 38, 78, 0.92), rgba(30, 24, 70, 0.94));
+    -fx-border-color: rgba(108, 198, 255, 0.18);
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+    -fx-padding: 18;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .prediction-card .label,
+.admin-content-host > .admin-legacy-host.admin-legacy-command .prediction-card-title {
+    -fx-text-fill: #f4f8ff;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-command .prediction-card-subtitle {
+    -fx-text-fill: #9eb1cf;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament {
+    -fx-background-color: transparent;
+    -fx-padding: 14 16 18 16;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .main-content,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .content-scroll,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .content-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .header-card,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .dashboard-card,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .prediction-card,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .table-card,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .form-card {
+    -fx-effect: dropshadow(gaussian, rgba(4, 8, 20, 0.40), 26, 0.18, 0, 12);
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .header-card {
+    -fx-background-color:
+        linear-gradient(to right, rgba(20, 55, 92, 0.88), rgba(63, 27, 97, 0.84)),
+        linear-gradient(to bottom right, rgba(10, 17, 33, 0.94), rgba(16, 17, 41, 0.92));
+    -fx-background-radius: 28;
+    -fx-border-color: rgba(111, 208, 255, 0.20);
+    -fx-border-radius: 28;
+    -fx-padding: 26;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .header-title {
+    -fx-font-size: 40px;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .header-subtitle {
+    -fx-font-size: 18px;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .primary-btn,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .secondary-btn {
+    -fx-padding: 11 18 11 18;
+    -fx-font-size: 14px;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .dashboard-card,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .prediction-card,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .table-card,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .form-card {
+    -fx-background-radius: 24;
+    -fx-border-radius: 24;
+    -fx-padding: 20;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .prediction-pill,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .stat-card,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .chart-card {
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .chart-card,
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .prediction-pill {
+    -fx-padding: 14;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .tournament-table {
+    -fx-background-color: rgba(7, 13, 30, 0.82);
+    -fx-border-color: rgba(96, 149, 238, 0.24);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-padding: 8;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .tournament-table .column-header-background {
+    -fx-background-color:
+        linear-gradient(to right, rgba(52, 184, 255, 0.18), rgba(129, 98, 255, 0.16)),
+        rgba(11, 22, 53, 0.95);
+    -fx-background-radius: 14 14 0 0;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .tournament-table .table-row-cell {
+    -fx-cell-size: 58px;
+}
+
+.admin-content-host > .admin-legacy-host.admin-legacy-tournament .tournament-table .table-cell {
+    -fx-font-size: 13px;
+    -fx-padding: 10 12 10 12;
+}
+
+.admin-team-design-page {
+    -fx-spacing: 20;
+    -fx-padding: 24 26 30 26;
+}
+
+.admin-team-hero {
+    -fx-background-color:
+        linear-gradient(to right, rgba(38, 95, 138, 0.70), rgba(90, 58, 153, 0.62)),
+        linear-gradient(to bottom right, rgba(22, 37, 67, 0.94), rgba(36, 26, 66, 0.92));
+    -fx-background-radius: 28;
+    -fx-border-color: rgba(111, 214, 255, 0.20);
+    -fx-border-radius: 28;
+    -fx-padding: 26 30 26 30;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.34), 28, 0.18, 0, 12);
+}
+
+.admin-team-kicker {
+    -fx-text-fill: #51d7ff;
+    -fx-font-size: 14px;
+    -fx-font-weight: 900;
+    -fx-letter-spacing: 3px;
+}
+
+.admin-team-title {
+    -fx-text-fill: #f6fbff;
+    -fx-font-size: 34px;
+    -fx-font-weight: 900;
+}
+
+.admin-team-subtitle {
+    -fx-text-fill: #d3def1;
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+}
+
+.admin-team-chip {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-text-fill: #dce8ff;
+    -fx-padding: 8 16 8 16;
+    -fx-background-radius: 999;
+    -fx-border-color: rgba(133, 166, 231, 0.18);
+    -fx-border-radius: 999;
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+}
+
+.admin-team-chip.is-active {
+    -fx-background-color: linear-gradient(to right, rgba(68, 196, 255, 0.18), rgba(139, 105, 255, 0.18));
+    -fx-border-color: rgba(98, 214, 255, 0.42);
+    -fx-text-fill: #ffffff;
+}
+
+.admin-team-panel {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(10, 16, 33, 0.94), rgba(8, 14, 28, 0.96));
+    -fx-background-radius: 24;
+    -fx-border-color: rgba(109, 156, 255, 0.14);
+    -fx-border-radius: 24;
+    -fx-padding: 20 22 20 22;
+    -fx-spacing: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.28), 22, 0.16, 0, 10);
+}
+
+.admin-team-panel-title {
+    -fx-text-fill: #f5f9ff;
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+}
+
+.admin-team-panel-subtitle {
+    -fx-text-fill: #9fb2d1;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+}
+
+.admin-team-table-card {
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(8, 13, 27, 0.92), rgba(6, 11, 23, 0.96));
+    -fx-background-radius: 28;
+    -fx-border-color: rgba(99, 154, 255, 0.14);
+    -fx-border-radius: 28;
+    -fx-padding: 16 18 18 18;
+    -fx-spacing: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.34), 28, 0.18, 0, 12);
+}
+
+.admin-team-table-card .admin-teams-table {
+    -fx-padding: 0;
+}
+
+.admin-team-toolbar-button {
+    -fx-background-color: linear-gradient(to right, #4cbcff, #8f71ff);
+    -fx-text-fill: #f7fbff;
+    -fx-font-size: 14px;
+    -fx-font-weight: 900;
+    -fx-padding: 12 18 12 18;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+}
+
+.admin-team-toolbar-button.secondary {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-border-color: rgba(134, 165, 228, 0.18);
+    -fx-text-fill: #eef4ff;
 }
 
 .admin-reference-page {
@@ -1683,6 +2009,12 @@
     -fx-text-fill: #c9f1ff;
 }
 
+.admin-inline-action.is-warning {
+    -fx-background-color: rgba(255, 177, 66, 0.12);
+    -fx-border-color: rgba(255, 193, 87, 0.34);
+    -fx-text-fill: #ffe0a6;
+}
+
 .admin-inline-action.is-danger {
     -fx-background-color: rgba(255, 72, 102, 0.08);
     -fx-border-color: rgba(255, 98, 124, 0.40);
@@ -1781,7 +2113,7 @@
 }
 
 .admin-team-editor-shell {
-    -fx-padding: 22 24;
+    -fx-padding: 24 26;
 }
 
 .admin-editor-grid {
@@ -1797,6 +2129,71 @@
         radial-gradient(center 85% 0%, radius 32%, rgba(89, 203, 255, 0.14), transparent 60%),
         linear-gradient(to bottom right, rgba(13, 20, 36, 0.98), rgba(17, 23, 42, 0.96));
     -fx-border-color: rgba(108, 192, 255, 0.14);
+}
+
+.admin-team-form-page {
+    -fx-padding: 8 4 16 4;
+}
+
+.admin-team-form-scroll,
+.admin-team-form-scroll > .viewport {
+    -fx-background-color:
+        linear-gradient(rgba(7, 12, 27, 0.82), rgba(9, 14, 28, 0.88)),
+        radial-gradient(center 50% 0%, radius 100%, rgba(255, 70, 180, 0.10), transparent 40%),
+        radial-gradient(center 0% 35%, radius 80%, rgba(54, 222, 255, 0.10), transparent 32%),
+        url("../images/hero-main-bg.png");
+    -fx-background-size: auto, auto, auto, cover;
+    -fx-background-position: center center, center center, center center, center center;
+}
+
+.admin-team-form-grid {
+    -fx-padding: 2 0 4 0;
+}
+
+.admin-form-group-label {
+    -fx-text-fill: #97aecf;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-letter-spacing: 1.2px;
+}
+
+.admin-preview-stat-row {
+    -fx-padding: 2 0 0 0;
+}
+
+.admin-preview-kpi {
+    -fx-background-color: rgba(255, 255, 255, 0.035);
+    -fx-border-color: rgba(120, 187, 255, 0.14);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-padding: 12 14;
+}
+
+.admin-preview-label {
+    -fx-text-fill: #87a1c5;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+    -fx-letter-spacing: 1px;
+}
+
+.admin-preview-value {
+    -fx-text-fill: #f7fbff;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.admin-preview-description {
+    -fx-line-spacing: 2px;
+}
+
+.admin-team-preview-visual {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.34), 18, 0.14, 0, 8);
+}
+
+.admin-table-header-note {
+    -fx-text-fill: #7e93b5;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
 }
 
 .admin-elevated-field,
@@ -1968,7 +2365,7 @@
 }
 
 .table-view.admin-teams-table {
-    -fx-padding: 18;
+    -fx-padding: 16;
     -fx-background-insets: 0;
     -fx-background-color:
         linear-gradient(to bottom, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
@@ -2020,7 +2417,7 @@
 }
 
 .table-view.admin-teams-table .table-row-cell {
-    -fx-cell-size: 78px;
+    -fx-cell-size: 88px;
     -fx-background-color: transparent;
     -fx-border-color: rgba(255, 255, 255, 0.04);
     -fx-border-width: 0 0 1 0;
@@ -2047,10 +2444,10 @@
 .table-view.admin-teams-table .table-cell {
     -fx-background-color: transparent;
     -fx-text-fill: #edf4ff;
-    -fx-font-size: 14px;
+    -fx-font-size: 13px;
     -fx-font-weight: 700;
     -fx-alignment: center-left;
-    -fx-padding: 18 12;
+    -fx-padding: 14 12;
     -fx-border-color: transparent rgba(255, 255, 255, 0.035) transparent transparent;
 }
 
@@ -2113,6 +2510,19 @@
 .admin-square-action,
 .admin-inline-action {
     -fx-cursor: hand;
+}
+
+.admin-action-pane {
+    -fx-alignment: center-left;
+}
+
+.admin-inline-action {
+    -fx-background-color: rgba(255, 255, 255, 0.04);
+    -fx-border-width: 1;
+    -fx-min-height: 36;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-padding: 8 12;
 }
 
 .admin-square-action:hover,

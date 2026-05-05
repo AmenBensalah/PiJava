@@ -172,7 +172,7 @@
                 <VBox styleClass="sidebar-nav" VBox.vgrow="ALWAYS">
                     <Button fx:id="frontFeedButton" text="Fil d'actualite" onAction="#handleShowFrontFeed" styleClass="sidebar-item sidebar-modern front-nav-item active" maxWidth="Infinity"/>
                     <Button fx:id="frontBoutiqueButton" text="Boutique" onAction="#handleFrontBoutique" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity"/>
-                    <Button fx:id="frontTournoisButton" text="Tournois" onAction="#handleFrontEquipes" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity"/>
+                    <Button fx:id="frontTournoisButton" text="Tournois" onAction="#handleFrontTournois" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity"/>
                     <Button fx:id="frontCommandesButton" text="Commandes" onAction="#handleFrontCommandes" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity"/>
                     <Button fx:id="frontEquipesButton" text="Equipes" onAction="#handleFrontEquipes" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity" managed="false" visible="false"/>
                     <Button fx:id="frontStreamingButton" text="Streaming" onAction="#handleShowFrontStreaming" styleClass="sidebar-item sidebar-modern front-nav-item" maxWidth="Infinity" managed="false" visible="false"/>

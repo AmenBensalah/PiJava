@@ -189,6 +189,21 @@ public class MyConnection {
     private void initializeCoreSchema() throws SQLException {
         try (Statement st = cnx.createStatement()) {
             st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS app_user (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    username VARCHAR(100) NOT NULL UNIQUE,
+                    first_name VARCHAR(120) NULL,
+                    email VARCHAR(190) NOT NULL UNIQUE,
+                    phone_number VARCHAR(30) NULL,
+                    password VARCHAR(255) NOT NULL,
+                    role VARCHAR(30) NOT NULL,
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """);
+            st.executeUpdate("ALTER TABLE app_user ADD COLUMN IF NOT EXISTS first_name VARCHAR(120) NULL");
+            st.executeUpdate("ALTER TABLE app_user ADD COLUMN IF NOT EXISTS phone_number VARCHAR(30) NULL");
+            st.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS equipe (
                     id INT PRIMARY KEY AUTO_INCREMENT,
                     nom_equipe VARCHAR(255) NOT NULL,
@@ -201,11 +216,23 @@ public class MyConnection {
                     max_members INT NOT NULL DEFAULT 5,
                     is_private BOOLEAN NOT NULL DEFAULT FALSE,
                     is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    banned_until TIMESTAMP NULL,
+                    ban_reason VARCHAR(255) NULL,
+                    ban_details TEXT NULL,
+                    banned_by_admin VARCHAR(100) NULL,
                     discord_invite_url VARCHAR(255) NULL,
                     manager_username VARCHAR(100) NULL
                 )
                 """);
             st.executeUpdate("ALTER TABLE equipe ADD COLUMN IF NOT EXISTS manager_username VARCHAR(100) NULL");
+            st.executeUpdate("ALTER TABLE equipe ADD COLUMN IF NOT EXISTS discord_invite_url VARCHAR(255) NULL");
+            st.executeUpdate("ALTER TABLE equipe ADD COLUMN IF NOT EXISTS max_members INT NOT NULL DEFAULT 5");
+            st.executeUpdate("ALTER TABLE equipe ADD COLUMN IF NOT EXISTS is_private BOOLEAN NOT NULL DEFAULT FALSE");
+            st.executeUpdate("ALTER TABLE equipe ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE");
+            st.executeUpdate("ALTER TABLE equipe ADD COLUMN IF NOT EXISTS banned_until TIMESTAMP NULL");
+            st.executeUpdate("ALTER TABLE equipe ADD COLUMN IF NOT EXISTS ban_reason VARCHAR(255) NULL");
+            st.executeUpdate("ALTER TABLE equipe ADD COLUMN IF NOT EXISTS ban_details TEXT NULL");
+            st.executeUpdate("ALTER TABLE equipe ADD COLUMN IF NOT EXISTS banned_by_admin VARCHAR(100) NULL");
             st.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS recrutement (
                     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -249,6 +276,52 @@ public class MyConnection {
             st.executeUpdate("ALTER TABLE candidature ADD COLUMN IF NOT EXISTS equipe_id INT NULL");
             st.executeUpdate("ALTER TABLE candidature ADD COLUMN IF NOT EXISTS account_username VARCHAR(100) NULL");
             st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS team_task (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    team_id INT NOT NULL,
+                    title VARCHAR(255) NOT NULL,
+                    description TEXT NULL,
+                    assignee_username VARCHAR(100) NULL,
+                    status VARCHAR(50) NOT NULL,
+                    due_date DATE NULL,
+                    completed_at DATE NULL,
+                    estimated_hours INT NOT NULL DEFAULT 0,
+                    actual_hours INT NOT NULL DEFAULT 0
+                )
+                """);
+            st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS team_alert (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    team_id INT NOT NULL,
+                    task_id INT NULL,
+                    title VARCHAR(255) NOT NULL,
+                    cause TEXT NULL,
+                    resolution_action TEXT NULL,
+                    resolved BOOLEAN NOT NULL DEFAULT FALSE,
+                    notified_manager_username VARCHAR(100) NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """);
+            st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS team_history (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    team_id INT NOT NULL,
+                    action_type VARCHAR(50) NOT NULL,
+                    description TEXT NOT NULL,
+                    author_username VARCHAR(100) NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """);
+            st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS team_comment (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    team_id INT NOT NULL,
+                    author_username VARCHAR(100) NOT NULL,
+                    content TEXT NOT NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """);
+            st.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS manager_request (
                     id INT PRIMARY KEY AUTO_INCREMENT,
                     username VARCHAR(100) NOT NULL,
@@ -262,6 +335,8 @@ public class MyConnection {
             st.executeUpdate("ALTER TABLE manager_request ADD COLUMN IF NOT EXISTS niveau VARCHAR(50) NULL");
             st.executeUpdate("ALTER TABLE manager_request ADD COLUMN IF NOT EXISTS username VARCHAR(100) NULL");
             st.executeUpdate("ALTER TABLE manager_request ADD COLUMN IF NOT EXISTS email VARCHAR(190) NULL");
+            st.executeUpdate("ALTER TABLE manager_request ADD COLUMN IF NOT EXISTS user_id INT NULL");
+            st.executeUpdate("ALTER TABLE manager_request MODIFY COLUMN user_id INT NULL");
         }
     }
 

@@ -1,5 +1,6 @@
 package edu.esportify.navigation;
 
+import edu.ProjetPI.controllers.SceneManager;
 import java.io.IOException;
 import java.net.URL;
 import javafx.fxml.FXMLLoader;
@@ -15,13 +16,26 @@ public final class AppNavigator {
 
     public static void init(Stage stage) {
         primaryStage = stage;
+        SceneManager.setStage(stage);
         primaryStage.setTitle("E-sportify Desktop");
         primaryStage.setMinWidth(1200);
         primaryStage.setMinHeight(760);
     }
 
+    public static boolean isReady() {
+        return primaryStage != null;
+    }
+
     public static void goToLogin() {
-        setScene("/views/login-view.fxml");
+        setScene("/edu/ProjetPI/views/login.fxml");
+    }
+
+    public static void goToRegister() {
+        setScene("/views/register-view.fxml");
+    }
+
+    public static void goToForgotPassword() {
+        setScene("/views/forgot-password-view.fxml");
     }
 
     public static void goToManager() {
@@ -29,11 +43,34 @@ public final class AppNavigator {
     }
 
     public static void goToUserHome() {
+        AppSession.getInstance().setPendingUserHomeSection(AppSession.UserHomeSection.STORE);
+        setScene("/views/user-layout-view.fxml");
+    }
+
+    public static void goToUserHome(AppSession.UserHomeSection section) {
+        AppSession.getInstance().setPendingUserHomeSection(section);
         setScene("/views/user-layout-view.fxml");
     }
 
     public static void goToAdmin() {
-        setScene("/views/admin-layout-view.fxml");
+        goToAdmin(AppSession.AdminSection.OVERVIEW);
+    }
+
+    public static void goToAdmin(AppSession.AdminSection section) {
+        AppSession.getInstance().setPendingAdminSection(section);
+        if (section == AppSession.AdminSection.TEAMS || section == AppSession.AdminSection.REQUESTS) {
+            setScene("/backTeamsDashboard.fxml");
+            return;
+        }
+        if (section == AppSession.AdminSection.STORE) {
+            setScene("/backListProduit.fxml");
+            return;
+        }
+        setScene("/fxml/rawg-games-view.fxml");
+    }
+
+    public static void goToProfile() {
+        setScene("/edu/ProjetPI/views/profile.fxml");
     }
 
     public static FXMLLoader createLoader(String resourcePath) {

@@ -1,6 +1,7 @@
 package edu.esportify.controllers;
 
 import edu.esportify.entities.Equipe;
+import edu.esportify.entities.UserRole;
 import edu.esportify.navigation.AppNavigator;
 import edu.esportify.navigation.AppSession;
 import edu.esportify.services.EquipeService;
@@ -44,22 +45,7 @@ public class ManagerLayoutController {
     private Button menuToggleButton;
 
     @FXML
-    private Button feedButton;
-
-    @FXML
     private Button teamButton;
-
-    @FXML
-    private Button tournamentsButton;
-
-    @FXML
-    private Button storeButton;
-
-    @FXML
-    private Button ordersButton;
-
-    @FXML
-    private Button accountButton;
 
     @FXML
     private Label accountNameLabel;
@@ -75,6 +61,11 @@ public class ManagerLayoutController {
 
     @FXML
     private void initialize() {
+        if (AppSession.getInstance().getCurrentUser() == null
+                || AppSession.getInstance().getCurrentUser().getRole() != UserRole.MANAGER) {
+            AppNavigator.goToLogin();
+            return;
+        }
         accountNameLabel.setText(AppSession.getInstance().getUsername());
         accountRoleLabel.setText(AppSession.getInstance().getRole() + " account");
         searchField.setPromptText("Rechercher des equipes, tournois...");
@@ -192,37 +183,31 @@ public class ManagerLayoutController {
     }
 
     private void updateActiveNav(ManagerView activeView) {
-        feedButton.getStyleClass().remove("nav-button-active");
-        teamButton.getStyleClass().remove("nav-button-active");
-        tournamentsButton.getStyleClass().remove("nav-button-active");
-        storeButton.getStyleClass().remove("nav-button-active");
-        ordersButton.getStyleClass().remove("nav-button-active");
-        accountButton.getStyleClass().remove("nav-button-active");
+        if (teamButton != null) {
+            teamButton.getStyleClass().remove("nav-button-active");
+        }
 
         switch (activeView) {
             case FEED -> {
                 pageTitleLabel.setText("Fil D'actualite");
-                feedButton.getStyleClass().add("nav-button-active");
             }
             case TEAM_FORM_CREATE, TEAM_FORM_EDIT, TEAM_DASHBOARD, CANDIDATES -> {
                 pageTitleLabel.setText("Hub Equipes");
-                teamButton.getStyleClass().add("nav-button-active");
+                if (teamButton != null) {
+                    teamButton.getStyleClass().add("nav-button-active");
+                }
             }
             case TOURNAMENTS -> {
                 pageTitleLabel.setText("Tournois");
-                tournamentsButton.getStyleClass().add("nav-button-active");
             }
             case STORE -> {
                 pageTitleLabel.setText("Boutique");
-                storeButton.getStyleClass().add("nav-button-active");
             }
             case ORDERS -> {
                 pageTitleLabel.setText("Commandes");
-                ordersButton.getStyleClass().add("nav-button-active");
             }
             case ACCOUNT -> {
                 pageTitleLabel.setText("Mon Compte");
-                accountButton.getStyleClass().add("nav-button-active");
             }
         }
     }

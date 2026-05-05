@@ -6,9 +6,11 @@ import edu.esportify.tools.MyConnection;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -31,23 +33,28 @@ public class EquipeService implements IService<Equipe> {
         }
         String requete = """
                 INSERT INTO equipe
-                (nom_equipe, logo, description, date_creation, classement, tag, region, max_members, is_private, is_active, discord_invite_url, manager_username)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (nom_equipe, logo, description, date_creation, classement, tag, region, max_members, is_private, is_active,
+                 banned_until, ban_reason, ban_details, banned_by_admin, discord_invite_url, manager_username)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
         try {
             PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
             pst.setString(1, equipe.getNomEquipe());
             pst.setString(2, equipe.getLogo());
             pst.setString(3, equipe.getDescription());
-            pst.setTimestamp(4, Timestamp.valueOf(equipe.getDateCreation()));
+            pst.setTimestamp(4, Timestamp.valueOf(ensureDateCreation(equipe)));
             pst.setString(5, equipe.getClassement());
             pst.setString(6, equipe.getTag());
             pst.setString(7, equipe.getRegion());
             pst.setInt(8, equipe.getMaxMembers());
             pst.setBoolean(9, equipe.isPrivate());
             pst.setBoolean(10, equipe.isActive());
-            pst.setString(11, equipe.getDiscordInviteUrl());
-            pst.setString(12, equipe.getManagerUsername());
+            pst.setTimestamp(11, equipe.getBannedUntil() == null ? null : Timestamp.valueOf(equipe.getBannedUntil()));
+            pst.setString(12, equipe.getBanReason());
+            pst.setString(13, equipe.getBanDetails());
+            pst.setString(14, equipe.getBannedByAdmin());
+            pst.setString(15, equipe.getDiscordInviteUrl());
+            pst.setString(16, equipe.getManagerUsername());
             pst.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erreur ajout equipe: " + e.getMessage(), e);
@@ -87,7 +94,8 @@ public class EquipeService implements IService<Equipe> {
         String requete = """
                 UPDATE equipe SET
                 nom_equipe = ?, logo = ?, description = ?, date_creation = ?, classement = ?, tag = ?, region = ?,
-                max_members = ?, is_private = ?, is_active = ?, discord_invite_url = ?, manager_username = ?
+                max_members = ?, is_private = ?, is_active = ?, banned_until = ?, ban_reason = ?, ban_details = ?,
+                banned_by_admin = ?, discord_invite_url = ?, manager_username = ?
                 WHERE id = ?
                 """;
         try {
@@ -95,16 +103,20 @@ public class EquipeService implements IService<Equipe> {
             pst.setString(1, equipe.getNomEquipe());
             pst.setString(2, equipe.getLogo());
             pst.setString(3, equipe.getDescription());
-            pst.setTimestamp(4, Timestamp.valueOf(equipe.getDateCreation()));
+            pst.setTimestamp(4, Timestamp.valueOf(ensureDateCreation(equipe)));
             pst.setString(5, equipe.getClassement());
             pst.setString(6, equipe.getTag());
             pst.setString(7, equipe.getRegion());
             pst.setInt(8, equipe.getMaxMembers());
             pst.setBoolean(9, equipe.isPrivate());
             pst.setBoolean(10, equipe.isActive());
-            pst.setString(11, equipe.getDiscordInviteUrl());
-            pst.setString(12, equipe.getManagerUsername());
-            pst.setInt(13, id);
+            pst.setTimestamp(11, equipe.getBannedUntil() == null ? null : Timestamp.valueOf(equipe.getBannedUntil()));
+            pst.setString(12, equipe.getBanReason());
+            pst.setString(13, equipe.getBanDetails());
+            pst.setString(14, equipe.getBannedByAdmin());
+            pst.setString(15, equipe.getDiscordInviteUrl());
+            pst.setString(16, equipe.getManagerUsername());
+            pst.setInt(17, id);
             pst.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erreur modification equipe: " + e.getMessage(), e);
@@ -181,8 +193,9 @@ public class EquipeService implements IService<Equipe> {
                 .filter(equipe -> lowerManager.isBlank() || valueOrEmpty(equipe.getManagerUsername()).toLowerCase().contains(lowerManager))
                 .filter(equipe -> lowerStatus.isBlank()
                         || "tous".equals(lowerStatus)
-                        || ("active".equals(lowerStatus) && equipe.isActive())
-                        || ("inactive".equals(lowerStatus) && !equipe.isActive()))
+                        || ("active".equals(lowerStatus) && equipe.isActive() && !equipe.isCurrentlyBanned())
+                        || ("inactive".equals(lowerStatus) && !equipe.isActive() && !equipe.isCurrentlyBanned())
+                        || ("bannie".equals(lowerStatus) && equipe.isCurrentlyBanned()))
                 .sorted(Comparator.comparing(Equipe::getDateCreation, Comparator.nullsLast(Comparator.reverseOrder())))
                 .toList();
     }
@@ -263,25 +276,73 @@ public class EquipeService implements IService<Equipe> {
     }
 
     private Equipe mapEquipe(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
         Equipe equipe = new Equipe();
         equipe.setId(rs.getInt("id"));
-        equipe.setNomEquipe(rs.getString("nom_equipe"));
-        equipe.setLogo(rs.getString("logo"));
-        equipe.setDescription(rs.getString("description"));
-        equipe.setDateCreation(rs.getTimestamp("date_creation").toLocalDateTime());
-        equipe.setClassement(rs.getString("classement"));
-        equipe.setTag(rs.getString("tag"));
-        equipe.setRegion(rs.getString("region"));
-        equipe.setMaxMembers(rs.getInt("max_members"));
-        equipe.setPrivate(rs.getBoolean("is_private"));
-        equipe.setActive(rs.getBoolean("is_active"));
-        equipe.setDiscordInviteUrl(rs.getString("discord_invite_url"));
-        equipe.setManagerUsername(rs.getString("manager_username"));
+        equipe.setNomEquipe(getStringIfPresent(rs, metaData, "nom_equipe"));
+        equipe.setLogo(getStringIfPresent(rs, metaData, "logo"));
+        equipe.setDescription(getStringIfPresent(rs, metaData, "description"));
+        Timestamp dateCreation = getTimestampIfPresent(rs, metaData, "date_creation");
+        equipe.setDateCreation(dateCreation == null ? LocalDateTime.now() : dateCreation.toLocalDateTime());
+        equipe.setClassement(getStringIfPresent(rs, metaData, "classement"));
+        equipe.setTag(getStringIfPresent(rs, metaData, "tag"));
+        equipe.setRegion(getStringIfPresent(rs, metaData, "region"));
+        equipe.setMaxMembers(getIntIfPresent(rs, metaData, "max_members", 5));
+        equipe.setPrivate(getBooleanIfPresent(rs, metaData, "is_private", false));
+        equipe.setActive(getBooleanIfPresent(rs, metaData, "is_active", true));
+        Timestamp bannedUntil = getTimestampIfPresent(rs, metaData, "banned_until");
+        equipe.setBannedUntil(bannedUntil == null ? null : bannedUntil.toLocalDateTime());
+        equipe.setBanReason(getStringIfPresent(rs, metaData, "ban_reason"));
+        equipe.setBanDetails(getStringIfPresent(rs, metaData, "ban_details"));
+        equipe.setBannedByAdmin(getStringIfPresent(rs, metaData, "banned_by_admin"));
+        equipe.setDiscordInviteUrl(getStringIfPresent(rs, metaData, "discord_invite_url"));
+        equipe.setManagerUsername(getStringIfPresent(rs, metaData, "manager_username"));
         return equipe;
+    }
+
+    private String getStringIfPresent(ResultSet rs, ResultSetMetaData metaData, String column) throws SQLException {
+        return hasColumn(metaData, column) ? rs.getString(column) : null;
+    }
+
+    private Timestamp getTimestampIfPresent(ResultSet rs, ResultSetMetaData metaData, String column) throws SQLException {
+        return hasColumn(metaData, column) ? rs.getTimestamp(column) : null;
+    }
+
+    private int getIntIfPresent(ResultSet rs, ResultSetMetaData metaData, String column, int defaultValue) throws SQLException {
+        if (!hasColumn(metaData, column)) {
+            return defaultValue;
+        }
+        int value = rs.getInt(column);
+        return rs.wasNull() ? defaultValue : value;
+    }
+
+    private boolean getBooleanIfPresent(ResultSet rs, ResultSetMetaData metaData, String column, boolean defaultValue) throws SQLException {
+        if (!hasColumn(metaData, column)) {
+            return defaultValue;
+        }
+        boolean value = rs.getBoolean(column);
+        return rs.wasNull() ? defaultValue : value;
+    }
+
+    private boolean hasColumn(ResultSetMetaData metaData, String columnName) throws SQLException {
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            if (columnName.equalsIgnoreCase(metaData.getColumnLabel(i))
+                    || columnName.equalsIgnoreCase(metaData.getColumnName(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean hasConnection() {
         return MyConnection.getInstance().getCnx() != null;
+    }
+
+    private LocalDateTime ensureDateCreation(Equipe equipe) {
+        if (equipe.getDateCreation() == null) {
+            equipe.setDateCreation(LocalDateTime.now());
+        }
+        return equipe.getDateCreation();
     }
 
     private String valueOrEmpty(String value) {

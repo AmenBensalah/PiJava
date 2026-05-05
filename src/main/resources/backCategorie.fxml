@@ -41,7 +41,11 @@
                 </Button>
                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToFrontOffice" styleClass="menu-btn" text="Client (Front)" />
                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToNewsFeed" styleClass="menu-btn" text="Gestion fil d'actualite" />
-                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToRawgGames" styleClass="menu-btn" text="Gestion equipes" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToTeamsAdmin" styleClass="menu-btn" text="Gestion equipes" />
+                <VBox>
+                    <Button maxWidth="1.7976931348623157E308" text="Gestion des equipes" styleClass="sidebar-submenu-btn" onAction="#goToTeamsAdmin" />
+                    <Button maxWidth="1.7976931348623157E308" text="Gestion demande manager" styleClass="sidebar-submenu-btn" onAction="#goToManagerRequestsAdmin" />
+                </VBox>
                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion tournoi" />
                 <VBox>
                     <Button maxWidth="1.7976931348623157E308" text="Tournois" styleClass="sidebar-submenu-btn" onAction="#goToTournoisAdmin" />

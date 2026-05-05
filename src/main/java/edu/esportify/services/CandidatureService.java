@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -243,7 +244,8 @@ public class CandidatureService implements IService<Candidature> {
         }
         candidature.setMotivation(motivation);
         candidature.setStatut(rs.getString("statut"));
-        candidature.setDateCandidature(rs.getTimestamp("date_candidature").toLocalDateTime());
+        Timestamp dateCandidature = rs.getTimestamp("date_candidature");
+        candidature.setDateCandidature(dateCandidature == null ? LocalDateTime.now() : dateCandidature.toLocalDateTime());
         candidature.setEquipeId(rs.getInt("equipe_id"));
         candidature.setEquipeNom(rs.getString("nom_equipe"));
         String accountUsername = null;
@@ -284,7 +286,7 @@ public class CandidatureService implements IService<Candidature> {
         addIfPresent(values, columns, "reason", candidature.getMotivation());
         addIfPresent(values, columns, "statut", candidature.getStatut());
         addIfPresent(values, columns, "status", candidature.getStatut());
-        addIfPresent(values, columns, "date_candidature", Timestamp.valueOf(candidature.getDateCandidature()));
+        addIfPresent(values, columns, "date_candidature", Timestamp.valueOf(ensureDateCandidature(candidature)));
         addIfPresent(values, columns, "equipe_id", candidature.getEquipeId());
         addIfPresent(values, columns, "account_username", candidature.getAccountUsername());
         addIfPresent(values, columns, "user_username", candidature.getAccountUsername());
@@ -348,6 +350,13 @@ public class CandidatureService implements IService<Candidature> {
             pst.setObject(index++, value);
         }
         return index;
+    }
+
+    private LocalDateTime ensureDateCandidature(Candidature candidature) {
+        if (candidature.getDateCandidature() == null) {
+            candidature.setDateCandidature(LocalDateTime.now());
+        }
+        return candidature.getDateCandidature();
     }
 
     private String valueOrEmpty(String value) {

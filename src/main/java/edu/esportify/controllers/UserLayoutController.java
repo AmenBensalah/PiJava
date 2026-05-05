@@ -42,19 +42,23 @@ public class UserLayoutController {
     @FXML private Button accountButton;
     @FXML private Label accountNameLabel;
     @FXML private Label accountRoleLabel;
-    @FXML private Label pageTitleLabel;
     @FXML private TextField searchField;
 
     @FXML
     private void initialize() {
-        accountNameLabel.setText(AppSession.getInstance().getUsername());
-        accountRoleLabel.setText(AppSession.getInstance().getRole() + " account");
-        searchField.setPromptText("Rechercher des equipes, tournois...");
+        String username = AppSession.getInstance().getUsername();
+        String role = AppSession.getInstance().getRole();
+        accountNameLabel.setText(username == null || username.isBlank() ? "Player" : username);
+        accountRoleLabel.setText(role == null || role.isBlank() ? "User account" : role + " account");
+        searchField.setPromptText("Rechercher...");
         applySidebarState();
-        showTeams();
+        openInitialSection();
     }
 
-    @FXML private void onFeed() { showFeed(); }
+    @FXML
+    private void onFeed() {
+        showFeed();
+    }
     @FXML private void onTeam() { showTeams(); }
     @FXML private void onTournaments() { showTournaments(); }
     @FXML private void onStore() { showStore(); }
@@ -109,7 +113,19 @@ public class UserLayoutController {
     public void showTournaments() { setCenter("/views/user-tournaments-view.fxml", UserView.TOURNAMENTS); }
     public void showStore() { setCenter("/views/user-store-view.fxml", UserView.STORE); }
     public void showOrders() { setCenter("/views/user-orders-view.fxml", UserView.ORDERS); }
-    public void showAccount() { setCenter("/views/user-account-view.fxml", UserView.ACCOUNT); }
+    public void showAccount() { AppNavigator.goToProfile(); }
+
+    private void openInitialSection() {
+        AppSession.UserHomeSection initialSection = AppSession.getInstance().getPendingUserHomeSection();
+        switch (initialSection) {
+            case FEED -> showFeed();
+            case STORE -> showStore();
+            case TOURNAMENTS -> showTournaments();
+            case ORDERS -> showOrders();
+            case ACCOUNT -> showAccount();
+            case TEAMS -> showTeams();
+        }
+    }
 
     private void setCenter(String viewPath, UserView activeView) {
         try {
@@ -127,38 +143,25 @@ public class UserLayoutController {
     }
 
     private void updateActiveNav(UserView activeView) {
-        feedButton.getStyleClass().remove("nav-button-active");
+        feedButton.getStyleClass().remove("menu-btn-active");
+        teamButton.getStyleClass().remove("menu-btn-active");
+        tournamentsButton.getStyleClass().remove("menu-btn-active");
+        storeButton.getStyleClass().remove("menu-btn-active");
+        ordersButton.getStyleClass().remove("menu-btn-active");
+        accountButton.getStyleClass().remove("menu-btn-active");
+
         teamButton.getStyleClass().remove("nav-button-active");
-        tournamentsButton.getStyleClass().remove("nav-button-active");
-        storeButton.getStyleClass().remove("nav-button-active");
-        ordersButton.getStyleClass().remove("nav-button-active");
-        accountButton.getStyleClass().remove("nav-button-active");
 
         switch (activeView) {
-            case FEED -> {
-                pageTitleLabel.setText("Fil D'actualite");
-                feedButton.getStyleClass().add("nav-button-active");
-            }
+            case FEED -> feedButton.getStyleClass().add("menu-btn-active");
             case TEAMS, TEAM_DETAIL, MY_TEAM, APPLY, CANDIDATURES, MANAGER_REQUEST -> {
-                pageTitleLabel.setText("Explorer une equipe");
                 teamButton.getStyleClass().add("nav-button-active");
+                teamButton.getStyleClass().add("menu-btn-active");
             }
-            case TOURNAMENTS -> {
-                pageTitleLabel.setText("Tournois");
-                tournamentsButton.getStyleClass().add("nav-button-active");
-            }
-            case STORE -> {
-                pageTitleLabel.setText("Boutique");
-                storeButton.getStyleClass().add("nav-button-active");
-            }
-            case ORDERS -> {
-                pageTitleLabel.setText("Commande");
-                ordersButton.getStyleClass().add("nav-button-active");
-            }
-            case ACCOUNT -> {
-                pageTitleLabel.setText("Mon compte");
-                accountButton.getStyleClass().add("nav-button-active");
-            }
+            case TOURNAMENTS -> tournamentsButton.getStyleClass().add("menu-btn-active");
+            case STORE -> storeButton.getStyleClass().add("menu-btn-active");
+            case ORDERS -> ordersButton.getStyleClass().add("menu-btn-active");
+            case ACCOUNT -> accountButton.getStyleClass().add("menu-btn-active");
         }
     }
 

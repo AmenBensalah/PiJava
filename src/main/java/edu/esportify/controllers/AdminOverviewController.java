@@ -59,7 +59,7 @@ public class AdminOverviewController implements AdminContentController {
         teamRegionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         teamManagerColumn.setCellValueFactory(new PropertyValueFactory<>("managerUsername"));
         teamStatusColumn.setCellValueFactory(cellData -> Bindings.createStringBinding(
-                () -> cellData.getValue().isActive() ? "Active" : "Inactive"
+                () -> cellData.getValue().isCurrentlyBanned() ? "Bannie" : (cellData.getValue().isActive() ? "Active" : "Inactive")
         ));
 
         requestUserColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
@@ -75,7 +75,7 @@ public class AdminOverviewController implements AdminContentController {
         List<ManagerRequest> requests = getRequestsSafe();
 
         long totalTeams = equipes.size();
-        long activeTeams = equipes.stream().filter(Equipe::isActive).count();
+        long activeTeams = equipes.stream().filter(Equipe::isAvailable).count();
         long privateTeams = equipes.stream().filter(Equipe::isPrivate).count();
         long pendingRequests = requests.stream().filter(request -> equalsIgnoreCase(request.getStatus(), "En attente")).count();
         long approvedRequests = requests.stream().filter(request -> equalsIgnoreCase(request.getStatus(), "Acceptee")).count();
@@ -164,11 +164,7 @@ public class AdminOverviewController implements AdminContentController {
         } catch (RuntimeException e) {
             System.out.println("Lecture demandes admin impossible, fallback local: " + e.getMessage());
         }
-        List<ManagerRequest> fallback = new ArrayList<>();
-        fallback.add(createRequest(1, "zriga", "rayenborgi@gmail.com", "En attente", LocalDateTime.now().minusDays(2)));
-        fallback.add(createRequest(2, "nova.manager", "nova@esportify.gg", "Acceptee", LocalDateTime.now().minusDays(5)));
-        fallback.add(createRequest(3, "echo.strat", "echo@esportify.gg", "Refusee", LocalDateTime.now().minusDays(1)));
-        return fallback;
+        return new ArrayList<>();
     }
 
     private Equipe createEquipe(int id, String nom, String region, String manager, boolean active, boolean isPrivate, LocalDateTime createdAt) {
@@ -183,14 +179,4 @@ public class AdminOverviewController implements AdminContentController {
         return equipe;
     }
 
-    private ManagerRequest createRequest(int id, String username, String email, String status, LocalDateTime createdAt) {
-        ManagerRequest request = new ManagerRequest();
-        request.setId(id);
-        request.setUsername(username);
-        request.setEmail(email);
-        request.setStatus(status);
-        request.setCreatedAt(createdAt);
-        request.setMotivation("Demande manager generee en mode local.");
-        return request;
-    }
 }

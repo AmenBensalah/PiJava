@@ -1,6 +1,7 @@
 package edu.ProjetPI.controllers;
 
 import edu.connexion3a77.controllers.TournoiAdminController;
+import edu.esportify.navigation.AppSession;
 import edu.ProjetPI.entities.User;
 import edu.ProjetPI.services.UserService;
 import javafx.collections.FXCollections;
@@ -373,7 +374,19 @@ public class AdminDashboardController {
 
     @FXML
     public void goToRawgGames(ActionEvent event) {
-        SceneManager.switchScene("/fxml/rawg-games-view.fxml", "Gestion des equipes");
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
+    }
+
+    @FXML
+    public void goToTeamsAdmin(ActionEvent event) {
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.TEAMS);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
+    }
+
+    @FXML
+    public void goToManagerRequestsAdmin(ActionEvent event) {
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.REQUESTS);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
     }
 
     @FXML

@@ -139,6 +139,18 @@ public class ManagerRequestService implements IService<ManagerRequest> {
                         || "Acceptee".equalsIgnoreCase(valueOrEmpty(request.getStatus()))));
     }
 
+    public boolean hasActiveRequestForEmail(String email, Integer excludeId) {
+        String normalized = valueOrEmpty(email).trim();
+        if (normalized.isBlank()) {
+            return false;
+        }
+        return getData().stream()
+                .anyMatch(request -> normalized.equalsIgnoreCase(valueOrEmpty(request.getEmail()).trim())
+                        && (excludeId == null || request.getId() != excludeId)
+                        && ("En attente".equalsIgnoreCase(valueOrEmpty(request.getStatus()))
+                        || "Acceptee".equalsIgnoreCase(valueOrEmpty(request.getStatus()))));
+    }
+
     private void addModern(ManagerRequest request) throws SQLException {
         String query = """
                 INSERT INTO manager_request (username, email, niveau, motivation, status, created_at)

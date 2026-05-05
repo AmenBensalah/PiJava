@@ -30,7 +30,7 @@
                             <columns>
                                 <TableColumn fx:id="pseudoColumn" text="Pseudo" prefWidth="140"/>
                                 <TableColumn fx:id="niveauColumn" text="Niveau" prefWidth="120"/>
-                                <TableColumn fx:id="roleColumn" text="Role" prefWidth="120"/>
+                                <TableColumn fx:id="disponibiliteColumn" text="Disponibilite" prefWidth="140"/>
                                 <TableColumn fx:id="statutColumn" text="Statut" prefWidth="120"/>
                                 <TableColumn fx:id="actionColumn" text="Actions" prefWidth="420"/>
                             </columns>

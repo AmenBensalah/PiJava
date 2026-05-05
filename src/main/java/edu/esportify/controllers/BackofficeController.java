@@ -180,7 +180,7 @@ public class BackofficeController {
     }
 
     private void configureTable() {
-        moderationTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        moderationTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         idColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().id()));
         authorColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().author()));
         contentColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().excerpt()));

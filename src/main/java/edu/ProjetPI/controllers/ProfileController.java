@@ -1,5 +1,6 @@
 package edu.ProjetPI.controllers;
 
+import edu.esportify.config.EnvConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -7,6 +8,9 @@ import com.google.gson.JsonParser;
 import edu.ProjetPI.entities.User;
 import edu.ProjetPI.services.UserService;
 import edu.ProjetPI.tools.UserValidationRules;
+import edu.esportify.entities.UserRole;
+import edu.esportify.navigation.AppNavigator;
+import edu.esportify.navigation.AppSession;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -229,6 +233,18 @@ public class ProfileController {
 
     @FXML
     public void handleBack() {
+        if (AppNavigator.isReady()) {
+            UserRole role = UserRole.fromValue(AppSession.getInstance().getRole());
+            if (role == UserRole.ADMIN) {
+                AppNavigator.goToAdmin();
+            } else if (role == UserRole.MANAGER) {
+                AppNavigator.goToManager();
+            } else {
+                AppNavigator.goToUserHome(AppSession.UserHomeSection.ACCOUNT);
+            }
+            return;
+        }
+
         User currentUser = DashboardSession.getCurrentUser();
         if (currentUser != null && "ROLE_ADMIN".equalsIgnoreCase(currentUser.getRole())) {
             SceneManager.switchScene("/edu/ProjetPI/views/admin-dashboard.fxml", "Admin Dashboard");
@@ -341,7 +357,7 @@ public class ProfileController {
 
     private Path resolveReportsPath() {
         List<Path> candidates = new ArrayList<>();
-        String envPath = System.getenv("PROFILE_REPORTS_PATH");
+        String envPath = EnvConfig.get("PROFILE_REPORTS_PATH");
         if (envPath != null && !envPath.isBlank()) {
             candidates.add(Path.of(envPath));
         }

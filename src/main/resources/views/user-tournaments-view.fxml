@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -19,76 +20,25 @@
             <children>
                 <VBox spacing="14" styleClass="hero-card">
                     <children>
-                        <Label text="TOURNOIS" styleClass="hero-title"/>
-                        <Label text="Decouvre les competitions a venir et les evenements actifs sur la scene." styleClass="muted-label"/>
-                        <HBox spacing="12">
-                            <children>
-                                <Button text="Mes inscriptions" styleClass="classic-button"/>
-                                <Button text="Voir le fil" styleClass="classic-button"/>
-                                <Button text="Tous les jeux" styleClass="classic-button"/>
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
-                <VBox spacing="14" styleClass="coord-card">
-                    <children>
-                        <Label text="Recherche avancee" styleClass="section-title"/>
+                        <Label text="DECROCHE TON TOURNOI" styleClass="hero-title"/>
+                        <Label text="Consulte les tournois, filtre rapidement et ouvre les details sans quitter cette interface." styleClass="muted-label"/>
                         <HBox spacing="14">
                             <children>
-                                <TextField promptText="Valorant, CS2, Chess" HBox.hgrow="ALWAYS" styleClass="field"/>
-                                <ComboBox promptText="Type de jeu" prefWidth="180" styleClass="dark-combo"/>
-                                <ComboBox promptText="Format" prefWidth="180" styleClass="dark-combo"/>
-                                <ComboBox promptText="Statut" prefWidth="180" styleClass="dark-combo"/>
+                                <TextField fx:id="nameField" promptText="Rechercher un tournoi..." HBox.hgrow="ALWAYS" styleClass="field"/>
+                                <ComboBox fx:id="typeFilterBox" prefWidth="200" styleClass="dark-combo"/>
+                                <Button text="Rafraichir" onAction="#onSearch" styleClass="classic-button"/>
+                                <Button text="Reset filtres" onAction="#onReset" styleClass="manager-outline-button"/>
                             </children>
                         </HBox>
+                        <Label fx:id="resultsLabel" styleClass="muted-label"/>
                     </children>
                 </VBox>
-                <HBox spacing="18">
+                <VBox spacing="16" styleClass="coord-card team-search-card">
                     <children>
-                        <VBox spacing="12" styleClass="coord-card" HBox.hgrow="ALWAYS">
-                            <children>
-                                <Label text="Valorant Masters" styleClass="section-title"/>
-                                <HBox spacing="10">
-                                    <children>
-                                        <Label text="FPS" styleClass="chip-active"/>
-                                        <Label text="5v5" styleClass="chip-active"/>
-                                    </children>
-                                </HBox>
-                                <Label text="Statut  Ouvert" styleClass="muted-label"/>
-                                <Label text="Prize  600 EUR" styleClass="muted-label"/>
-                                <Button text="Voir" styleClass="classic-button"/>
-                            </children>
-                        </VBox>
-                        <VBox spacing="12" styleClass="coord-card" HBox.hgrow="ALWAYS">
-                            <children>
-                                <Label text="Fifa Arena" styleClass="section-title"/>
-                                <HBox spacing="10">
-                                    <children>
-                                        <Label text="Sports" styleClass="chip-active"/>
-                                        <Label text="Solo" styleClass="chip-active"/>
-                                    </children>
-                                </HBox>
-                                <Label text="Statut  Bientot" styleClass="muted-label"/>
-                                <Label text="Prize  500 EUR" styleClass="muted-label"/>
-                                <Button text="Voir" styleClass="classic-button"/>
-                            </children>
-                        </VBox>
-                        <VBox spacing="12" styleClass="coord-card" HBox.hgrow="ALWAYS">
-                            <children>
-                                <Label text="Chess Mind Cup" styleClass="section-title"/>
-                                <HBox spacing="10">
-                                    <children>
-                                        <Label text="Mind" styleClass="chip-active"/>
-                                        <Label text="Solo" styleClass="chip-active"/>
-                                    </children>
-                                </HBox>
-                                <Label text="Statut  Termine" styleClass="muted-label"/>
-                                <Label text="Prize  800 EUR" styleClass="muted-label"/>
-                                <Button text="Voir" styleClass="classic-button"/>
-                            </children>
-                        </VBox>
+                        <Label text="Tournois disponibles" styleClass="section-title"/>
+                        <FlowPane fx:id="tournamentsContainer" hgap="18" vgap="18" prefWrapLength="1100"/>
                     </children>
-                </HBox>
+                </VBox>
             </children>
             <padding>
                 <Insets top="24" right="24" bottom="24" left="24"/>

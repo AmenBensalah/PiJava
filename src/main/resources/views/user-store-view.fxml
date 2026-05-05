@@ -6,9 +6,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
 <ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
@@ -17,75 +17,81 @@
             fitToWidth="true"
             styleClass="page-scroll">
     <content>
-        <VBox spacing="22" styleClass="content-layer page">
+        <VBox spacing="16" styleClass="content-layer page">
             <children>
-                <VBox spacing="14" styleClass="hero-card">
+                <HBox spacing="18" styleClass="hero-card">
                     <children>
-                        <Label text="BOUTIQUE" styleClass="hero-title"/>
-                        <Label text="Retrouve les produits gaming et les accessoires recommandes." styleClass="muted-label"/>
-                        <HBox spacing="12">
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
                             <children>
-                                <Label text="Tous" styleClass="chip-active"/>
-                                <Label text="Clavier" styleClass="chip-active"/>
-                                <Label text="Souris" styleClass="chip-active"/>
-                                <Label text="PC gamer" styleClass="chip-active"/>
+                                <Label text="BOUTIQUE" styleClass="eyebrow"/>
+                                <Label text="NOTRE CATALOGUE" styleClass="hero-title"/>
+                                <Label text="Decouvrez nos produits gaming et e-sport." styleClass="card-title"/>
+                            </children>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <HBox spacing="10">
+                            <children>
+                                <Button text="IA Recommandations" onAction="#onShowRecommendations" styleClass="btn-secondary" prefWidth="145" prefHeight="38"/>
+                                <Button text="Panier" onAction="#onOpenCart" styleClass="btn-secondary" prefWidth="90" prefHeight="38"/>
+                                <Button text="Reinitialiser Filtres" onAction="#onReset" styleClass="btn-primary" prefWidth="150" prefHeight="38"/>
                             </children>
                         </HBox>
                     </children>
-                </VBox>
-                <HBox spacing="18">
+                    <padding>
+                        <Insets top="16" right="18" bottom="16" left="18"/>
+                    </padding>
+                </HBox>
+
+                <HBox spacing="10">
                     <children>
-                        <VBox prefWidth="300" spacing="14" styleClass="coord-card">
-                            <children>
-                                <Label text="Recherche avancee" styleClass="section-title"/>
-                                <TextField promptText="Nom du produit" styleClass="field"/>
-                                <ComboBox promptText="Categorie" styleClass="dark-combo"/>
-                                <HBox spacing="12">
-                                    <children>
-                                        <Button text="Rechercher" styleClass="classic-button"/>
-                                        <Button text="Reinitialiser" styleClass="manager-outline-button"/>
-                                    </children>
-                                </HBox>
-                            </children>
-                        </VBox>
-                        <VBox spacing="12" styleClass="coord-card" HBox.hgrow="ALWAYS">
-                            <children>
-                                <ImageView fitWidth="210" fitHeight="210" preserveRatio="false">
-                                    <image><Image url="@../images/logo3.png"/></image>
-                                </ImageView>
-                                <Label text="Carte mere HYTS" styleClass="section-title"/>
-                                <Label text="100.00 EUR" styleClass="summary-value"/>
-                                <Label text="EN STOCK" styleClass="chip-active"/>
-                                <Button text="Voir details" styleClass="classic-button"/>
-                            </children>
-                        </VBox>
-                        <VBox spacing="12" styleClass="coord-card" HBox.hgrow="ALWAYS">
-                            <children>
-                                <ImageView fitWidth="210" fitHeight="210" preserveRatio="false">
-                                    <image><Image url="@../images/logo5.png"/></image>
-                                </ImageView>
-                                <Label text="Casque Esportify Pro" styleClass="section-title"/>
-                                <Label text="140.00 EUR" styleClass="summary-value"/>
-                                <Label text="EN STOCK" styleClass="chip-active"/>
-                                <Button text="Voir details" styleClass="classic-button"/>
-                            </children>
-                        </VBox>
-                        <VBox spacing="12" styleClass="coord-card" HBox.hgrow="ALWAYS">
-                            <children>
-                                <ImageView fitWidth="210" fitHeight="210" preserveRatio="false">
-                                    <image><Image url="@../images/logo3.png"/></image>
-                                </ImageView>
-                                <Label text="PC Gamer MPLA" styleClass="section-title"/>
-                                <Label text="1400.00 EUR" styleClass="summary-value"/>
-                                <Label text="RUPTURE" styleClass="chip-active"/>
-                                <Button text="Voir details" styleClass="classic-button"/>
-                            </children>
-                        </VBox>
+                        <Button text="TOUS" onAction="#onShowAll" styleClass="cat-pill-active"/>
+                        <Button text="DISPONIBLES" onAction="#onShowAvailableOnly" styleClass="cat-pill"/>
+                        <Label text="PC GAMER" styleClass="cat-pill"/>
+                        <Label text="CLAVIER" styleClass="cat-pill"/>
+                        <Label text="CARTE MERE" styleClass="cat-pill"/>
+                        <Label text="SOURIS" styleClass="cat-pill"/>
                     </children>
                 </HBox>
+
+                <VBox spacing="14" styleClass="coord-card">
+                    <children>
+                        <Label text="Trouver un produit &amp; Offres" styleClass="section-title"/>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <children>
+                                <Label text="Client fidele ?" style="-fx-text-fill: #ff42d0; -fx-font-weight: 800;"/>
+                                <TextField fx:id="emailField" promptText="Entrez votre e-mail..." styleClass="field" prefWidth="250"/>
+                                <Button text="Activer -10% sur tout" onAction="#onActivateOffer" styleClass="btn-secondary" prefHeight="36"/>
+                            </children>
+                        </HBox>
+                        <HBox spacing="10" alignment="BOTTOM_LEFT" styleClass="team-search-grid">
+                            <children>
+                                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="MOT CLE" styleClass="field-label"/>
+                                        <TextField fx:id="nameField" promptText="Nom du produit..." styleClass="field"/>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="8">
+                                    <children>
+                                        <Label text="CATEGORIE" styleClass="field-label"/>
+                                        <ComboBox fx:id="stockFilterBox" prefWidth="180" styleClass="dark-combo"/>
+                                    </children>
+                                </VBox>
+                                <Button text="Prix +" onAction="#onSortPriceAsc" styleClass="cat-pill" prefWidth="82" prefHeight="38"/>
+                                <Button text="Prix -" onAction="#onSortPriceDesc" styleClass="cat-pill" prefWidth="82" prefHeight="38"/>
+                            </children>
+                        </HBox>
+                        <Label fx:id="resultsLabel" styleClass="muted-label"/>
+                    </children>
+                    <padding>
+                        <Insets top="16" right="18" bottom="14" left="18"/>
+                    </padding>
+                </VBox>
+
+                <FlowPane fx:id="productsContainer" hgap="16" vgap="16" prefWrapLength="930"/>
             </children>
             <padding>
-                <Insets top="24" right="24" bottom="24" left="24"/>
+                <Insets top="16" right="18" bottom="20" left="18"/>
             </padding>
         </VBox>
     </content>

@@ -47,7 +47,7 @@
             <children>
                 <Accordion fx:id="sidebarAccordion" VBox.vgrow="ALWAYS" styleClass="admin-accordion">
                     <panes>
-                        <TitledPane text="Gestion fil d'actualite" expanded="false" styleClass="admin-nav-group">
+                        <TitledPane fx:id="feedGroupPane" text="Gestion fil d'actualite" expanded="false" styleClass="admin-nav-group">
                             <content>
                                 <VBox spacing="10" styleClass="admin-submenu-box">
                                     <children>
@@ -56,7 +56,7 @@
                                 </VBox>
                             </content>
                         </TitledPane>
-                        <TitledPane text="Gestion Equipes" expanded="true" styleClass="admin-nav-group">
+                        <TitledPane fx:id="teamsGroupPane" text="Gestion Equipes" expanded="true" styleClass="admin-nav-group">
                             <content>
                                 <VBox spacing="10" styleClass="admin-submenu-box">
                                     <children>
@@ -66,29 +66,34 @@
                                 </VBox>
                             </content>
                         </TitledPane>
-                        <TitledPane text="Gestion Tournoi" expanded="false" styleClass="admin-nav-group">
+                        <TitledPane fx:id="tournamentsGroupPane" text="Gestion Tournoi" expanded="false" styleClass="admin-nav-group">
                             <content>
                                 <VBox spacing="10" styleClass="admin-submenu-box">
                                     <children>
-                                        <Button fx:id="tournamentsButton" text="Tournois" onAction="#onPlaceholderSection" styleClass="admin-submenu-button"/>
+                                        <Button fx:id="tournamentsButton" text="Tournois" onAction="#onTournaments" styleClass="admin-submenu-button"/>
+                                        <Button fx:id="participationsButton" text="Participations" onAction="#onParticipations" styleClass="admin-submenu-button"/>
                                     </children>
                                 </VBox>
                             </content>
                         </TitledPane>
-                        <TitledPane text="Gestion Boutique" expanded="false" styleClass="admin-nav-group">
+                        <TitledPane fx:id="storeGroupPane" text="Gestion Boutique" expanded="false" styleClass="admin-nav-group">
                             <content>
                                 <VBox spacing="10" styleClass="admin-submenu-box">
                                     <children>
-                                        <Button fx:id="storeButton" text="Boutique" onAction="#onPlaceholderSection" styleClass="admin-submenu-button"/>
+                                        <Button fx:id="storeButton" text="Produits" onAction="#onStoreProducts" styleClass="admin-submenu-button"/>
+                                        <Button fx:id="categoriesButton" text="Categories" onAction="#onStoreCategories" styleClass="admin-submenu-button"/>
+                                        <Button fx:id="paymentsButton" text="Paiements" onAction="#onPayments" styleClass="admin-submenu-button"/>
+                                        <Button fx:id="forecastButton" text="Prediction CA" onAction="#onForecast" styleClass="admin-submenu-button"/>
+                                        <Button fx:id="ordersButton" text="Commandes" onAction="#onOrders" styleClass="admin-submenu-button"/>
                                     </children>
                                 </VBox>
                             </content>
                         </TitledPane>
-                        <TitledPane text="Gestion comptes" expanded="false" styleClass="admin-nav-group">
+                        <TitledPane fx:id="accountsGroupPane" text="Gestion comptes" expanded="false" styleClass="admin-nav-group">
                             <content>
                                 <VBox spacing="10" styleClass="admin-submenu-box">
                                     <children>
-                                        <Button fx:id="accountsButton" text="Comptes" onAction="#onPlaceholderSection" styleClass="admin-submenu-button"/>
+                                        <Button fx:id="accountsButton" text="Comptes" onAction="#onAccounts" styleClass="admin-submenu-button"/>
                                     </children>
                                 </VBox>
                             </content>

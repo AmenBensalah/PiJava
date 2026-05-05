@@ -51,6 +51,7 @@
                     </Button>
                     <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToNewsFeed" styleClass="menu-btn" text="Fil d'actualite" />
                     <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToCatalogue" styleClass="menu-btn" text="Boutique" />
+                    <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToTeams" styleClass="menu-btn" text="Equipe" />
                     <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn, menu-btn-active" text="Tournois" />
                     <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToCart" styleClass="menu-btn" text="Commandes" />
                     <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleViewProfile" styleClass="menu-btn" text="Profil" />

@@ -78,9 +78,26 @@ public final class FaceApiCaptureDialog {
     private FaceApiCaptureDialog() {
     }
 
-    public static Optional<List<Double>> captureDescriptor(Window owner) {
-        FacePipeline activePipeline = getPipeline();
+    public static Optional<String> validateFaceIdAvailability() {
+        try {
+            String detectorCheck = checkCachedModel(DETECTOR_MODEL_NAME, 200_000);
+            if (detectorCheck != null) {
+                return Optional.of(detectorCheck);
+            }
+            String recognizerCheck = checkCachedModel(RECOGNIZER_MODEL_NAME, 1_000_000);
+            if (recognizerCheck != null) {
+                return Optional.of(recognizerCheck);
+            }
+            if (Webcam.getDefault() == null) {
+                return Optional.of("Aucune webcam detectee sur cette machine.");
+            }
+            return Optional.empty();
+        } catch (Exception e) {
+            return Optional.of(e.getMessage() == null ? "Face ID indisponible." : e.getMessage());
+        }
+    }
 
+    public static Optional<List<Double>> captureDescriptor(Window owner) {
         Webcam webcam = Webcam.getDefault();
         if (webcam == null) {
             throw new IllegalStateException("No webcam found on this machine.");
@@ -157,9 +174,13 @@ public final class FaceApiCaptureDialog {
         captureButton.setOnAction(event -> {
             captureButton.setDisable(true);
             captureInProgress.set(true);
-            status.setText("Analyzing face... stay still for a second.");
+            status.setText("Preparing Face ID... stay still for a second.");
 
-            CompletableFuture.supplyAsync(() -> captureStableDescriptor(latestFrame, activePipeline), worker)
+            CompletableFuture.supplyAsync(() -> {
+                        FacePipeline activePipeline = getPipeline();
+                        Platform.runLater(() -> status.setText("Analyzing face... stay still for a second."));
+                        return captureStableDescriptor(latestFrame, activePipeline);
+                    }, worker)
                     .orTimeout(12, TimeUnit.SECONDS)
                     .whenComplete((descriptor, error) -> Platform.runLater(() -> {
                         captureButton.setDisable(false);
@@ -310,6 +331,23 @@ public final class FaceApiCaptureDialog {
         } catch (Exception e) {
             throw new IllegalStateException("Unable to prepare ONNX model '" + modelName + "': " + e.getMessage(), e);
         }
+    }
+
+    private static String checkCachedModel(String modelName, long minSize) {
+        Path modelDir = Path.of(System.getProperty("user.home"), ".pijava-faceid", "models");
+        Path modelPath = modelDir.resolve(modelName);
+        if (Files.exists(modelPath)) {
+            try {
+                if (Files.size(modelPath) >= minSize) {
+                    return null;
+                }
+            } catch (IOException ignored) {
+                // Fall through to error message below.
+            }
+        }
+        return "Modele Face ID manquant: " + modelName
+                + ". Placez les modeles ONNX dans " + modelDir
+                + " avant d'utiliser Face ID.";
     }
 
     private static BufferedImage copyImage(BufferedImage src) {

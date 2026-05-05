@@ -44,6 +44,8 @@ build/
 
 ### Local config ###
 config/local.properties
+.env
+.env.local
 
 ### Python ###
 __pycache__/

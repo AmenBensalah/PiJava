@@ -3,6 +3,7 @@ package edu.esportify.controllers;
 import edu.esportify.entities.Equipe;
 import edu.esportify.navigation.AppSession;
 import edu.esportify.services.EquipeService;
+import edu.projetJava.controllers.BackTeamsDashboardController;
 import java.time.LocalDateTime;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -35,6 +36,7 @@ public class AdminTeamFormController implements AdminContentController {
     private final EquipeService equipeService = new EquipeService();
 
     private AdminLayoutController parentController;
+    private BackTeamsDashboardController legacyHost;
     private Equipe currentEquipe;
 
     @FXML private Label heroTitleLabel;
@@ -68,6 +70,8 @@ public class AdminTeamFormController implements AdminContentController {
         statusBox.getItems().setAll("Active", "Inactive");
         visibilityBox.setValue("Publique");
         statusBox.setValue("Active");
+        registerPreviewBindings();
+        updateSpotlight(null);
     }
 
     @Override
@@ -89,14 +93,18 @@ public class AdminTeamFormController implements AdminContentController {
             loadEquipe(currentEquipe);
         } else {
             clearFields();
-            updateSpotlight(null);
+            refreshSpotlightFromInputs();
         }
+    }
+
+    public void setLegacyHost(BackTeamsDashboardController legacyHost) {
+        this.legacyHost = legacyHost;
     }
 
     @FXML
     private void onBack() {
         AppSession.getInstance().setSelectedEquipe(null);
-        parentController.showTeams();
+        navigateBackToTeams();
     }
 
     @FXML
@@ -110,7 +118,7 @@ public class AdminTeamFormController implements AdminContentController {
         deleteButton.setVisible(false);
         deleteButton.setManaged(false);
         clearFields();
-        updateSpotlight(null);
+        refreshSpotlightFromInputs();
         infoLabel.setText("Mode creation active.");
     }
 
@@ -164,7 +172,7 @@ public class AdminTeamFormController implements AdminContentController {
             equipeService.updateEntity(currentEquipe.getId(), equipe);
         }
         AppSession.getInstance().setSelectedEquipe(null);
-        parentController.showTeams();
+        navigateBackToTeams();
     }
 
     private ValidationResult validateFields(String name, String tag, String classement, String description, String discord, String manager) {
@@ -211,7 +219,7 @@ public class AdminTeamFormController implements AdminContentController {
         }
         equipeService.deleteEntity(currentEquipe);
         AppSession.getInstance().setSelectedEquipe(null);
-        parentController.showTeams();
+        navigateBackToTeams();
     }
 
     private void loadEquipe(Equipe equipe) {
@@ -242,6 +250,52 @@ public class AdminTeamFormController implements AdminContentController {
         descriptionArea.clear();
     }
 
+    private void registerPreviewBindings() {
+        nameField.textProperty().addListener((obs, oldValue, newValue) -> refreshSpotlightFromInputs());
+        tagField.textProperty().addListener((obs, oldValue, newValue) -> refreshSpotlightFromInputs());
+        regionBox.valueProperty().addListener((obs, oldValue, newValue) -> refreshSpotlightFromInputs());
+        classementField.textProperty().addListener((obs, oldValue, newValue) -> refreshSpotlightFromInputs());
+        maxMembersField.textProperty().addListener((obs, oldValue, newValue) -> refreshSpotlightFromInputs());
+        discordField.textProperty().addListener((obs, oldValue, newValue) -> refreshSpotlightFromInputs());
+        logoField.textProperty().addListener((obs, oldValue, newValue) -> refreshSpotlightFromInputs());
+        visibilityBox.valueProperty().addListener((obs, oldValue, newValue) -> refreshSpotlightFromInputs());
+        statusBox.valueProperty().addListener((obs, oldValue, newValue) -> refreshSpotlightFromInputs());
+        descriptionArea.textProperty().addListener((obs, oldValue, newValue) -> refreshSpotlightFromInputs());
+    }
+
+    private void refreshSpotlightFromInputs() {
+        updateSpotlight(buildPreviewEquipe());
+    }
+
+    private Equipe buildPreviewEquipe() {
+        String name = safe(nameField.getText()).trim();
+        String tag = safe(tagField.getText()).trim();
+        String region = safe(regionBox.getValue()).trim();
+        String description = safe(descriptionArea.getText()).trim();
+        String logo = safe(logoField.getText()).trim();
+        String status = safe(statusBox.getValue()).trim();
+
+        boolean empty = name.isBlank()
+                && tag.isBlank()
+                && region.isBlank()
+                && description.isBlank()
+                && logo.isBlank();
+        if (empty) {
+            return null;
+        }
+
+        Equipe preview = new Equipe();
+        preview.setNomEquipe(name.isBlank() ? "Nouvelle equipe" : name);
+        preview.setTag(tag.isBlank() ? "N/A" : tag);
+        preview.setRegion(region.isBlank() ? "Europe" : region);
+        preview.setDescription(description.isBlank()
+                ? "Preparez une fiche equipe complete avec un rendu elegant et des donnees propres."
+                : description);
+        preview.setLogo(logo);
+        preview.setActive(!"Inactive".equalsIgnoreCase(status));
+        return preview;
+    }
+
     private void updateSpotlight(Equipe equipe) {
         spotlightTitleLabel.setText(equipe == null ? "Nouvelle equipe" : safe(equipe.getNomEquipe()));
         spotlightTagLabel.setText(equipe == null ? "N/A" : safe(equipe.getTag()));
@@ -264,6 +318,14 @@ public class AdminTeamFormController implements AdminContentController {
 
         String sessionUsername = safe(AppSession.getInstance().getUsername()).trim();
         return sessionUsername.isBlank() ? "admin" : sessionUsername;
+    }
+
+    private void navigateBackToTeams() {
+        if (parentController != null) {
+            parentController.showTeams();
+        } else if (legacyHost != null) {
+            legacyHost.showTeams();
+        }
     }
 
     private Image loadLogo(String path) {

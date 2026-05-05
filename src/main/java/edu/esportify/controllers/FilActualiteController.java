@@ -1,6 +1,5 @@
 package edu.esportify.controllers;
 
-import edu.ProjetPI.controllers.DashboardSession;
 import edu.ProjetPI.controllers.SceneManager;
 import edu.esportify.entities.Announcement;
 import edu.esportify.entities.Commentaire;
@@ -8,6 +7,7 @@ import edu.esportify.entities.ConversationPreview;
 import edu.esportify.entities.FilActualite;
 import edu.esportify.entities.MessengerMessage;
 import edu.esportify.entities.UserProfile;
+import edu.esportify.navigation.AppSession;
 import edu.esportify.services.AnnouncementService;
 import edu.esportify.services.CommentaireService;
 import edu.esportify.services.FilActualiteService;
@@ -387,10 +387,11 @@ public class FilActualiteController {
     @FXML private void handleRefreshStreaming() { refreshStreamingHub(); }
     @FXML private void handleShowFrontSaved() { showFrontOffice(); showFrontView(frontSavedView, frontSavedButton); }
     @FXML private void handleShowFrontProfile() { navigateToScene("/edu/ProjetPI/views/profile.fxml", "Mon Profil"); }
-    @FXML private void handleFrontEquipes() { navigateToScene("/fxml/tournoi-user-view.fxml", "E-Sportify User - Tournois"); }
-    @FXML private void handleFrontBoutique() { navigateToScene("/ajoutProduit.fxml", "E-SPORTIFY : Boutique"); }
+    @FXML private void handleFrontEquipes() { edu.esportify.navigation.AppNavigator.goToUserHome(edu.esportify.navigation.AppSession.UserHomeSection.TEAMS); }
+    @FXML private void handleFrontTournois() { edu.esportify.navigation.AppNavigator.goToUserHome(edu.esportify.navigation.AppSession.UserHomeSection.TOURNAMENTS); }
+    @FXML private void handleFrontBoutique() { edu.esportify.navigation.AppNavigator.goToUserHome(edu.esportify.navigation.AppSession.UserHomeSection.STORE); }
     @FXML private void handleFrontCommandes() { navigateToScene("/lignecommande-view.fxml", "Liste des commandes"); }
-    @FXML private void handleAdminEquipes() { if (showBackOffice()) { navigateToScene("/fxml/rawg-games-view.fxml", "E-Sportify Admin - Consulter Jeux"); } }
+    @FXML private void handleAdminEquipes() { if (showBackOffice()) { navigateToScene("/backTeamsDashboard.fxml", "Gestion des equipes"); } }
     @FXML private void handleAdminTournoi() {
         if (showBackOffice()) {
             edu.connexion3a77.controllers.TournoiAdminController.openOn(edu.connexion3a77.controllers.TournoiAdminController.InitialSection.TOURNOIS);
@@ -473,7 +474,7 @@ public class FilActualiteController {
         updateNotificationsBadge();
         closeNotificationsPopup();
         notificationsOpen = false;
-        DashboardSession.clear();
+        AppSession.getInstance().logout();
         SceneManager.switchScene("/edu/ProjetPI/views/login.fxml", "E-SPORTIFY : Connexion");
     }
     @FXML private void handleAnnouncementAdd() { handleAnnouncementCreate(); }

@@ -5,6 +5,7 @@ import edu.connexion3a77.services.RawgApiService;
 import edu.ProjetPI.controllers.DashboardSession;
 import edu.ProjetPI.controllers.SceneManager;
 import edu.connexion3a77.controllers.TournoiAdminController;
+import edu.esportify.navigation.AppSession;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -86,6 +87,24 @@ public class RawgGamesController {
     @FXML
     private void goToCatalogue() {
         SceneManager.switchScene("/backListProduit.fxml", "Gestion des produits");
+    }
+
+    @FXML
+    private void goToRawgGames() {
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.TEAMS);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
+    }
+
+    @FXML
+    private void goToTeamsAdmin() {
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.TEAMS);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
+    }
+
+    @FXML
+    private void goToManagerRequestsAdmin() {
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.REQUESTS);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "Gestion des equipes");
     }
 
     @FXML

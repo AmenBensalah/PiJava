@@ -1,12 +1,11 @@
 package edu.esportify.services;
 
-import edu.ProjetPI.controllers.DashboardSession;
-import edu.ProjetPI.entities.User;
+import edu.esportify.entities.User;
 import edu.esportify.entities.UserProfile;
+import edu.esportify.navigation.AppSession;
 import edu.esportify.tools.MyConnection;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -33,6 +32,10 @@ public class UserDirectoryService {
         if (!users.isEmpty()) {
             return users;
         }
+        users = readUsers("app_user");
+        if (!users.isEmpty()) {
+            return users;
+        }
         users = readUsers("users");
         if (!users.isEmpty()) {
             return users;
@@ -49,15 +52,15 @@ public class UserDirectoryService {
     }
 
     public UserProfile resolveCurrentUser() {
-        User sessionUser = DashboardSession.getCurrentUser();
+        User sessionUser = AppSession.getInstance().getCurrentUser();
         if (sessionUser != null) {
             String displayName = firstNonBlank(
-                    sessionUser.getPseudo(),
-                    sessionUser.getFullName(),
+                    sessionUser.getUsername(),
+                    sessionUser.getFirstName(),
                     extractNameFromEmail(sessionUser.getEmail()),
                     "User " + sessionUser.getId()
             );
-            String role = firstNonBlank(sessionUser.getRole(), "USER");
+            String role = sessionUser.getRole() == null ? "USER" : sessionUser.getRole().name();
             return new UserProfile(
                     sessionUser.getId(),
                     displayName,
@@ -79,8 +82,7 @@ public class UserDirectoryService {
     }
 
     private List<UserProfile> readUsers(String tableName) {
-        String sql = "SELECT id, COALESCE(NULLIF(pseudo, ''), NULLIF(nom, ''), SUBSTRING_INDEX(email, '@', 1), CONCAT('User ', id)) AS display_name, "
-                + "COALESCE(email, '') AS email, COALESCE(role, 'USER') AS role FROM " + tableName + " ORDER BY id";
+        String sql = buildUsersQuery(tableName);
         List<UserProfile> users = new ArrayList<>();
         try (Statement st = getConnection().createStatement();
              ResultSet rs = st.executeQuery(sql)) {
@@ -99,6 +101,15 @@ public class UserDirectoryService {
             return List.of();
         }
         return users;
+    }
+
+    private String buildUsersQuery(String tableName) {
+        if ("app_user".equalsIgnoreCase(tableName)) {
+            return "SELECT id, COALESCE(NULLIF(username, ''), NULLIF(first_name, ''), SUBSTRING_INDEX(email, '@', 1), CONCAT('User ', id)) AS display_name, "
+                    + "COALESCE(email, '') AS email, COALESCE(role, 'USER') AS role FROM app_user ORDER BY id";
+        }
+        return "SELECT id, COALESCE(NULLIF(pseudo, ''), NULLIF(nom, ''), SUBSTRING_INDEX(email, '@', 1), CONCAT('User ', id)) AS display_name, "
+                + "COALESCE(email, '') AS email, COALESCE(role, 'USER') AS role FROM " + tableName + " ORDER BY id";
     }
 
     private List<UserProfile> fallbackUsers() {

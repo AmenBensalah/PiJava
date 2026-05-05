@@ -46,6 +46,7 @@
                             </children>
                         </HBox>
                         <Button maxWidth="1.7976931348623157E308" onAction="#onLogin" text="SE CONNECTER" styleClass="login-submit-button"/>
+                        <Button maxWidth="1.7976931348623157E308" onAction="#onFaceId" text="FACE ID" styleClass="ghost-button"/>
                         <Label fx:id="infoLabel" maxWidth="1.7976931348623157E308" styleClass="login-status-pill"/>
                         <HBox alignment="CENTER" spacing="18">
                             <children>

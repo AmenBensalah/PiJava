@@ -346,7 +346,19 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     private void goToRawgGames() {
-        SceneNavigator.switchScene(commandeTableView, "/fxml/rawg-games-view.fxml", "Gestion des equipes");
+        SceneNavigator.switchScene(commandeTableView, "/backTeamsDashboard.fxml", "Gestion des equipes");
+    }
+
+    @FXML
+    private void goToTeamsAdmin() {
+        edu.esportify.navigation.AppSession.getInstance().setPendingAdminSection(edu.esportify.navigation.AppSession.AdminSection.TEAMS);
+        SceneNavigator.switchScene(commandeTableView, "/backTeamsDashboard.fxml", "Gestion des equipes");
+    }
+
+    @FXML
+    private void goToManagerRequestsAdmin() {
+        edu.esportify.navigation.AppSession.getInstance().setPendingAdminSection(edu.esportify.navigation.AppSession.AdminSection.REQUESTS);
+        SceneNavigator.switchScene(commandeTableView, "/backTeamsDashboard.fxml", "Gestion des equipes");
     }
 
     @FXML
