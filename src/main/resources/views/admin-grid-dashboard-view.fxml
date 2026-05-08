@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.esportify.controllers.AdminGridDashboardController"
+      spacing="20"
+      styleClass="admin-grid-wrapper"
+      maxWidth="1400">
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+    
+    <VBox spacing="10">
+        <Label text="ADMIN CONTROL CENTER" styleClass="grid-title"/>
+        <Label text="Sélectionnez une section pour gérer" styleClass="grid-subtitle"/>
+    </VBox>
+    
+    <GridPane hgap="20" vgap="20" styleClass="admin-grid" VBox.vgrow="ALWAYS">
+        <columnConstraints>
+            <javafx.scene.layout.ColumnConstraints percentWidth="33.33"/>
+            <javafx.scene.layout.ColumnConstraints percentWidth="33.33"/>
+            <javafx.scene.layout.ColumnConstraints percentWidth="33.34"/>
+        </columnConstraints>
+        <rowConstraints>
+            <javafx.scene.layout.RowConstraints minHeight="180"/>
+            <javafx.scene.layout.RowConstraints minHeight="180"/>
+            <javafx.scene.layout.RowConstraints minHeight="180"/>
+        </rowConstraints>
+        
+        <!-- Row 1 -->
+        <!-- Fil d'Actualité -->
+        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="12" styleClass="admin-grid-button-card" onMouseClicked="#onFeedSection">
+            <children>
+                <Label text="📰" styleClass="grid-icon"/>
+                <Label text="FIL D'ACTUALITE" styleClass="grid-button-title"/>
+                <Label text="Gestion des annonces, publications et commentaires" styleClass="grid-button-desc"/>
+            </children>
+        </VBox>
+        
+        <!-- Gestion Equipes -->
+        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="12" styleClass="admin-grid-button-card" onMouseClicked="#onTeamsSection">
+            <children>
+                <Label text="👥" styleClass="grid-icon"/>
+                <Label text="GESTION EQUIPES" styleClass="grid-button-title"/>
+                <Label text="Liste des équipes et demandes manager" styleClass="grid-button-desc"/>
+            </children>
+        </VBox>
+        
+        <!-- Gestion Tournoi -->
+        <VBox GridPane.columnIndex="2" GridPane.rowIndex="0" spacing="12" styleClass="admin-grid-button-card" onMouseClicked="#onTournamentsSection">
+            <children>
+                <Label text="🏆" styleClass="grid-icon"/>
+                <Label text="GESTION TOURNOI" styleClass="grid-button-title"/>
+                <Label text="Tournois et participations" styleClass="grid-button-desc"/>
+            </children>
+        </VBox>
+        
+        <!-- Row 2 -->
+        <!-- Gestion Boutique -->
+        <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="12" styleClass="admin-grid-button-card" onMouseClicked="#onStoreSection">
+            <children>
+                <Label text="🛒" styleClass="grid-icon"/>
+                <Label text="GESTION BOUTIQUE" styleClass="grid-button-title"/>
+                <Label text="Produits, catégories et commandes" styleClass="grid-button-desc"/>
+            </children>
+        </VBox>
+        
+        <!-- Gestion Comptes -->
+        <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="12" styleClass="admin-grid-button-card" onMouseClicked="#onAccountsSection">
+            <children>
+                <Label text="👤" styleClass="grid-icon"/>
+                <Label text="GESTION COMPTES" styleClass="grid-button-title"/>
+                <Label text="Gestion des utilisateurs et permissions" styleClass="grid-button-desc"/>
+            </children>
+        </VBox>
+        
+        <!-- Modération -->
+        <VBox GridPane.columnIndex="2" GridPane.rowIndex="1" spacing="12" styleClass="admin-grid-button-card" onMouseClicked="#onBackoffice">
+            <children>
+                <Label text="🛡️" styleClass="grid-icon"/>
+                <Label text="MODERATION" styleClass="grid-button-title"/>
+                <Label text="Dashboard de modération en direct" styleClass="grid-button-desc"/>
+            </children>
+        </VBox>
+        
+        <!-- Row 3 -->
+        <!-- Paiements -->
+        <VBox GridPane.columnIndex="0" GridPane.rowIndex="2" spacing="12" styleClass="admin-grid-button-card" onMouseClicked="#onPaymentsSection">
+            <children>
+                <Label text="💳" styleClass="grid-icon"/>
+                <Label text="PAIEMENTS" styleClass="grid-button-title"/>
+                <Label text="Gestion des paiements Stripe" styleClass="grid-button-desc"/>
+            </children>
+        </VBox>
+        
+        <!-- Prédiction CA -->
+        <VBox GridPane.columnIndex="1" GridPane.rowIndex="2" spacing="12" styleClass="admin-grid-button-card" onMouseClicked="#onForecastSection">
+            <children>
+                <Label text="📈" styleClass="grid-icon"/>
+                <Label text="PREDICTION CA" styleClass="grid-button-title"/>
+                <Label text="Prévisions chiffre d'affaires" styleClass="grid-button-desc"/>
+            </children>
+        </VBox>
+        
+        <!-- Paramètres -->
+        <VBox GridPane.columnIndex="2" GridPane.rowIndex="2" spacing="12" styleClass="admin-grid-button-card" onMouseClicked="#onSettingsSection">
+            <children>
+                <Label text="⚙️" styleClass="grid-icon"/>
+                <Label text="PARAMETRES" styleClass="grid-button-title"/>
+                <Label text="Configuration du système" styleClass="grid-button-desc"/>
+            </children>
+        </VBox>
+    </GridPane>
+</VBox>

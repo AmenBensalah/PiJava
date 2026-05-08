@@ -1609,6 +1609,171 @@
 .cart-summary .metric-value,
 .cart-summary .metric-total,
 .cart-summary .qty-value {
+
+/* ================================ */
+/* ADMIN GRID DASHBOARD STYLES      */
+/* ================================ */
+
+.admin-grid-container {
+    -fx-background-color:
+        radial-gradient(center 20% 10%, radius 80%, rgba(56, 105, 214, 0.30), transparent 60%),
+        radial-gradient(center 85% 0%, radius 55%, rgba(204, 83, 255, 0.28), transparent 45%),
+        linear-gradient(to bottom, #0b1020 0%, #151739 42%, #0a1025 100%);
+}
+
+.admin-grid-wrapper {
+    -fx-background-color: transparent;
+}
+
+.grid-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 32px;
+    -fx-font-weight: 900;
+}
+
+.grid-subtitle {
+    -fx-text-fill: #a8c5ff;
+    -fx-font-size: 14px;
+}
+
+.admin-grid {
+    -fx-hgap: 20;
+    -fx-vgap: 20;
+}
+
+.admin-grid-button-card {
+    -fx-background-color: 
+        linear-gradient(to bottom right, rgba(15, 35, 70, 0.88), rgba(20, 18, 55, 0.85)),
+        linear-gradient(to bottom right, rgba(74, 181, 241, 0.08), rgba(164, 121, 244, 0.08));
+    -fx-background-radius: 24;
+    -fx-border-color: rgba(112, 222, 255, 0.35);
+    -fx-border-radius: 24;
+    -fx-border-width: 2;
+    -fx-padding: 24;
+    -fx-spacing: 12;
+    -fx-alignment: TOP_CENTER;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 28, 0.18, 0, 10);
+}
+
+.admin-grid-button-card:hover {
+    -fx-background-color: 
+        linear-gradient(to bottom right, rgba(25, 50, 90, 0.92), rgba(30, 28, 70, 0.90)),
+        linear-gradient(to bottom right, rgba(102, 200, 255, 0.15), rgba(190, 140, 255, 0.12));
+    -fx-border-color: rgba(112, 222, 255, 0.65);
+    -fx-effect: dropshadow(gaussian, rgba(112, 222, 255, 0.25), 32, 0.24, 0, 14);
+}
+
+.grid-icon {
+    -fx-font-size: 48px;
+    -fx-text-alignment: CENTER;
+}
+
+.grid-button-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+    -fx-text-alignment: CENTER;
+}
+
+.grid-button-desc {
+    -fx-text-fill: #8fa8d4;
+    -fx-font-size: 12px;
+    -fx-text-alignment: CENTER;
+    -fx-line-spacing: 1;
+}
+
+/* ================================ */
+/* ADMIN MODAL STYLES               */
+/* ================================ */
+
+.admin-modal-wrapper {
+    -fx-background-color: transparent;
+    -fx-spacing: 0;
+}
+
+.admin-modal-header {
+    -fx-background-color: 
+        linear-gradient(to right, rgba(15, 70, 100, 0.95), rgba(20, 35, 75, 0.95)),
+        linear-gradient(to right, rgba(112, 222, 255, 0.05), rgba(164, 121, 244, 0.05));
+    -fx-border-color: rgba(112, 222, 255, 0.35);
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 16 20 16 20;
+}
+
+.admin-modal-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 20px;
+    -fx-font-weight: 900;
+}
+
+.admin-modal-subtitle {
+    -fx-text-fill: #8fa8d4;
+    -fx-font-size: 12px;
+}
+
+.admin-modal-action-button {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-text-fill: #d8e4ff;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+
+.admin-modal-action-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-border-color: rgba(255, 255, 255, 0.30);
+    -fx-text-fill: #ffffff;
+}
+
+.admin-modal-action-button.cyan-action {
+    -fx-background-color: linear-gradient(to right, rgba(112, 222, 255, 0.35), rgba(112, 222, 255, 0.25));
+    -fx-border-color: rgba(112, 222, 255, 0.60);
+    -fx-text-fill: #7df5ff;
+}
+
+.admin-modal-action-button.cyan-action:hover {
+    -fx-background-color: linear-gradient(to right, rgba(112, 222, 255, 0.50), rgba(112, 222, 255, 0.40));
+    -fx-border-color: rgba(112, 222, 255, 0.90);
+    -fx-text-fill: #ffffff;
+}
+
+.admin-modal-action-button.danger-action {
+    -fx-background-color: linear-gradient(to right, rgba(255, 100, 100, 0.25), rgba(255, 80, 80, 0.20));
+    -fx-border-color: rgba(255, 100, 100, 0.50);
+    -fx-text-fill: #ff8080;
+}
+
+.admin-modal-close-button {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-text-fill: #d8e4ff;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+
+.admin-modal-close-button:hover {
+    -fx-background-color: rgba(255, 100, 100, 0.20);
+    -fx-border-color: rgba(255, 100, 100, 0.50);
+    -fx-text-fill: #ff9999;
+}
+
+.admin-modal-content-area {
+    -fx-background-color: 
+        linear-gradient(to bottom right, rgba(12, 22, 50, 0.95), rgba(18, 15, 45, 0.92)),
+        linear-gradient(to bottom right, rgba(74, 181, 241, 0.05), rgba(164, 121, 244, 0.05));
+    -fx-background-radius: 0;
+    -fx-border-color: rgba(112, 222, 255, 0.25);
+    -fx-border-width: 2;
+}
     -fx-text-fill: white;
 }
 

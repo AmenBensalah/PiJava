@@ -413,7 +413,8 @@ public class BackListProduitController implements Initializable {
 
     @FXML
     void goToNewsFeed(ActionEvent event) {
-        edu.ProjetPI.controllers.SceneManager.switchScene("/FilActualiteView.fxml", "E-SPORTIFY : Fil d'actualite");
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.FEED);
+        edu.ProjetPI.controllers.SceneManager.switchScene("/backTeamsDashboard.fxml", "E-SPORTIFY : Fil d'actualite");
     }
 
     @FXML

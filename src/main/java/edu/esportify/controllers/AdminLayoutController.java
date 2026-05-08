@@ -29,7 +29,10 @@ import javafx.geometry.Insets;
 
 public class AdminLayoutController {
     private enum AdminView {
-        FEED,
+        FEED_ANNOUNCEMENTS,
+        FEED_POSTS,
+        FEED_COMMENTS,
+        FEED_AI,
         OVERVIEW,
         TEAMS,
         TEAM_EDITOR,
@@ -61,7 +64,10 @@ public class AdminLayoutController {
     @FXML private TitledPane storeGroupPane;
     @FXML private TitledPane accountsGroupPane;
     @FXML private Button menuToggleButton;
-    @FXML private Button feedButton;
+    @FXML private Button feedAnnouncementsButton;
+    @FXML private Button feedPostsButton;
+    @FXML private Button feedCommentsButton;
+    @FXML private Button feedAiButton;
     @FXML private Button overviewButton;
     @FXML private Button teamsButton;
     @FXML private Button requestsButton;
@@ -91,16 +97,31 @@ public class AdminLayoutController {
         } catch (RuntimeException e) {
             System.out.println("Initialisation admin en mode degrade: " + e.getMessage());
         }
-        if (sidebarAccordion != null && !sidebarAccordion.getPanes().isEmpty()) {
-            sidebarAccordion.setExpandedPane(sidebarAccordion.getPanes().get(1));
-        }
+        
+        // Show grid dashboard by default
+        showGridDashboard();
+        
         applySidebarState();
-        openPendingAdminSection();
     }
 
     @FXML
-    private void onFeed() {
-        showFeed();
+    private void onFeedAnnouncements() {
+        showFeedAnnouncements();
+    }
+
+    @FXML
+    private void onFeedPosts() {
+        showFeedPosts();
+    }
+
+    @FXML
+    private void onFeedComments() {
+        showFeedComments();
+    }
+
+    @FXML
+    private void onFeedAi() {
+        showFeedAi();
     }
 
     @FXML
@@ -187,8 +208,20 @@ public class AdminLayoutController {
         setCenter("/views/admin-overview-view.fxml", AdminView.OVERVIEW);
     }
 
-    public void showFeed() {
-        setCenter("/views/admin-feed-view.fxml", AdminView.FEED);
+    public void showFeedAnnouncements() {
+        setCenter("/AnnouncementManagementView.fxml", AdminView.FEED_ANNOUNCEMENTS);
+    }
+
+    public void showFeedPosts() {
+        setCenter("/PostManagementView.fxml", AdminView.FEED_POSTS);
+    }
+
+    public void showFeedComments() {
+        setCenter("/CommentManagementView.fxml", AdminView.FEED_COMMENTS);
+    }
+
+    public void showFeedAi() {
+        setCenter("/views/admin-feed-view.fxml", AdminView.FEED_AI);
     }
 
     public void showTeams() {
@@ -253,6 +286,7 @@ public class AdminLayoutController {
             case TEAMS -> showTeams();
             case REQUESTS -> showRequests();
             case STORE -> showStoreProducts();
+            case FEED -> showFeedAnnouncements();
         }
     }
 
@@ -289,10 +323,13 @@ public class AdminLayoutController {
     }
 
     private void updateActiveNav(AdminView activeView) {
-        removeActive(feedButton);
-        overviewButton.getStyleClass().remove("nav-button-active");
-        teamsButton.getStyleClass().remove("nav-button-active");
-        requestsButton.getStyleClass().remove("nav-button-active");
+        removeActive(feedAnnouncementsButton);
+        removeActive(feedPostsButton);
+        removeActive(feedCommentsButton);
+        removeActive(feedAiButton);
+        removeActive(overviewButton);
+        removeActive(teamsButton);
+        removeActive(requestsButton);
         removeActive(tournamentsButton);
         removeActive(participationsButton);
         removeActive(storeButton);
@@ -304,68 +341,83 @@ public class AdminLayoutController {
         updateActiveGroup(null);
 
         switch (activeView) {
-            case FEED -> {
-                contentBadgeLabel.setText("Fil d'actualite");
-                feedButton.getStyleClass().add("nav-button-active");
+            case FEED_ANNOUNCEMENTS -> {
+                contentBadgeLabel.setText("Annonces");
+                addActive(feedAnnouncementsButton);
+                updateActiveGroup(feedGroupPane);
+            }
+            case FEED_POSTS -> {
+                contentBadgeLabel.setText("Publications");
+                addActive(feedPostsButton);
+                updateActiveGroup(feedGroupPane);
+            }
+            case FEED_COMMENTS -> {
+                contentBadgeLabel.setText("Commentaires");
+                addActive(feedCommentsButton);
+                updateActiveGroup(feedGroupPane);
+            }
+            case FEED_AI -> {
+                contentBadgeLabel.setText("Centre IA");
+                addActive(feedAiButton);
                 updateActiveGroup(feedGroupPane);
             }
             case OVERVIEW -> {
                 contentBadgeLabel.setText("Dashboard");
-                overviewButton.getStyleClass().add("nav-button-active");
+                addActive(overviewButton);
             }
             case TEAMS -> {
                 contentBadgeLabel.setText("Gestion equipes");
-                teamsButton.getStyleClass().add("nav-button-active");
+                addActive(teamsButton);
                 updateActiveGroup(teamsGroupPane);
             }
             case TEAM_EDITOR -> {
                 contentBadgeLabel.setText("Edition equipe");
-                teamsButton.getStyleClass().add("nav-button-active");
+                addActive(teamsButton);
                 updateActiveGroup(teamsGroupPane);
             }
             case REQUESTS -> {
                 contentBadgeLabel.setText("Demandes");
-                requestsButton.getStyleClass().add("nav-button-active");
+                addActive(requestsButton);
                 updateActiveGroup(teamsGroupPane);
             }
             case ACCOUNTS -> {
                 contentBadgeLabel.setText("Comptes");
-                accountsButton.getStyleClass().add("nav-button-active");
+                addActive(accountsButton);
                 updateActiveGroup(accountsGroupPane);
             }
             case TOURNAMENTS -> {
                 contentBadgeLabel.setText("Tournois");
-                tournamentsButton.getStyleClass().add("nav-button-active");
+                addActive(tournamentsButton);
                 updateActiveGroup(tournamentsGroupPane);
             }
             case PARTICIPATIONS -> {
                 contentBadgeLabel.setText("Participations");
-                participationsButton.getStyleClass().add("nav-button-active");
+                addActive(participationsButton);
                 updateActiveGroup(tournamentsGroupPane);
             }
             case STORE_PRODUCTS -> {
                 contentBadgeLabel.setText("Produits");
-                storeButton.getStyleClass().add("nav-button-active");
+                addActive(storeButton);
                 updateActiveGroup(storeGroupPane);
             }
             case STORE_CATEGORIES -> {
                 contentBadgeLabel.setText("Categories");
-                categoriesButton.getStyleClass().add("nav-button-active");
+                addActive(categoriesButton);
                 updateActiveGroup(storeGroupPane);
             }
             case PAYMENTS -> {
                 contentBadgeLabel.setText("Paiements");
-                paymentsButton.getStyleClass().add("nav-button-active");
+                addActive(paymentsButton);
                 updateActiveGroup(storeGroupPane);
             }
             case FORECAST -> {
                 contentBadgeLabel.setText("Prediction CA");
-                forecastButton.getStyleClass().add("nav-button-active");
+                addActive(forecastButton);
                 updateActiveGroup(storeGroupPane);
             }
             case ORDERS -> {
                 contentBadgeLabel.setText("Commandes");
-                ordersButton.getStyleClass().add("nav-button-active");
+                addActive(ordersButton);
                 updateActiveGroup(storeGroupPane);
             }
             case PROFILE -> {
@@ -477,6 +529,12 @@ public class AdminLayoutController {
         }
     }
 
+    private void addActive(Button button) {
+        if (button != null && !button.getStyleClass().contains("nav-button-active")) {
+            button.getStyleClass().add("nav-button-active");
+        }
+    }
+
     private void updateActiveGroup(TitledPane activePane) {
         setGroupActive(feedGroupPane, activePane == feedGroupPane);
         setGroupActive(teamsGroupPane, activePane == teamsGroupPane);
@@ -538,5 +596,117 @@ public class AdminLayoutController {
 
     private String valueOrDefault(String value, String fallback) {
         return value == null || value.isBlank() ? fallback : value;
+    }
+
+    /* ============================================ */
+    /* NEW GRID DASHBOARD METHODS                   */
+    /* ============================================ */
+
+    public void showGridDashboard() {
+        try {
+            FXMLLoader loader = AppNavigator.createLoader("/views/admin-grid-dashboard-view.fxml");
+            Node view = loader.load();
+            Object controller = loader.getController();
+            if (controller instanceof AdminGridDashboardController gridController) {
+                gridController.init(this);
+            }
+            contentContainer.getChildren().setAll(view);
+            contentBadgeLabel.setText("Dashboard");
+        } catch (Exception e) {
+            System.out.println("Erreur chargement grille: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void showFeedSection() {
+        showModalWithContent("FIL D'ACTUALITE", "Gestion des annonces, publications et commentaires",
+                            () -> setCenter("/views/admin-news-feed-hub-view.fxml", AdminView.PLACEHOLDER));
+    }
+
+    public void showTeamsSection() {
+        showModalWithContent("GESTION EQUIPES", "Liste des équipes et demandes manager",
+                            () -> showTeams());
+    }
+
+    public void showTournamentsSection() {
+        showModalWithContent("GESTION TOURNOI", "Tournois et participations",
+                            () -> showTournaments());
+    }
+
+    public void showStoreSection() {
+        showModalWithContent("GESTION BOUTIQUE", "Produits, catégories et commandes",
+                            () -> showStoreProducts());
+    }
+
+    public void showAccountsSection() {
+        showModalWithContent("GESTION COMPTES", "Gestion des utilisateurs et permissions",
+                            () -> showAccounts());
+    }
+
+    public void showBackoffice() {
+        try {
+            FXMLLoader loader = AppNavigator.createLoader("/BackofficeDashboard.fxml");
+            Node view = loader.load();
+            contentContainer.getChildren().setAll(view);
+            contentBadgeLabel.setText("Moderation");
+        } catch (Exception e) {
+            System.out.println("Erreur chargement dashboard: " + e.getMessage());
+        }
+    }
+
+    public void showPaymentsSection() {
+        showModalWithContent("PAIEMENTS", "Gestion des paiements Stripe",
+                            () -> showPayments());
+    }
+
+    public void showForecastSection() {
+        showModalWithContent("PREDICTION CA", "Prévisions chiffre d'affaires",
+                            () -> showForecast());
+    }
+
+    public void showSettingsSection() {
+        showModalWithContent("PARAMETRES", "Configuration du système",
+                            () -> showOverview());
+    }
+
+    private void showModalWithContent(String title, String subtitle, Runnable contentLoader) {
+        try {
+            FXMLLoader wrapperLoader = AppNavigator.createLoader("/views/admin-modal-wrapper-view.fxml");
+            Node wrapperView = wrapperLoader.load();
+            AdminModalWrapperController wrapperController = wrapperLoader.getController();
+            wrapperController.init(this);
+            wrapperController.setTitle(title, subtitle);
+            wrapperController.setOnCloseCallback(() -> showGridDashboard());
+
+            // Display the wrapper first
+            contentContainer.getChildren().setAll(wrapperView);
+            
+            // Load the actual content into the wrapper's content container
+            loadContentIntoModal(contentLoader, wrapperController);
+
+        } catch (Exception e) {
+            System.out.println("Erreur chargement modal: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void loadContentIntoModal(Runnable contentLoader, AdminModalWrapperController wrapperController) {
+        // We need to temporarily replace the contentContainer reference
+        // This is a bit tricky, so let's create a special version that loads into the modal's content area
+        StackPane modalContent = wrapperController.getContentContainer();
+        
+        // Store original contentContainer
+        StackPane originalContent = contentContainer;
+        
+        // Temporarily replace with modal's content container
+        contentContainer = modalContent;
+        
+        // Load the content
+        try {
+            contentLoader.run();
+        } finally {
+            // Restore original
+            contentContainer = originalContent;
+        }
     }
 }

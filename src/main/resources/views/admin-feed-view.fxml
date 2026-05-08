@@ -18,18 +18,22 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.esportify.controllers.AdminFeedController"
             fitToWidth="true"
+            hbarPolicy="NEVER"
+            pannable="true"
+            stylesheets="@../styles/app.css"
+            vbarPolicy="AS_NEEDED"
             styleClass="page-scroll">
     <content>
-        <VBox spacing="22" styleClass="content-layer page admin-reference-page">
+        <VBox minHeight="980" spacing="22" styleClass="content-layer page admin-reference-page">
             <children>
                 <VBox spacing="12" styleClass="hero-card admin-reference-hero">
                     <children>
                         <Label text="FIL D'ACTUALITE" styleClass="admin-eyebrow"/>
-                        <Label text="GESTION DES ANNONCES" styleClass="admin-reference-title"/>
-                        <Label text="Creez et suivez les annonces du fil d'actualite." styleClass="admin-reference-subtitle" wrapText="true"/>
+                        <Label text="CENTRE IA" styleClass="admin-reference-title"/>
+                        <Label text="Supervisez les signaux, tendances et indicateurs du fil d'actualite dans un panneau integre au back-office." styleClass="admin-reference-subtitle" wrapText="true"/>
                         <HBox spacing="14">
                             <children>
-                                <Button text="Creer une annonce" styleClass="admin-glow-button"/>
+                                <Button text="Analyser le flux" styleClass="admin-glow-button"/>
                                 <Button text="Rafraichir" onAction="#onRefresh" styleClass="admin-ghost-button"/>
                             </children>
                         </HBox>

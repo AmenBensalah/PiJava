@@ -1,24 +1,31 @@
 package edu.esportify.controllers;
 
-import edu.projetJava.models.Produit;
+import edu.PROJETPI.services.OrderSession;
+import edu.esportify.navigation.AppNavigator;
+import edu.esportify.navigation.AppSession;
 import edu.projetJava.controllers.AjoutProduitController;
+import edu.projetJava.models.Produit;
 import edu.projetJava.services.ProduitService;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -28,6 +35,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class UserStoreController implements UserContentController {
+    private static final String[] FALLBACK_IMAGES = {
+            "/images/gaming.jpg",
+            "/images/esportify-card.jpg",
+            "/images/logo3.png",
+            "/images/logo5.png"
+    };
+
     private enum SortMode {
         NONE,
         PRICE_ASC,
@@ -35,6 +49,7 @@ public class UserStoreController implements UserContentController {
     }
 
     private final ProduitService produitService = new ProduitService();
+    private UserLayoutController parentController;
     private SortMode sortMode = SortMode.NONE;
     private boolean offerActive;
 
@@ -54,6 +69,7 @@ public class UserStoreController implements UserContentController {
 
     @Override
     public void init(UserLayoutController parentController) {
+        this.parentController = parentController;
         applyFilters();
     }
 
@@ -127,11 +143,7 @@ public class UserStoreController implements UserContentController {
 
     @FXML
     private void onOpenCart() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Panier");
-        alert.setHeaderText("Panier utilisateur");
-        alert.setContentText("Le bouton Panier est integre au design. On peut ensuite le brancher a la vraie vue panier.");
-        alert.showAndWait();
+        openCartView();
     }
 
     private void applyFilters() {
@@ -202,6 +214,24 @@ public class UserStoreController implements UserContentController {
         imgArea.setPrefHeight(160);
         imgArea.getStyleClass().add("product-card-img-area");
 
+        ImageView productImage = buildProductImageView(produit);
+        if (productImage != null) {
+            AnchorPane.setTopAnchor(productImage, 0.0);
+            AnchorPane.setRightAnchor(productImage, 0.0);
+            AnchorPane.setBottomAnchor(productImage, 0.0);
+            AnchorPane.setLeftAnchor(productImage, 0.0);
+            imgArea.getChildren().add(productImage);
+        } else {
+            Label placeholder = new Label("Visuel produit");
+            placeholder.getStyleClass().add("product-image-placeholder");
+            placeholder.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            AnchorPane.setTopAnchor(placeholder, 0.0);
+            AnchorPane.setRightAnchor(placeholder, 0.0);
+            AnchorPane.setBottomAnchor(placeholder, 0.0);
+            AnchorPane.setLeftAnchor(placeholder, 0.0);
+            imgArea.getChildren().add(placeholder);
+        }
+
         Label title = new Label(value(produit.getNom(), "Produit gaming"));
         title.getStyleClass().add("card-title");
 
@@ -249,7 +279,7 @@ public class UserStoreController implements UserContentController {
         Button cartButton = new Button("Ajouter");
         cartButton.getStyleClass().add("btn-cart");
         cartButton.setDisable(!inStock);
-        cartButton.setOnAction(event -> showCartMessage(produit));
+        cartButton.setOnAction(event -> addToCartAndOpen(produit));
 
         actionBox.getChildren().addAll(detailsButton, spacer2, cartButton);
         card.getChildren().addAll(imgArea, title, priceStockBox, description, actionBox);
@@ -268,20 +298,98 @@ public class UserStoreController implements UserContentController {
         alert.showAndWait();
     }
 
-    private void showCartMessage(Produit produit) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Panier");
-        alert.setHeaderText("Produit ajoute");
-        alert.setContentText(value(produit.getNom(), "Produit") + " est pret a etre envoye vers le panier.");
-        alert.showAndWait();
+    private void addToCartAndOpen(Produit produit) {
+        if (produit.getStock() <= 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Panier");
+            alert.setHeaderText("Produit indisponible");
+            alert.setContentText("Ce produit est actuellement en rupture de stock.");
+            alert.showAndWait();
+            return;
+        }
+
+        try {
+            OrderSession.getInstance().addProduct(toCartProduct(produit), 1);
+            openCartView();
+        } catch (IllegalArgumentException exception) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Panier");
+            alert.setHeaderText("Ajout impossible");
+            alert.setContentText(exception.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    private edu.PROJETPI.entites.Produit toCartProduct(Produit produit) {
+        return new edu.PROJETPI.entites.Produit(
+                produit.getId(),
+                value(produit.getNom(), "Produit"),
+                getDisplayedPrice(produit),
+                produit.getStock(),
+                value(produit.getDescription(), "Produit de la boutique Esportify.")
+        );
+    }
+
+    private double getDisplayedPrice(Produit produit) {
+        return offerActive ? produit.getPrix() * 0.9 : produit.getPrix();
+    }
+
+    private void openCartView() {
+        if (parentController != null) {
+            parentController.showOrders();
+            return;
+        }
+        AppNavigator.goToUserHome(AppSession.UserHomeSection.ORDERS);
+    }
+
+    private ImageView buildProductImageView(Produit produit) {
+        String imageSource = resolveProductImageSource(produit);
+        if (imageSource == null) {
+            return null;
+        }
+        try {
+            Image image = new Image(imageSource, true);
+            ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(300);
+            imageView.setFitHeight(160);
+            imageView.setPreserveRatio(false);
+            imageView.getStyleClass().add("product-image-view");
+            return imageView;
+        } catch (RuntimeException ignored) {
+            return null;
+        }
+    }
+
+    private String resolveProductImageSource(Produit produit) {
+        String imagePath = produit.getImage();
+        if (imagePath != null) {
+            imagePath = imagePath.trim();
+        }
+        if (imagePath != null && !imagePath.isBlank() && !"placeholder.png".equalsIgnoreCase(imagePath)) {
+            if (imagePath.startsWith("http://") || imagePath.startsWith("https://") || imagePath.startsWith("file:")) {
+                return imagePath;
+            }
+            URL resource = getClass().getResource(imagePath.startsWith("/") ? imagePath : "/" + imagePath);
+            if (resource != null) {
+                return resource.toExternalForm();
+            }
+            File file = new File(imagePath);
+            if (file.exists()) {
+                return file.toURI().toString();
+            }
+        }
+
+        String fallback = FALLBACK_IMAGES[Math.floorMod(produit.getId(), FALLBACK_IMAGES.length)];
+        URL fallbackResource = getClass().getResource(fallback);
+        return fallbackResource == null ? null : fallbackResource.toExternalForm();
     }
 
     private List<Produit> demoProducts() {
         List<Produit> produits = new ArrayList<>();
-        produits.add(new Produit(1, "carte mere hytts", 100, 12, "Une base solide pour config gaming.", "", true, "actif", 0, 0, 0, "", "", ""));
-        produits.add(new Produit(2, "carte mere ttht7410", 140, 9, "Carte mere fiable pour setup competitif.", "", true, "actif", 0, 0, 0, "", "", ""));
-        produits.add(new Produit(3, "pc gamer mpla", 140, 6, "Configuration gaming prete pour la scene e-sport.", "", true, "actif", 0, 0, 0, "", "", ""));
-        produits.add(new Produit(4, "pc gamer", 1405, 3, "Tour premium pour joueurs exigeants.", "", true, "actif", 0, 0, 0, "", "", ""));
+        produits.add(new Produit(1, "carte mere hytts", 100, 12, "Une base solide pour config gaming.", "/images/logo3.png", true, "actif", 0, 0, 0, "", "", ""));
+        produits.add(new Produit(2, "carte mere ttht7410", 140, 9, "Carte mere fiable pour setup competitif.", "/images/logo5.png", true, "actif", 0, 0, 0, "", "", ""));
+        produits.add(new Produit(3, "pc gamer mpla", 140, 6, "Configuration gaming prete pour la scene e-sport.", "/images/esportify-card.jpg", true, "actif", 0, 0, 0, "", "", ""));
+        produits.add(new Produit(4, "pc gamer", 1405, 3, "Tour premium pour joueurs exigeants.", "/images/gaming.jpg", true, "actif", 0, 0, 0, "", "", ""));
         return produits;
     }
 

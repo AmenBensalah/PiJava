@@ -150,7 +150,7 @@ public class GoogleOAuthService {
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                throw new IllegalStateException("Token exchange failed (HTTP " + response.statusCode() + "): " + trim(response.body()));
+                throw new IllegalStateException(buildFriendlyOAuthError(response.statusCode(), response.body(), "Google"));
             }
             String accessToken = jsonString(response.body(), "access_token");
             if (accessToken == null || accessToken.isBlank()) {
@@ -161,7 +161,7 @@ public class GoogleOAuthService {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Token exchange interrupted.", e);
         } catch (Exception e) {
-            throw new IllegalStateException("Unable to exchange authorization code: " + e.getMessage(), e);
+            throw new IllegalStateException(normalizeOAuthMessage("Unable to exchange authorization code: " + e.getMessage()), e);
         }
     }
 
@@ -189,7 +189,7 @@ public class GoogleOAuthService {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Profile fetch interrupted.", e);
         } catch (Exception e) {
-            throw new IllegalStateException("Unable to fetch Google profile: " + e.getMessage(), e);
+            throw new IllegalStateException(normalizeOAuthMessage("Unable to fetch Google profile: " + e.getMessage()), e);
         }
     }
 
@@ -255,6 +255,21 @@ public class GoogleOAuthService {
         }
         String t = body.trim();
         return t.length() > 320 ? t.substring(0, 320) + "..." : t;
+    }
+
+    private static String buildFriendlyOAuthError(int status, String body, String provider) {
+        return normalizeOAuthMessage(provider + " login failed (HTTP " + status + "): " + trim(body));
+    }
+
+    private static String normalizeOAuthMessage(String message) {
+        String normalized = message == null ? "" : message.toLowerCase();
+        if (normalized.contains("identity_provider_mismatch")) {
+            return "Ce compte est deja lie a une autre methode de connexion. Reutilisez le fournisseur deja associe ou connectez-vous avec email/mot de passe.";
+        }
+        if (normalized.contains("redirect_uri_mismatch")) {
+            return "La redirection OAuth Google est invalide. Verifiez PIJAVA_GOOGLE_REDIRECT_URI dans la configuration.";
+        }
+        return message;
     }
 
     private static String settingRequired(String key) {

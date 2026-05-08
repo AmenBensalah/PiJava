@@ -48,6 +48,36 @@
     -fx-border-width: 0 2px 0 0;
     -fx-border-color: rgba(139, 92, 246, 0.3);
 }
+.admin-sidebar-scroll,
+.admin-sidebar-scroll > .viewport {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+.admin-sidebar-scroll > .scroll-bar:vertical {
+    -fx-background-color: rgba(0, 0, 0, 0.10);
+    -fx-pref-width: 10px;
+    -fx-padding: 2px;
+}
+.admin-sidebar-scroll > .scroll-bar:vertical > .track {
+    -fx-background-color: rgba(255, 255, 255, 0.04);
+    -fx-background-radius: 999px;
+}
+.admin-sidebar-scroll > .scroll-bar:vertical > .thumb {
+    -fx-background-color: linear-gradient(to bottom, #00e5ff, #bc13fe);
+    -fx-background-radius: 999px;
+}
+.admin-sidebar-scroll > .scroll-bar > .increment-button,
+.admin-sidebar-scroll > .scroll-bar > .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.admin-sidebar-scroll > .scroll-bar > .increment-arrow,
+.admin-sidebar-scroll > .scroll-bar > .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-shape: "";
+}
 .menu-btn {
     -fx-background-color: transparent;
     -fx-text-fill: #9ca3af;
@@ -71,6 +101,115 @@
 /* MAIN AREA - HYPER VIBRANT NEON BACKGROUND */
 .main-area-bg {
     -fx-background-color: linear-gradient(to bottom, rgba(5, 8, 19, 0.34), rgba(8, 4, 17, 0.44));
+}
+
+.user-feed-shell,
+.user-feed-shell > .viewport {
+    -fx-background-color: transparent;
+}
+
+.user-feed-page {
+    -fx-background-color: transparent;
+}
+
+.user-feed-hero {
+    -fx-padding: 34px 42px;
+}
+
+.user-feed-hero-text {
+    -fx-text-fill: #e2e8f0;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.user-composer-card {
+    -fx-padding: 22px 28px;
+}
+
+.user-feed-textarea {
+    -fx-min-height: 96px;
+}
+
+.user-feed-textarea .content {
+    -fx-background-color: transparent;
+}
+
+.user-feed-tabs {
+    -fx-padding: 4px 0 4px 0;
+}
+
+.user-feed-search {
+    -fx-pref-width: 360px;
+}
+
+.user-feed-main-list {
+    -fx-background-color: linear-gradient(to bottom right, rgba(8, 12, 23, 0.88), rgba(10, 15, 26, 0.82));
+    -fx-background-radius: 18px;
+    -fx-border-color: rgba(0, 229, 255, 0.32);
+    -fx-border-radius: 18px;
+    -fx-border-width: 1.5px;
+    -fx-padding: 22px;
+}
+
+.user-post-card,
+.user-side-card {
+    -fx-background-color: linear-gradient(to bottom right, rgba(9, 15, 29, 0.95), rgba(12, 18, 34, 0.88));
+    -fx-background-radius: 18px;
+    -fx-border-color: rgba(255, 255, 255, 0.08);
+    -fx-border-radius: 18px;
+    -fx-padding: 18px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 18, 0.15, 0, 8);
+}
+
+.user-post-card:hover {
+    -fx-border-color: rgba(0, 229, 255, 0.44);
+    -fx-effect: dropshadow(gaussian, rgba(0, 229, 255, 0.16), 24, 0.18, 0, 8);
+}
+
+.user-post-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+
+.user-post-body {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 14px;
+    -fx-line-spacing: 3px;
+}
+
+.user-feed-muted {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.user-post-badge {
+    -fx-background-radius: 999px;
+    -fx-padding: 7px 12px;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #c7f9ff;
+    -fx-background-color: rgba(0, 229, 255, 0.14);
+    -fx-border-color: rgba(0, 229, 255, 0.32);
+    -fx-border-radius: 999px;
+}
+
+.user-post-badge.media {
+    -fx-text-fill: #f5d0fe;
+    -fx-background-color: rgba(188, 19, 254, 0.18);
+    -fx-border-color: rgba(188, 19, 254, 0.40);
+}
+
+.user-post-badge.event {
+    -fx-text-fill: #fed7aa;
+    -fx-background-color: rgba(249, 115, 22, 0.16);
+    -fx-border-color: rgba(249, 115, 22, 0.36);
+}
+
+.user-post-preview {
+    -fx-background-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 16, 0.18, 0, 6);
 }
 
 /* HEADER BANNER */

@@ -112,7 +112,7 @@ public class UserLayoutController {
     public void showManagerRequestForm() { setCenter("/views/user-manager-request-view.fxml", UserView.MANAGER_REQUEST); }
     public void showTournaments() { setCenter("/views/user-tournaments-view.fxml", UserView.TOURNAMENTS); }
     public void showStore() { setCenter("/views/user-store-view.fxml", UserView.STORE); }
-    public void showOrders() { setCenter("/views/user-orders-view.fxml", UserView.ORDERS); }
+    public void showOrders() { setCenter("/lignecommande-view.fxml", UserView.ORDERS); }
     public void showAccount() { AppNavigator.goToProfile(); }
 
     private void openInitialSection() {

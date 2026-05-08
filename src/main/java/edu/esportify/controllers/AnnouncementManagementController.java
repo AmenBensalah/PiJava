@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
 
-public class AnnouncementManagementController {
+public class AnnouncementManagementController implements AdminContentController {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd MMM yyyy - HH:mm", Locale.FRENCH);
     private static final String PUBLIC_MEDIA_ROOT = "C:/Users/bouzi/Desktop/PI_DEV_ESPORTIFY/public";
@@ -81,6 +81,12 @@ public class AnnouncementManagementController {
 
     public void setOnDataChanged(Runnable onDataChanged) {
         this.onDataChanged = onDataChanged;
+    }
+
+    @Override
+    public void init(AdminLayoutController parentController) {
+        setOnDataChanged(this::refreshAnnouncements);
+        onViewShown();
     }
 
     public void onViewShown() {

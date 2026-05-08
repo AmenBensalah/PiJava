@@ -2,79 +2,133 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+<ScrollPane fx:id="feedScrollPane"
+            xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.esportify.controllers.UserFeedController"
             fitToWidth="true"
-            styleClass="page-scroll">
+            hbarPolicy="NEVER"
+            pannable="true"
+            vbarPolicy="AS_NEEDED"
+            styleClass="page-scroll user-feed-shell">
     <content>
-        <HBox spacing="20" styleClass="content-layer page">
-            <children>
-                <VBox spacing="24" HBox.hgrow="ALWAYS">
-                    <children>
-                        <VBox spacing="12" styleClass="hero-card">
-                            <children>
-                                <Label text="ACTUALITE GAMING" styleClass="hero-title"/>
-                                <Label text="Suis les equipes actives, les annonces de recrutement et les temps forts de la plateforme." styleClass="muted-label"/>
-                                <HBox spacing="12">
-                                    <children>
-                                        <Label fx:id="equipesCountLabel" styleClass="chip-active"/>
-                                        <Label fx:id="recrutementsCountLabel" styleClass="chip-active"/>
-                                        <Label text="Compte user" styleClass="chip-active"/>
-                                    </children>
-                                </HBox>
-                            </children>
-                        </VBox>
-                        <VBox spacing="16" styleClass="coord-card">
-                            <children>
-                                <Label text="Partager une actualite" styleClass="section-title"/>
-                                <TextArea fx:id="postArea" prefRowCount="3" promptText="Ecris un message ou partage une idee..." styleClass="text-area"/>
-                                <HBox spacing="12">
-                                    <children>
-                                        <Label text="Tournois" styleClass="chip-active"/>
-                                        <Label text="Recrutement" styleClass="chip-active"/>
-                                        <Label text="Boutique" styleClass="chip-active"/>
-                                    </children>
-                                </HBox>
-                                <Button onAction="#onPublish" text="Publier" styleClass="classic-button"/>
-                            </children>
-                        </VBox>
-                        <VBox fx:id="postsContainer" spacing="12" HBox.hgrow="ALWAYS"/>
-                    </children>
-                </VBox>
-                <VBox prefWidth="280" spacing="12">
-                    <children>
-                        <Label text="A surveiller" styleClass="section-title"/>
-                        <VBox spacing="10" styleClass="quick-list-card">
-                            <children>
-                                <Label text="#recrutement" styleClass="card-title"/>
-                                <Label text="Equipes ouvertes" styleClass="muted-label"/>
-                            </children>
-                        </VBox>
-                        <VBox spacing="10" styleClass="quick-list-card">
-                            <children>
-                                <Label text="#tournois" styleClass="card-title"/>
-                                <Label text="Calendrier esport" styleClass="muted-label"/>
-                            </children>
-                        </VBox>
-                        <VBox spacing="10" styleClass="quick-list-card">
-                            <children>
-                                <Label text="#gaming" styleClass="card-title"/>
-                                <Label text="Nouveautes materiel" styleClass="muted-label"/>
-                            </children>
-                        </VBox>
-                    </children>
-                </VBox>
-            </children>
+        <VBox spacing="22" styleClass="user-feed-page">
             <padding>
-                <Insets top="24" right="24" bottom="24" left="24"/>
+                <Insets top="38" right="44" bottom="42" left="44"/>
             </padding>
-        </HBox>
+
+            <VBox spacing="18" styleClass="boutique-banner user-feed-hero">
+                <HBox alignment="TOP_LEFT" spacing="18" styleClass="feed-hero-head">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="FIL D'ACTUALITE" styleClass="banner-subtitle"/>
+                        <Label text="COMMUNAUTE E-SPORTIFY" styleClass="banner-title"/>
+                        <Label text="Publiez vos temps forts, suivez les annonces officielles et retrouvez les discussions de la communaute." styleClass="user-feed-hero-text" wrapText="true"/>
+                    </VBox>
+                    <HBox spacing="10" alignment="TOP_RIGHT" styleClass="feed-top-actions">
+                        <Button fx:id="topNotificationsButton" text="Notifications" onAction="#onOpenNotificationsHub" styleClass="feed-action-button"/>
+                        <Button fx:id="topMessengerButton" text="Discussions" onAction="#onOpenMessengerHub" styleClass="feed-action-button"/>
+                    </HBox>
+                </HBox>
+                <HBox spacing="12">
+                    <Label fx:id="postsCountLabel" text="0 posts" styleClass="cat-pill cat-pill-active"/>
+                    <Label fx:id="eventsCountLabel" text="0 events" styleClass="cat-pill"/>
+                    <Label fx:id="mediaCountLabel" text="0 media" styleClass="cat-pill"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Actualiser" onAction="#onRefresh" styleClass="btn-reinitialiser"/>
+                </HBox>
+            </VBox>
+
+            <VBox spacing="14" styleClass="filter-panel user-composer-card">
+                <HBox alignment="CENTER_LEFT" spacing="14">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Partager une actualite" styleClass="filter-title"/>
+                        <Label fx:id="statusLabel" text="Pret a publier" styleClass="user-feed-muted"/>
+                    </VBox>
+                    <Button text="Publier" onAction="#onPublish" styleClass="btn-rechercher"/>
+                </HBox>
+                <TextArea fx:id="contentArea" prefRowCount="3" promptText="Ecris un message, un resultat de match, une annonce d'equipe..." styleClass="filter-input user-feed-textarea"/>
+                <HBox spacing="12">
+                    <TextField fx:id="imageField" promptText="Lien image ou /uploads/..." styleClass="filter-input" HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="videoField" promptText="Lien video" styleClass="filter-input" HBox.hgrow="ALWAYS"/>
+                    <CheckBox fx:id="eventCheckBox" text="Event" onAction="#onToggleEvent" styleClass="chip-check"/>
+                </HBox>
+                <HBox fx:id="eventFieldsRow" spacing="12" visible="false" managed="false">
+                    <TextField fx:id="eventTitleField" promptText="Titre event" styleClass="filter-input" HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="eventLocationField" promptText="Lieu ou lien" styleClass="filter-input" HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="maxParticipantsField" promptText="Places" styleClass="filter-input short-input"/>
+                </HBox>
+            </VBox>
+
+            <HBox spacing="12" styleClass="user-feed-tabs">
+                <Button fx:id="allFilterButton" text="Tout" onAction="#onFilterAll" styleClass="cat-pill cat-pill-active"/>
+                <Button fx:id="mediaFilterButton" text="Media" onAction="#onFilterMedia" styleClass="cat-pill"/>
+                <Button fx:id="eventFilterButton" text="Events" onAction="#onFilterEvents" styleClass="cat-pill"/>
+                <Button fx:id="aiFilterButton" text="IA Recommandations" onAction="#onFilterRecommended" styleClass="cat-pill"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchField" promptText="Rechercher dans le fil..." styleClass="global-search user-feed-search"/>
+            </HBox>
+
+            <HBox spacing="22" alignment="TOP_LEFT">
+                <VBox spacing="16" HBox.hgrow="ALWAYS" styleClass="user-feed-main-list">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Publications recentes" styleClass="filter-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="resultCountLabel" text="0 resultats" styleClass="cat-pill"/>
+                    </HBox>
+                    <VBox fx:id="postsContainer" spacing="16"/>
+                </VBox>
+
+                <VBox spacing="18" prefWidth="350" minWidth="300" maxWidth="390">
+                    <VBox spacing="12" styleClass="filter-panel">
+                        <Label text="Annonces officielles" styleClass="filter-title"/>
+                        <VBox fx:id="announcementsContainer" spacing="12"/>
+                    </VBox>
+                    <VBox spacing="12" styleClass="filter-panel">
+                        <Label text="Tendances" styleClass="filter-title"/>
+                        <VBox fx:id="trendingContainer" spacing="10"/>
+                    </VBox>
+                    <VBox fx:id="notificationsSectionCard" spacing="12" styleClass="filter-panel">
+                        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="integration-header">
+                            <Label text="Notifications" styleClass="filter-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="notificationsCountLabel" text="0 alertes" styleClass="cat-pill"/>
+                        </HBox>
+                        <VBox fx:id="notificationsContainer" spacing="10"/>
+                    </VBox>
+                    <VBox spacing="12" styleClass="filter-panel">
+                        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="integration-header">
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="Streaming" styleClass="filter-title"/>
+                                <Label fx:id="streamingStatusLabel" text="Chargement du hub streaming..." styleClass="user-feed-muted" wrapText="true"/>
+                            </VBox>
+                            <Button text="Refresh" onAction="#onRefreshStreaming" styleClass="btn-reinitialiser"/>
+                        </HBox>
+                        <VBox fx:id="streamingContainer" spacing="10"/>
+                    </VBox>
+                    <VBox fx:id="aiSectionCard" spacing="12" styleClass="filter-panel">
+                        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="integration-header">
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="IA &amp; Taches" styleClass="filter-title"/>
+                                <Label fx:id="aiContextLabel" text="Chargement du contexte equipe..." styleClass="user-feed-muted" wrapText="true"/>
+                            </VBox>
+                        </HBox>
+                        <VBox fx:id="aiContainer" spacing="10"/>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </VBox>
     </content>
 </ScrollPane>

@@ -216,7 +216,14 @@ public class LoginController {
             cursor = cursor.getCause();
         }
         String message = cursor.getMessage();
-        return message == null || message.isBlank() ? "Erreur inconnue." : message;
+        if (message == null || message.isBlank()) {
+            return "Erreur inconnue.";
+        }
+        String normalized = message.toLowerCase();
+        if (normalized.contains("identity_provider_mismatch")) {
+            return "Ce compte est deja lie a une autre methode de connexion. Reutilisez le bon fournisseur ou connectez-vous avec email/mot de passe.";
+        }
+        return message;
     }
 
     private edu.ProjetPI.entities.User toLegacyDashboardUser(User user) {

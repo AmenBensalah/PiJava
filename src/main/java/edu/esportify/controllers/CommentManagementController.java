@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
 
-public class CommentManagementController {
+public class CommentManagementController implements AdminContentController {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd MMM yyyy - HH:mm", Locale.FRENCH);
 
@@ -77,6 +77,11 @@ public class CommentManagementController {
     }
 
     public void setOnDataChanged(Runnable onDataChanged) { this.onDataChanged = onDataChanged; }
+    @Override
+    public void init(AdminLayoutController parentController) {
+        setOnDataChanged(this::refreshComments);
+        onViewShown();
+    }
     public void onViewShown() { refreshComments(); }
     @FXML private void handleRefresh() { refreshComments(); activityStatusLabel.setText("Flux actualise"); }
     @FXML private void handleCreateComment() { openEditor(null); }

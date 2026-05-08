@@ -5,26 +5,34 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <ScrollPane xmlns="http://javafx.com/javafx/17.0.2-ea"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.esportify.controllers.UserTournamentsController"
             fitToWidth="true"
-            styleClass="page-scroll">
+            styleClass="page-scroll"
+            stylesheets="@/css/tournoi-user.css">
     <content>
         <VBox spacing="22" styleClass="content-layer page">
             <children>
                 <VBox spacing="14" styleClass="hero-card">
                     <children>
                         <Label text="DECROCHE TON TOURNOI" styleClass="hero-title"/>
-                        <Label text="Consulte les tournois, filtre rapidement et ouvre les details sans quitter cette interface." styleClass="muted-label"/>
-                        <HBox spacing="14">
+                        <Label text="Choisis un tournoi, prepare ta demande, puis suis son acceptation dans ton calendrier." styleClass="muted-label"/>
+                        <HBox spacing="14" alignment="CENTER_LEFT">
                             <children>
-                                <TextField fx:id="nameField" promptText="Rechercher un tournoi..." HBox.hgrow="ALWAYS" styleClass="field"/>
+                                <TextField fx:id="nameField"
+                                           promptText="Rechercher un tournoi..."
+                                           HBox.hgrow="ALWAYS"
+                                           styleClass="field"/>
                                 <ComboBox fx:id="typeFilterBox" prefWidth="200" styleClass="dark-combo"/>
                                 <Button text="Rafraichir" onAction="#onSearch" styleClass="classic-button"/>
                                 <Button text="Reset filtres" onAction="#onReset" styleClass="manager-outline-button"/>
@@ -33,12 +41,69 @@
                         <Label fx:id="resultsLabel" styleClass="muted-label"/>
                     </children>
                 </VBox>
+
                 <VBox spacing="16" styleClass="coord-card team-search-card">
                     <children>
                         <Label text="Tournois disponibles" styleClass="section-title"/>
                         <FlowPane fx:id="tournamentsContainer" hgap="18" vgap="18" prefWrapLength="1100"/>
                     </children>
                 </VBox>
+
+                <VBox spacing="16" styleClass="coord-card">
+                    <children>
+                        <Label text="Calendrier de mes tournois inscrits" styleClass="section-title"/>
+                        <StackPane fx:id="calendarContainer" minHeight="360.0" prefHeight="420.0"/>
+                    </children>
+                </VBox>
+
+                <HBox spacing="18" alignment="TOP_LEFT">
+                    <children>
+                        <VBox spacing="12" styleClass="coord-card participation-card" prefWidth="380">
+                            <children>
+                                <Label text="Formulaire de participation" styleClass="section-title"/>
+                                <Label text="ID Tournoi" styleClass="field-label"/>
+                                <TextField fx:id="tfPartTournoiId"
+                                           promptText="Selection automatique apres Rejoindre"
+                                           editable="false"
+                                           disable="true"
+                                           styleClass="field-input"/>
+                                <Label text="Description" styleClass="field-label"/>
+                                <TextField fx:id="tfPartDescription"
+                                           promptText="Explique rapidement ta demande"
+                                           styleClass="field-input"/>
+                                <Label text="Niveau" styleClass="field-label"/>
+                                <ComboBox fx:id="cbPartNiveau"
+                                          promptText="Selectionner un niveau"
+                                          styleClass="field-input"/>
+                                <HBox spacing="10">
+                                    <children>
+                                        <Button text="Enregistrer" onAction="#onSaveParticipation" styleClass="primary-btn"/>
+                                        <Button text="Annuler" onAction="#onCancelParticipationEdit" styleClass="secondary-btn"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="12" styleClass="coord-card table-card" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label text="Mes participations" styleClass="section-title"/>
+                                <TableView fx:id="participationTable" VBox.vgrow="ALWAYS" styleClass="participation-table">
+                                    <columns>
+                                        <TableColumn fx:id="colPartId" text="ID" prefWidth="60.0"/>
+                                        <TableColumn fx:id="colPartTournoiId" text="Tournoi ID" prefWidth="90.0"/>
+                                        <TableColumn fx:id="colPartTournoiNom" text="Tournoi" prefWidth="170.0"/>
+                                        <TableColumn fx:id="colPartDescription" text="Description" prefWidth="220.0"/>
+                                        <TableColumn fx:id="colPartNiveau" text="Niveau" prefWidth="110.0"/>
+                                        <TableColumn fx:id="colPartStatut" text="Statut" prefWidth="110.0"/>
+                                        <TableColumn fx:id="colPartActions" text="Actions" prefWidth="150.0"/>
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <Label fx:id="userStatusLabel" text="Pret." styleClass="status-label"/>
             </children>
             <padding>
                 <Insets top="24" right="24" bottom="24" left="24"/>

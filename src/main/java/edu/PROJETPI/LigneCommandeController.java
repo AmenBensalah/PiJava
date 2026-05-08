@@ -4,6 +4,8 @@ import edu.PROJETPI.entites.CartItem;
 import edu.PROJETPI.services.OrderSession;
 import edu.PROJETPI.tools.AlertUtils;
 import edu.PROJETPI.tools.SceneNavigator;
+import edu.esportify.navigation.AppNavigator;
+import edu.esportify.navigation.AppSession;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
@@ -151,7 +153,7 @@ public class LigneCommandeController implements Initializable {
 
     @FXML
     private void continueShopping() {
-        SceneNavigator.switchScene(tableView, "/ajoutProduit.fxml", "E-SPORTIFY : Dashboard");
+        AppNavigator.goToUserHome(AppSession.UserHomeSection.STORE);
     }
 
     @FXML

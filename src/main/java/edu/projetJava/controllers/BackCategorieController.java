@@ -102,7 +102,8 @@ public class BackCategorieController {
 
     @FXML
     void goToNewsFeed(ActionEvent event) {
-        SceneManager.switchScene("/FilActualiteView.fxml", "E-SPORTIFY : Fil d'actualite");
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.FEED);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "E-SPORTIFY : Fil d'actualite");
     }
 
     @FXML

@@ -9,6 +9,7 @@ public class DemandeParticipation {
 
     private int id;
     private int tournoiId;
+    private Integer userId;
     private String description;
     private String niveau;
     private String statut;
@@ -62,6 +63,14 @@ public class DemandeParticipation {
         this.tournoiId = tournoiId;
     }
 
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -91,6 +100,7 @@ public class DemandeParticipation {
         return "DemandeParticipation{" +
                 "id=" + id +
                 ", tournoiId=" + tournoiId +
+                ", userId=" + userId +
                 ", description='" + description + '\'' +
                 ", niveau='" + niveau + '\'' +
                 ", statut='" + statut + '\'' +

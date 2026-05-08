@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -10,7 +12,12 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane styleClass="root-pane" stylesheets="@ajoutProduit.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.projetJava.controllers.BackTeamsDashboardController" prefWidth="1280.0" prefHeight="720.0">
+<BorderPane styleClass="root-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.projetJava.controllers.BackTeamsDashboardController" prefWidth="1280.0" prefHeight="720.0">
+    <stylesheets>
+        <URL value="@ajoutProduit.css"/>
+        <URL value="@styles/app.css"/>
+    </stylesheets>
+
     <top>
         <HBox alignment="CENTER_LEFT" prefHeight="65.0" styleClass="top-navbar" BorderPane.alignment="CENTER">
             <padding><Insets left="20.0" right="30.0" /></padding>
@@ -32,44 +39,53 @@
     </top>
 
     <left>
-        <VBox prefWidth="220.0" styleClass="global-sidebar" BorderPane.alignment="CENTER">
-            <children>
-                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Menu">
-                    <VBox.margin><Insets bottom="10.0" top="10.0" /></VBox.margin>
-                </Button>
-                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToFrontOffice" styleClass="menu-btn" text="Client (Front)" />
-                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToNewsFeed" styleClass="menu-btn" text="Gestion fil d'actualite" />
-                <Button fx:id="teamManagementMenuButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showTeams" styleClass="menu-btn" text="Gestion equipes" />
-                <VBox fx:id="teamSubmenuBox" visible="false" managed="false">
-                    <Button fx:id="teamsListButton" maxWidth="1.7976931348623157E308" text="Liste des equipes" styleClass="sidebar-submenu-btn" onAction="#showTeams" />
-                    <Button fx:id="managerRequestsButton" maxWidth="1.7976931348623157E308" text="Demande manager" styleClass="sidebar-submenu-btn" onAction="#showManagerRequests" />
-                </VBox>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" pannable="true" styleClass="admin-sidebar-scroll" vbarPolicy="AS_NEEDED" BorderPane.alignment="CENTER">
+            <content>
+                <VBox prefWidth="220.0" styleClass="global-sidebar">
+                    <children>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Menu">
+                            <VBox.margin><Insets bottom="10.0" top="10.0" /></VBox.margin>
+                        </Button>
+                        <Button fx:id="newsFeedButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToNewsFeed" styleClass="menu-btn" text="Gestion fil d'actualite" />
+                        <VBox fx:id="feedSubmenuBox" visible="false" managed="false">
+                            <Button fx:id="feedPostsButton" maxWidth="1.7976931348623157E308" text="Gestion des publications" styleClass="sidebar-submenu-btn" onAction="#showFeedPosts" />
+                            <Button fx:id="feedAnnouncementsButton" maxWidth="1.7976931348623157E308" text="Gestion des annonces" styleClass="sidebar-submenu-btn" onAction="#showFeedAnnouncements" />
+                            <Button fx:id="feedCommentsButton" maxWidth="1.7976931348623157E308" text="Gestion des commentaires" styleClass="sidebar-submenu-btn" onAction="#showFeedComments" />
+                            <Button fx:id="feedAiButton" maxWidth="1.7976931348623157E308" text="Centre IA" styleClass="sidebar-submenu-btn" onAction="#showFeedAi" />
+                        </VBox>
+                        <Button fx:id="teamManagementMenuButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showTeams" styleClass="menu-btn" text="Gestion equipes" />
+                        <VBox fx:id="teamSubmenuBox" visible="false" managed="false">
+                            <Button fx:id="teamsListButton" maxWidth="1.7976931348623157E308" text="Liste des equipes" styleClass="sidebar-submenu-btn" onAction="#showTeams" />
+                            <Button fx:id="managerRequestsButton" maxWidth="1.7976931348623157E308" text="Demande manager" styleClass="sidebar-submenu-btn" onAction="#showManagerRequests" />
+                        </VBox>
 
-                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion tournoi" />
-                <VBox>
-                    <Button maxWidth="1.7976931348623157E308" text="Tournois" styleClass="sidebar-submenu-btn" onAction="#goToTournoisAdmin" />
-                    <Button maxWidth="1.7976931348623157E308" text="Participations" styleClass="sidebar-submenu-btn" onAction="#goToParticipationsAdmin" />
-                </VBox>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion tournoi" />
+                        <VBox>
+                            <Button maxWidth="1.7976931348623157E308" text="Tournois" styleClass="sidebar-submenu-btn" onAction="#goToTournoisAdmin" />
+                            <Button maxWidth="1.7976931348623157E308" text="Participations" styleClass="sidebar-submenu-btn" onAction="#goToParticipationsAdmin" />
+                        </VBox>
 
-                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion boutique" />
-                <VBox>
-                    <Button maxWidth="1.7976931348623157E308" text="Centre de mailing" styleClass="sidebar-submenu-btn" onAction="#goToMailing" />
-                    <Button maxWidth="1.7976931348623157E308" text="Produits" styleClass="sidebar-submenu-btn" onAction="#goToBackListProduit" />
-                    <Button maxWidth="1.7976931348623157E308" text="Categories" styleClass="sidebar-submenu-btn" onAction="#goToAdminCategorie" />
-                    <Button maxWidth="1.7976931348623157E308" text="Paiements" styleClass="sidebar-submenu-btn" onAction="#goToPayments" />
-                    <Button maxWidth="1.7976931348623157E308" text="Prediction CA" styleClass="sidebar-submenu-btn" onAction="#goToRevenuePrediction" />
-                    <Button maxWidth="1.7976931348623157E308" text="Commandes" styleClass="sidebar-submenu-btn" onAction="#goToCommandes" />
-                </VBox>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-btn" text="Gestion boutique" />
+                        <VBox>
+                            <Button maxWidth="1.7976931348623157E308" text="Centre de mailing" styleClass="sidebar-submenu-btn" onAction="#goToMailing" />
+                            <Button maxWidth="1.7976931348623157E308" text="Produits" styleClass="sidebar-submenu-btn" onAction="#goToBackListProduit" />
+                            <Button maxWidth="1.7976931348623157E308" text="Categories" styleClass="sidebar-submenu-btn" onAction="#goToAdminCategorie" />
+                            <Button maxWidth="1.7976931348623157E308" text="Paiements" styleClass="sidebar-submenu-btn" onAction="#goToPayments" />
+                            <Button maxWidth="1.7976931348623157E308" text="Prediction CA" styleClass="sidebar-submenu-btn" onAction="#goToRevenuePrediction" />
+                            <Button maxWidth="1.7976931348623157E308" text="Commandes" styleClass="sidebar-submenu-btn" onAction="#goToCommandes" />
+                        </VBox>
 
-                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToGestionComptes" styleClass="menu-btn" text="Gestion comptes" />
-                <Region VBox.vgrow="ALWAYS" />
-                <VBox alignment="CENTER" spacing="10">
-                    <padding><Insets bottom="20.0" left="20" right="20"/></padding>
-                    <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="theme-toggle-btn" text="Theme" />
-                    <Button mnemonicParsing="false" onAction="#handleLogout" prefWidth="1.7976931348623157E308" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="Deconnexion" />
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToGestionComptes" styleClass="menu-btn" text="Gestion comptes" />
+                        <Region VBox.vgrow="ALWAYS" />
+                        <VBox alignment="CENTER" spacing="10">
+                            <padding><Insets bottom="20.0" left="20" right="20"/></padding>
+                            <Button mnemonicParsing="false" prefWidth="1.7976931348623157E308" styleClass="theme-toggle-btn" text="Theme" />
+                            <Button mnemonicParsing="false" onAction="#handleLogout" prefWidth="1.7976931348623157E308" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="Deconnexion" />
+                        </VBox>
+                    </children>
                 </VBox>
-            </children>
-        </VBox>
+            </content>
+        </ScrollPane>
     </left>
 
     <center>

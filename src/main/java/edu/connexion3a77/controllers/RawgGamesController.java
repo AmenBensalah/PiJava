@@ -59,7 +59,8 @@ public class RawgGamesController {
 
     @FXML
     private void goToNewsFeed() {
-        SceneManager.switchScene("/FilActualiteView.fxml", "E-SPORTIFY : Fil d'actualite");
+        AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.FEED);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "E-SPORTIFY : Fil d'actualite");
     }
 
     @FXML

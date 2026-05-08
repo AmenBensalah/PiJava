@@ -337,7 +337,8 @@ public class TournoiAdminController {
 
     @FXML
     private void goToNewsFeed(ActionEvent event) {
-        SceneManager.switchScene("/FilActualiteView.fxml", "E-SPORTIFY : Fil d'actualite");
+        edu.esportify.navigation.AppSession.getInstance().setPendingAdminSection(edu.esportify.navigation.AppSession.AdminSection.FEED);
+        SceneManager.switchScene("/backTeamsDashboard.fxml", "E-SPORTIFY : Fil d'actualite");
     }
 
     @FXML

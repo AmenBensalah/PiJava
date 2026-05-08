@@ -159,7 +159,14 @@ public class LoginController {
             cursor = cursor.getCause();
         }
         String msg = cursor.getMessage();
-        return msg == null || msg.isBlank() ? "Social login failed." : msg;
+        if (msg == null || msg.isBlank()) {
+            return "Social login failed.";
+        }
+        String normalized = msg.toLowerCase();
+        if (normalized.contains("identity_provider_mismatch")) {
+            return "Ce compte est deja lie a une autre methode de connexion. Reutilisez le bon fournisseur ou connectez-vous avec email/mot de passe.";
+        }
+        return msg;
     }
 
     private void completeLogin(User user) {

@@ -341,7 +341,8 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     private void goToNewsFeed() {
-        SceneNavigator.switchScene(commandeTableView, "/FilActualiteView.fxml", "E-SPORTIFY : Fil d'actualite");
+        edu.esportify.navigation.AppSession.getInstance().setPendingAdminSection(edu.esportify.navigation.AppSession.AdminSection.FEED);
+        SceneNavigator.switchScene(commandeTableView, "/backTeamsDashboard.fxml", "E-SPORTIFY : Fil d'actualite");
     }
 
     @FXML

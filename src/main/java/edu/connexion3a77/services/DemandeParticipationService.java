@@ -30,9 +30,11 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
         String requete = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 "id INT PRIMARY KEY AUTO_INCREMENT, " +
                 "tournoi_id INT NOT NULL, " +
+                "user_id INT NULL, " +
                 "description VARCHAR(255) NOT NULL, " +
                 "niveau VARCHAR(100) NOT NULL, " +
-                "statut VARCHAR(30) NOT NULL DEFAULT 'EN_ATTENTE'" +
+                "statut VARCHAR(30) NOT NULL DEFAULT 'EN_ATTENTE', " +
+                "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
                 ")";
 
         try {
@@ -49,6 +51,26 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
             } catch (SQLException ignored) {
                 // Column may already exist, ignore.
             }
+            try {
+                st.executeUpdate("ALTER TABLE " + TABLE_NAME + " ADD COLUMN user_id INT NULL");
+            } catch (SQLException ignored) {
+                // Column may already exist, ignore.
+            }
+            try {
+                st.executeUpdate("ALTER TABLE " + TABLE_NAME + " ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
+            } catch (SQLException ignored) {
+                // Column may already exist, ignore.
+            }
+            try {
+                st.executeUpdate("ALTER TABLE " + TABLE_NAME + " MODIFY COLUMN status VARCHAR(30) NOT NULL DEFAULT 'EN_ATTENTE'");
+            } catch (SQLException ignored) {
+                // Legacy schema may not expose a status column.
+            }
+            try {
+                st.executeUpdate("ALTER TABLE " + TABLE_NAME + " MODIFY COLUMN statut VARCHAR(30) NOT NULL DEFAULT 'EN_ATTENTE'");
+            } catch (SQLException ignored) {
+                // Legacy schema may not expose a statut column.
+            }
         } catch (SQLException e) {
             System.out.println("Erreur creation table participation_request : " + e.getMessage());
         }
@@ -56,6 +78,10 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
 
     @Override
     public void addEntity(DemandeParticipation demandeParticipation) {
+        addEntity(demandeParticipation, null);
+    }
+
+    public void addEntity(DemandeParticipation demandeParticipation, Integer currentUserId) {
         if (!isDemandeValide(demandeParticipation)) {
             return;
         }
@@ -106,7 +132,9 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
                 pst.setString(idx++, normalizedStatut(demandeParticipation.getStatut()));
             }
             if (includeUserId) {
-                Integer userId = resolveDefaultUserId();
+                Integer userId = currentUserId != null && currentUserId > 0
+                        ? currentUserId
+                        : resolveDefaultUserId();
                 if (userId == null) {
                     pst.setNull(idx++, Types.INTEGER);
                 } else {
@@ -135,6 +163,14 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
 
     public void ajouter(DemandeParticipation demandeParticipation) {
         addEntity(demandeParticipation);
+    }
+
+    public void ajouterPourUtilisateur(DemandeParticipation demandeParticipation, Integer userId) {
+        if (columns.containsKey("userId") && (userId == null || userId <= 0)) {
+            System.out.println("Controle saisie: utilisateur non connecte pour cette demande.");
+            return;
+        }
+        addEntity(demandeParticipation, userId);
     }
 
     @Override
@@ -201,6 +237,10 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
                 DemandeParticipation demandeParticipation = new DemandeParticipation();
                 demandeParticipation.setId(rs.getInt(col("id")));
                 demandeParticipation.setTournoiId(rs.getInt(col("tournoiId")));
+                if (columns.containsKey("userId")) {
+                    int userId = rs.getInt(col("userId"));
+                    demandeParticipation.setUserId(rs.wasNull() ? null : userId);
+                }
                 demandeParticipation.setDescription(rs.getString(col("description")));
                 demandeParticipation.setNiveau(rs.getString(col("niveau")));
                 demandeParticipation.setStatut(normalizedStatut(rs.getString(col("statut"))));
@@ -214,6 +254,38 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
 
     public List<DemandeParticipation> afficher() {
         return getData();
+    }
+
+    public List<DemandeParticipation> afficherPourUtilisateur(Integer userId) {
+        if (userId == null || userId <= 0) {
+            return new ArrayList<>();
+        }
+        if (!columns.containsKey("userId")) {
+            return getData();
+        }
+
+        List<DemandeParticipation> data = new ArrayList<>();
+        String requete = "SELECT * FROM " + TABLE_NAME + " WHERE " + col("userId") + " = ? ORDER BY " + col("id") + " DESC";
+
+        try {
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
+            pst.setInt(1, userId);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                DemandeParticipation demandeParticipation = new DemandeParticipation();
+                demandeParticipation.setId(rs.getInt(col("id")));
+                demandeParticipation.setTournoiId(rs.getInt(col("tournoiId")));
+                int mappedUserId = rs.getInt(col("userId"));
+                demandeParticipation.setUserId(rs.wasNull() ? null : mappedUserId);
+                demandeParticipation.setDescription(rs.getString(col("description")));
+                demandeParticipation.setNiveau(rs.getString(col("niveau")));
+                demandeParticipation.setStatut(normalizedStatut(rs.getString(col("statut"))));
+                data.add(demandeParticipation);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return data;
     }
 
     public List<DemandeParticipation> afficherParStatut(String statut) {
@@ -233,6 +305,10 @@ public class DemandeParticipationService implements IService<DemandeParticipatio
                 DemandeParticipation demandeParticipation = new DemandeParticipation();
                 demandeParticipation.setId(rs.getInt(col("id")));
                 demandeParticipation.setTournoiId(rs.getInt(col("tournoiId")));
+                if (columns.containsKey("userId")) {
+                    int userId = rs.getInt(col("userId"));
+                    demandeParticipation.setUserId(rs.wasNull() ? null : userId);
+                }
                 demandeParticipation.setDescription(rs.getString(col("description")));
                 demandeParticipation.setNiveau(rs.getString(col("niveau")));
                 demandeParticipation.setStatut(normalizedStatut(rs.getString(col("statut"))));

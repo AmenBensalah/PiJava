@@ -55,6 +55,7 @@ __pycache__/
 ### Build Artifacts ###
 *.class
 *.log
+.m2/
 
 ### Mac OS ###
 .DS_Store

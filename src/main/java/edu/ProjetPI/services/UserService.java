@@ -19,6 +19,9 @@ public class UserService implements IService<User> {
 
     public UserService() {
         this.connection = MyConnection.getInstance().getCnx();
+        if (connection == null) {
+            return;
+        }
         ensureFaceDescriptorColumnExists();
         ensureLastLoginColumnExists();
         ensureWarningSentAtColumnExists();
@@ -30,7 +33,7 @@ public class UserService implements IService<User> {
         ensureUniqueEmailForCreate(user.getEmail());
         String sql = "INSERT INTO user(nom, pseudo, email, password, role, face_descriptor_json) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = requireConnection().prepareStatement(sql)) {
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getPseudo().trim());
             ps.setString(3, UserValidationRules.normalizeEmail(user.getEmail()));
@@ -53,7 +56,7 @@ public class UserService implements IService<User> {
         String sqlWithoutPassword = "UPDATE user SET nom = ?, pseudo = ?, email = ?, role = ?, face_descriptor_json = ? WHERE id = ?";
         boolean updatePassword = user.getPassword() != null && !user.getPassword().isBlank();
 
-        try (PreparedStatement ps = connection.prepareStatement(updatePassword ? sqlWithPassword : sqlWithoutPassword)) {
+        try (PreparedStatement ps = requireConnection().prepareStatement(updatePassword ? sqlWithPassword : sqlWithoutPassword)) {
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getPseudo().trim());
             ps.setString(3, UserValidationRules.normalizeEmail(user.getEmail()));
@@ -78,7 +81,7 @@ public class UserService implements IService<User> {
     @Override
     public void delete(int id) {
         String sql = "DELETE FROM user WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = requireConnection().prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -91,7 +94,7 @@ public class UserService implements IService<User> {
         List<User> users = new ArrayList<>();
         String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json, last_login, warning_sent_at FROM user ORDER BY id";
 
-        try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        try (Statement st = requireConnection().createStatement(); ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 users.add(mapResultSet(rs));
             }
@@ -112,7 +115,7 @@ public class UserService implements IService<User> {
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json, last_login, warning_sent_at FROM user WHERE email = ?";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = requireConnection().prepareStatement(sql)) {
             ps.setString(1, UserValidationRules.normalizeEmail(email));
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -159,7 +162,7 @@ public class UserService implements IService<User> {
     public void updatePasswordByEmail(String email, String newRawPassword) {
         String normalizedEmail = UserValidationRules.normalizeEmail(email);
         String sql = "UPDATE user SET password = ? WHERE email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = requireConnection().prepareStatement(sql)) {
             ps.setString(1, PasswordUtils.hash(newRawPassword));
             ps.setString(2, normalizedEmail);
             int updated = ps.executeUpdate();
@@ -198,7 +201,7 @@ public class UserService implements IService<User> {
         List<User> users = new ArrayList<>();
         String sql = "SELECT id, nom AS full_name, pseudo, email, password, role, face_descriptor_json, last_login, warning_sent_at "
                 + "FROM user WHERE face_descriptor_json IS NOT NULL AND TRIM(face_descriptor_json) <> ''";
-        try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        try (Statement st = requireConnection().createStatement(); ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 users.add(mapResultSet(rs));
             }
@@ -217,7 +220,7 @@ public class UserService implements IService<User> {
                 return;
             }
             String sql = "ALTER TABLE user ADD COLUMN face_descriptor_json LONGTEXT NULL";
-            try (Statement st = connection.createStatement()) {
+            try (Statement st = requireConnection().createStatement()) {
                 st.executeUpdate(sql);
             } catch (SQLException e) {
                 String msg = e.getMessage() == null ? "" : e.getMessage().toLowerCase();
@@ -231,7 +234,7 @@ public class UserService implements IService<User> {
 
     private void ensureLastLoginColumnExists() {
         String sql = "ALTER TABLE user ADD COLUMN last_login DATETIME NULL";
-        try (Statement st = connection.createStatement()) {
+        try (Statement st = requireConnection().createStatement()) {
             st.executeUpdate(sql);
         } catch (SQLException e) {
             String msg = e.getMessage() == null ? "" : e.getMessage().toLowerCase();
@@ -243,7 +246,7 @@ public class UserService implements IService<User> {
 
     public void updateLastLogin(int userId) {
         String sql = "UPDATE user SET last_login = ? WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = requireConnection().prepareStatement(sql)) {
             ps.setString(1, java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             ps.setInt(2, userId);
             ps.executeUpdate();
@@ -254,7 +257,7 @@ public class UserService implements IService<User> {
 
     private void ensureWarningSentAtColumnExists() {
         String sql = "ALTER TABLE user ADD COLUMN warning_sent_at DATETIME NULL";
-        try (Statement st = connection.createStatement()) {
+        try (Statement st = requireConnection().createStatement()) {
             st.executeUpdate(sql);
         } catch (SQLException e) {
             String msg = e.getMessage() == null ? "" : e.getMessage().toLowerCase();
@@ -266,7 +269,7 @@ public class UserService implements IService<User> {
 
     public void setWarningSentAt(int userId) {
         String sql = "UPDATE user SET warning_sent_at = ? WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = requireConnection().prepareStatement(sql)) {
             ps.setString(1, java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             ps.setInt(2, userId);
             ps.executeUpdate();
@@ -277,7 +280,7 @@ public class UserService implements IService<User> {
 
     public void clearWarningSentAt(int userId) {
         String sql = "UPDATE user SET warning_sent_at = NULL WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = requireConnection().prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -319,7 +322,7 @@ public class UserService implements IService<User> {
 
     private void ensureUniqueEmailForCreate(String email) {
         String sql = "SELECT id FROM user WHERE email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = requireConnection().prepareStatement(sql)) {
             ps.setString(1, UserValidationRules.normalizeEmail(email));
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -333,7 +336,7 @@ public class UserService implements IService<User> {
 
     private void ensureUniqueEmailForUpdate(int userId, String email) {
         String sql = "SELECT id FROM user WHERE email = ? AND id <> ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = requireConnection().prepareStatement(sql)) {
             ps.setString(1, UserValidationRules.normalizeEmail(email));
             ps.setInt(2, userId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -372,5 +375,12 @@ public class UserService implements IService<User> {
             pseudo += "x";
         }
         return pseudo;
+    }
+
+    private Connection requireConnection() {
+        if (connection == null) {
+            throw new IllegalStateException("Connexion a la base indisponible. Verifiez que MySQL est lance puis reessayez.");
+        }
+        return connection;
     }
 }

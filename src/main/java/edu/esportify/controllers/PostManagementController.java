@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
 
-public class PostManagementController {
+public class PostManagementController implements AdminContentController {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd MMM yyyy - HH:mm", Locale.FRENCH);
 
@@ -89,6 +89,12 @@ public class PostManagementController {
 
     public void setOnDataChanged(Runnable onDataChanged) {
         this.onDataChanged = onDataChanged;
+    }
+
+    @Override
+    public void init(AdminLayoutController parentController) {
+        setOnDataChanged(this::refreshPosts);
+        onViewShown();
     }
 
     public void onViewShown() {

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="0"
+      styleClass="admin-modal-wrapper"
+      VBox.vgrow="ALWAYS">
+    
+    <!-- Modal Header -->
+    <HBox alignment="CENTER_LEFT" spacing="16" styleClass="admin-modal-header">
+        <children>
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label fx:id="modalTitleLabel" text="SECTION TITLE" styleClass="admin-modal-title"/>
+                <Label fx:id="modalSubtitleLabel" text="Section description" styleClass="admin-modal-subtitle"/>
+            </VBox>
+            <HBox spacing="12" alignment="CENTER_RIGHT">
+                <Button fx:id="refreshButton" text="RAFRAICHIR" styleClass="admin-modal-action-button"/>
+                <Button fx:id="createButton" text="+ CREER" styleClass="admin-modal-action-button cyan-action"/>
+                <Button fx:id="deleteButton" text="SUPPRIMER" styleClass="admin-modal-action-button danger-action" visible="false"/>
+                <Button fx:id="closeButton" text="FERMER" onAction="#onCloseModal" styleClass="admin-modal-close-button"/>
+            </HBox>
+        </children>
+        <padding>
+            <Insets top="16" right="20" bottom="16" left="20"/>
+        </padding>
+    </HBox>
+    
+    <!-- Content Container -->
+    <StackPane fx:id="modalContentContainer" VBox.vgrow="ALWAYS" styleClass="admin-modal-content-area"/>
+</VBox>

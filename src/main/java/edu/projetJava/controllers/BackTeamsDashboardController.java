@@ -16,8 +16,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
@@ -27,12 +29,22 @@ import java.io.IOException;
 public class BackTeamsDashboardController {
 
     private enum TeamSection {
+        FEED_POSTS,
+        FEED_ANNOUNCEMENTS,
+        FEED_COMMENTS,
+        FEED_AI,
         TEAMS,
         REQUESTS
     }
 
     @FXML private StackPane contentContainer;
+    @FXML private VBox feedSubmenuBox;
     @FXML private VBox teamSubmenuBox;
+    @FXML private Button newsFeedButton;
+    @FXML private Button feedPostsButton;
+    @FXML private Button feedAnnouncementsButton;
+    @FXML private Button feedCommentsButton;
+    @FXML private Button feedAiButton;
     @FXML private Button teamManagementMenuButton;
     @FXML private Button teamsListButton;
     @FXML private Button managerRequestsButton;
@@ -40,19 +52,23 @@ public class BackTeamsDashboardController {
     @FXML
     private void initialize() {
         switch (edu.esportify.navigation.AppSession.getInstance().getPendingAdminSection()) {
+            case FEED -> showFeedPosts();
             case REQUESTS -> showManagerRequests();
             case TEAMS -> showTeams();
             default -> showTeams();
         }
+        edu.esportify.navigation.AppSession.getInstance().setPendingAdminSection(AppSession.AdminSection.OVERVIEW);
     }
 
     @FXML
     public void showTeams() {
+        setFeedSubmenuVisible(false);
         setTeamSubmenuVisible(true);
         loadContent("/views/admin-teams-view.fxml", TeamSection.TEAMS);
     }
 
     public void showTeamEditor(Equipe equipe) {
+        setFeedSubmenuVisible(false);
         setTeamSubmenuVisible(true);
         AppSession.getInstance().setSelectedEquipe(equipe);
         loadContent("/views/admin-team-form-view.fxml", TeamSection.TEAMS);
@@ -60,8 +76,42 @@ public class BackTeamsDashboardController {
 
     @FXML
     void showManagerRequests() {
+        setFeedSubmenuVisible(false);
         setTeamSubmenuVisible(true);
         loadContent("/views/admin-manager-requests-view.fxml", TeamSection.REQUESTS);
+    }
+
+    @FXML
+    void showNewsFeed() {
+        showFeedPosts();
+    }
+
+    @FXML
+    void showFeedPosts() {
+        setFeedSubmenuVisible(true);
+        setTeamSubmenuVisible(false);
+        loadContent("/PostManagementView.fxml", TeamSection.FEED_POSTS);
+    }
+
+    @FXML
+    void showFeedAnnouncements() {
+        setFeedSubmenuVisible(true);
+        setTeamSubmenuVisible(false);
+        loadContent("/AnnouncementManagementView.fxml", TeamSection.FEED_ANNOUNCEMENTS);
+    }
+
+    @FXML
+    void showFeedComments() {
+        setFeedSubmenuVisible(true);
+        setTeamSubmenuVisible(false);
+        loadContent("/CommentManagementView.fxml", TeamSection.FEED_COMMENTS);
+    }
+
+    @FXML
+    void showFeedAi() {
+        setFeedSubmenuVisible(true);
+        setTeamSubmenuVisible(false);
+        loadContent("/views/admin-feed-view.fxml", TeamSection.FEED_AI);
     }
 
     @FXML
@@ -132,12 +182,36 @@ public class BackTeamsDashboardController {
             } else if (controller instanceof AdminContentController adminContentController) {
                 adminContentController.init(null);
             }
-            contentContainer.getChildren().setAll(view);
+            contentContainer.getChildren().setAll(wrapContentIfNeeded(view, section));
             updateActiveButtons(section);
         } catch (Exception e) {
             contentContainer.getChildren().setAll(buildErrorContent(resource, e));
             updateActiveButtons(section);
         }
+    }
+
+    private Node wrapContentIfNeeded(Node view, TeamSection section) {
+        if (!isFeedSection(section)) {
+            return view;
+        }
+        if (view instanceof Region region) {
+            region.setMaxWidth(Double.MAX_VALUE);
+        }
+
+        ScrollPane scrollPane = new ScrollPane(view);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setPannable(true);
+        scrollPane.getStyleClass().addAll("page-scroll", "feed-dashboard-scroll");
+        return scrollPane;
+    }
+
+    private boolean isFeedSection(TeamSection section) {
+        return section == TeamSection.FEED_POSTS
+                || section == TeamSection.FEED_ANNOUNCEMENTS
+                || section == TeamSection.FEED_COMMENTS
+                || section == TeamSection.FEED_AI;
     }
 
     private Node buildErrorContent(String resource, Exception error) {
@@ -170,17 +244,54 @@ public class BackTeamsDashboardController {
     }
 
     private void updateActiveButtons(TeamSection section) {
-        teamsListButton.getStyleClass().remove("sidebar-submenu-active");
-        managerRequestsButton.getStyleClass().remove("sidebar-submenu-active");
-        teamManagementMenuButton.getStyleClass().remove("sidebar-submenu-active");
+        removeActive(newsFeedButton);
+        removeActive(feedPostsButton);
+        removeActive(feedAnnouncementsButton);
+        removeActive(feedCommentsButton);
+        removeActive(feedAiButton);
+        removeActive(teamsListButton);
+        removeActive(managerRequestsButton);
+        removeActive(teamManagementMenuButton);
+        if (section == TeamSection.FEED_POSTS) {
+            addActive(newsFeedButton);
+            addActive(feedPostsButton);
+            return;
+        }
+        if (section == TeamSection.FEED_ANNOUNCEMENTS) {
+            addActive(newsFeedButton);
+            addActive(feedAnnouncementsButton);
+            return;
+        }
+        if (section == TeamSection.FEED_COMMENTS) {
+            addActive(newsFeedButton);
+            addActive(feedCommentsButton);
+            return;
+        }
+        if (section == TeamSection.FEED_AI) {
+            addActive(newsFeedButton);
+            addActive(feedAiButton);
+            return;
+        }
         if (section == TeamSection.TEAMS) {
-            teamManagementMenuButton.getStyleClass().add("sidebar-submenu-active");
-            teamsListButton.getStyleClass().add("sidebar-submenu-active");
+            addActive(teamManagementMenuButton);
+            addActive(teamsListButton);
         } else if (section == TeamSection.REQUESTS) {
-            teamManagementMenuButton.getStyleClass().add("sidebar-submenu-active");
-            managerRequestsButton.getStyleClass().add("sidebar-submenu-active");
+            addActive(teamManagementMenuButton);
+            addActive(managerRequestsButton);
         } else {
-            teamManagementMenuButton.getStyleClass().add("sidebar-submenu-active");
+            addActive(teamManagementMenuButton);
+        }
+    }
+
+    private void removeActive(Button button) {
+        if (button != null) {
+            button.getStyleClass().remove("sidebar-submenu-active");
+        }
+    }
+
+    private void addActive(Button button) {
+        if (button != null && !button.getStyleClass().contains("sidebar-submenu-active")) {
+            button.getStyleClass().add("sidebar-submenu-active");
         }
     }
 
@@ -188,6 +299,13 @@ public class BackTeamsDashboardController {
         if (teamSubmenuBox != null) {
             teamSubmenuBox.setVisible(visible);
             teamSubmenuBox.setManaged(visible);
+        }
+    }
+
+    private void setFeedSubmenuVisible(boolean visible) {
+        if (feedSubmenuBox != null) {
+            feedSubmenuBox.setVisible(visible);
+            feedSubmenuBox.setManaged(visible);
         }
     }
 
@@ -203,7 +321,7 @@ public class BackTeamsDashboardController {
 
     @FXML
     void goToNewsFeed(ActionEvent event) {
-        SceneManager.switchScene("/FilActualiteView.fxml", "E-SPORTIFY : Fil d'actualite");
+        showNewsFeed();
     }
 
     @FXML

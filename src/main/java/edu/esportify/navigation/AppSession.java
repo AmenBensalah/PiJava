@@ -15,6 +15,7 @@ public final class AppSession {
 
     public enum AdminSection {
         OVERVIEW,
+        FEED,
         TEAMS,
         REQUESTS,
         STORE

@@ -26,6 +26,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -162,13 +163,16 @@ public class TournoiUserController {
         int tournoiId = Integer.parseInt(tfPartTournoiId.getText().trim());
         String description = tfPartDescription.getText().trim();
         String niveau = cbPartNiveau.getValue();
+        Integer currentUserId = resolveCurrentUserId();
 
         if (selectedParticipation == null) {
             DemandeParticipation nouvelleDemande = new DemandeParticipation(tournoiId, description, niveau);
-            demandeParticipationService.ajouter(nouvelleDemande);
-            userStatusLabel.setText("Participation envoyee.");
+            nouvelleDemande.setUserId(currentUserId);
+            demandeParticipationService.ajouterPourUtilisateur(nouvelleDemande, currentUserId);
+            userStatusLabel.setText("Demande envoyee pour le tournoi cible.");
         } else {
             DemandeParticipation demandeMaj = new DemandeParticipation(tournoiId, description, niveau);
+            demandeMaj.setUserId(currentUserId);
             demandeParticipationService.updateEntity(selectedParticipation.getId(), demandeMaj);
             userStatusLabel.setText("Participation modifiee.");
         }
@@ -239,7 +243,7 @@ public class TournoiUserController {
     }
 
     private void loadParticipations() {
-        participationList.setAll(demandeParticipationService.afficher());
+        participationList.setAll(demandeParticipationService.afficherPourUtilisateur(resolveCurrentUserId()));
     }
 
     private void renderTournoiCards() {
@@ -288,18 +292,22 @@ public class TournoiUserController {
         joinButton.setDisable(isAlreadyJoined(tournoi.getId()));
 
         voirButton.setOnAction(event -> userStatusLabel.setText("Tournoi selectionne: " + tournoi.getNomTournoi()));
-        joinButton.setOnAction(event -> joinTournoi(tournoi));
+        joinButton.setOnAction(event -> prepareParticipationForTournoi(tournoi));
 
         buttonsRow.getChildren().addAll(voirButton, joinButton);
         card.getChildren().addAll(nom, tags, jeu, date, places, prix, buttonsRow);
         return card;
     }
 
-    private void joinTournoi(Tournoi tournoi) {
+    private void prepareParticipationForTournoi(Tournoi tournoi) {
         if (isAlreadyJoined(tournoi.getId())) {
             userStatusLabel.setText("Tu es deja inscrit a ce tournoi.");
             return;
         }
+
+        selectedParticipation = null;
+        tfPartTournoiId.setText(String.valueOf(tournoi.getId()));
+
         String description = tfPartDescription.getText();
         if (description == null || description.trim().isEmpty()) {
             description = "Demande pour le tournoi " + tournoi.getNomTournoi();
@@ -310,18 +318,8 @@ public class TournoiUserController {
             niveau = "Amateur";
             cbPartNiveau.setValue(niveau);
         }
-
-        DemandeParticipation demande = new DemandeParticipation(
-                tournoi.getId(),
-                description,
-                niveau
-        );
-        demandeParticipationService.ajouter(demande);
-        loadParticipations();
-        renderTournoiCards();
-        refreshCalendarFromParticipations();
-        tfPartTournoiId.setText(String.valueOf(tournoi.getId()));
-        userStatusLabel.setText("Demande de participation envoyee pour " + tournoi.getNomTournoi() + ".");
+        scrollToParticipationForm();
+        userStatusLabel.setText("Tournoi cible selectionne: " + tournoi.getNomTournoi() + ". Termine le formulaire puis clique Enregistrer.");
     }
 
     private void deleteParticipation(DemandeParticipation demande) {
@@ -476,5 +474,18 @@ public class TournoiUserController {
             }
             currentUserRankLabel.setText("Rank: " + rank);
         }
+    }
+
+    private Integer resolveCurrentUserId() {
+        var currentUser = DashboardSession.getCurrentUser();
+        return currentUser == null || currentUser.getId() <= 0 ? null : currentUser.getId();
+    }
+
+    private void scrollToParticipationForm() {
+        if (tfPartTournoiId == null || tfPartTournoiId.getScene() == null) {
+            return;
+        }
+        tfPartTournoiId.requestFocus();
+        tfPartDescription.positionCaret(tfPartDescription.getText() == null ? 0 : tfPartDescription.getText().length());
     }
 }
