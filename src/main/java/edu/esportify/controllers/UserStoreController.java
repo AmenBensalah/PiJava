@@ -58,6 +58,9 @@ public class UserStoreController implements UserContentController {
     @FXML private ComboBox<String> stockFilterBox;
     @FXML private Label resultsLabel;
     @FXML private FlowPane productsContainer;
+    @FXML private VBox chatbotWindow;
+    @FXML private VBox chatMessages;
+    @FXML private TextField chatInput;
 
     @FXML
     private void initialize() {
@@ -128,10 +131,12 @@ public class UserStoreController implements UserContentController {
             AjoutProduitController controller = loader.getController();
             controller.openRecommendationsPage();
 
-            Stage stage = (Stage) productsContainer.getScene().getWindow();
-            Scene scene = new Scene(root);
+            Scene currentScene = productsContainer.getScene();
+            Scene scene = new Scene(root, currentScene.getWidth(), currentScene.getHeight());
+            Stage stage = (Stage) currentScene.getWindow();
             stage.setScene(scene);
             stage.show();
+            applyMainWindowMode(stage);
         } catch (IOException exception) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("IA Recommandations");
@@ -144,6 +149,59 @@ public class UserStoreController implements UserContentController {
     @FXML
     private void onOpenCart() {
         openCartView();
+    }
+
+    @FXML
+    private void toggleChatbot() {
+        chatbotWindow.setVisible(!chatbotWindow.isVisible());
+        if (chatbotWindow.isVisible() && chatMessages.getChildren().isEmpty()) {
+            addMessageBubble(
+                    "IA Assistant",
+                    "Bonjour! Je suis l'assistant E-SPORTIFY. Comment puis-je vous aider aujourd'hui?",
+                    "-fx-background-color: #1a1a2e; -fx-border-color: linear-gradient(to right, #8a2be2, #4a00e0); -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(138,43,226,0.6), 15, 0, 0, 0); -fx-text-fill: white;"
+            );
+        }
+    }
+
+    @FXML
+    private void sendChatMessage() {
+        String text = chatInput.getText() == null ? "" : chatInput.getText().trim();
+        if (text.isEmpty()) {
+            return;
+        }
+
+        addMessageBubble(
+                "Vous",
+                text,
+                "-fx-background-color: #0f3443; -fx-border-color: #00e5ff; -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(0,229,255,0.7), 15, 0, 0, 0); -fx-text-fill: white;"
+        );
+        chatInput.clear();
+
+        Thread aiThread = new Thread(() -> {
+            String response = edu.projetJava.services.GeminiAIService.getResponse(text);
+            javafx.application.Platform.runLater(() -> addMessageBubble(
+                    "IA Assistant",
+                    response,
+                    "-fx-background-color: #1a1a2e; -fx-border-color: linear-gradient(to right, #8a2be2, #4a00e0); -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(138,43,226,0.6), 15, 0, 0, 0); -fx-text-fill: white;"
+            ));
+        });
+        aiThread.setDaemon(true);
+        aiThread.start();
+    }
+
+    private void addMessageBubble(String sender, String text, String style) {
+        VBox bubbleBox = new VBox(5);
+        Label senderLabel = new Label(sender);
+        senderLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #aaa;");
+
+        Label messageLabel = new Label(text);
+        messageLabel.setWrapText(true);
+        messageLabel.setMaxWidth(260);
+        messageLabel.setStyle(style + " -fx-padding: 10; -fx-background-radius: 10;");
+
+        bubbleBox.setAlignment("Vous".equals(sender) ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+        bubbleBox.getChildren().addAll(senderLabel, messageLabel);
+        chatMessages.getChildren().add(bubbleBox);
     }
 
     private void applyFilters() {
@@ -340,6 +398,21 @@ public class UserStoreController implements UserContentController {
             return;
         }
         AppNavigator.goToUserHome(AppSession.UserHomeSection.ORDERS);
+    }
+
+    private void applyMainWindowMode(Stage stage) {
+        if (stage == null) {
+            return;
+        }
+        stage.setResizable(true);
+        stage.setMinWidth(1200);
+        stage.setMinHeight(760);
+        stage.setFullScreen(false);
+        stage.setMaximized(true);
+        javafx.application.Platform.runLater(() -> {
+            stage.setFullScreen(false);
+            stage.setMaximized(true);
+        });
     }
 
     private ImageView buildProductImageView(Produit produit) {

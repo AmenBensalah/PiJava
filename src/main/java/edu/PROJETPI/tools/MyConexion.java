@@ -60,12 +60,12 @@ public class MyConexion {
     public static void initDatabase() {
         createDatabaseIfMissing();
 
-        if ("esportify".equalsIgnoreCase(DB_NAME)) {
-            ensureProductionSchema();
+        ensureProductionSchema();
+
+        if (shouldResetDatabase()) {
+            resetTestDatabase();
             return;
         }
-
-        resetTestDatabase();
     }
 
     private static void createDatabaseIfMissing() {
@@ -87,6 +87,10 @@ public class MyConexion {
         } catch (SQLException e) {
             throw new IllegalStateException("Impossible d'initialiser les tables.", e);
         }
+    }
+
+    private static boolean shouldResetDatabase() {
+        return Boolean.parseBoolean(System.getProperty("projetpi.resetDatabase", "false"));
     }
 
     private static void ensureProductionSchema() {

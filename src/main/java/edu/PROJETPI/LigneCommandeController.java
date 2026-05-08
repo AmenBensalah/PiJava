@@ -60,6 +60,7 @@ public class LigneCommandeController implements Initializable {
         colSousTotal.setCellValueFactory(new PropertyValueFactory<>("sousTotal"));
 
         tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, selected) -> updateQuantityDisplay(selected));
+        loadSavedCartIfNeeded();
         refresh();
     }
 
@@ -90,6 +91,18 @@ public class LigneCommandeController implements Initializable {
             animateTotalPrice();
         }
         lastDisplayedTotal = newTotal;
+    }
+
+    private void loadSavedCartIfNeeded() {
+        if (!OrderSession.getInstance().isCartEmpty()) {
+            return;
+        }
+
+        try {
+            OrderSession.getInstance().reloadCartForCurrentUser();
+        } catch (IllegalStateException e) {
+            AlertUtils.showError(e.getMessage());
+        }
     }
 
     @FXML

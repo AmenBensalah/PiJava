@@ -1,6 +1,7 @@
 package edu.PROJETPI.tools;
 
 import javafx.fxml.FXMLLoader;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,6 +32,8 @@ public final class SceneNavigator {
             stage.setTitle(title);
             stage.setScene(scene);
             stage.setResizable(true);
+            stage.setMinWidth(1200);
+            stage.setMinHeight(760);
             stage.setFullScreen(false);
             if (!maximized) {
                 stage.setX(x);
@@ -39,6 +42,11 @@ public final class SceneNavigator {
                 stage.setHeight(height);
             }
             stage.setMaximized(true);
+            stage.show();
+            Platform.runLater(() -> {
+                stage.setFullScreen(false);
+                stage.setMaximized(true);
+            });
         } catch (IOException e) {
             throw new IllegalStateException("Impossible de charger l'ecran " + resource, e);
         }

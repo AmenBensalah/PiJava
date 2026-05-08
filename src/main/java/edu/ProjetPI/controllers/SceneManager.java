@@ -1,6 +1,7 @@
 package edu.ProjetPI.controllers;
 
 import javafx.fxml.FXMLLoader;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -17,6 +18,7 @@ public class SceneManager {
 
     public static void setStage(Stage stage) {
         primaryStage = stage;
+        applyMainWindowMode();
     }
 
     public static void switchScene(String fxmlPath, String title) {
@@ -30,11 +32,25 @@ public class SceneManager {
             scene.setFill(Color.BLACK);
             primaryStage.setTitle(title);
             primaryStage.setScene(scene);
-            primaryStage.setFullScreen(false);
-            primaryStage.setMaximized(true);
             primaryStage.show();
+            applyMainWindowMode();
         } catch (IOException e) {
             throw new IllegalStateException("Unable to load scene: " + fxmlPath, e);
         }
+    }
+
+    private static void applyMainWindowMode() {
+        if (primaryStage == null) {
+            return;
+        }
+        primaryStage.setResizable(true);
+        primaryStage.setMinWidth(1200);
+        primaryStage.setMinHeight(760);
+        primaryStage.setFullScreen(false);
+        primaryStage.setMaximized(true);
+        Platform.runLater(() -> {
+            primaryStage.setFullScreen(false);
+            primaryStage.setMaximized(true);
+        });
     }
 }

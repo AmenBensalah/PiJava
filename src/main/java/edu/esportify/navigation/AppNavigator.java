@@ -3,6 +3,7 @@ package edu.esportify.navigation;
 import edu.ProjetPI.controllers.SceneManager;
 import java.io.IOException;
 import java.net.URL;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,8 +19,7 @@ public final class AppNavigator {
         primaryStage = stage;
         SceneManager.setStage(stage);
         primaryStage.setTitle("E-sportify Desktop");
-        primaryStage.setMinWidth(1200);
-        primaryStage.setMinHeight(760);
+        applyMainWindowMode();
     }
 
     public static boolean isReady() {
@@ -100,8 +100,24 @@ public final class AppNavigator {
             }
             primaryStage.setScene(scene);
             primaryStage.show();
+            applyMainWindowMode();
         } catch (IOException e) {
             throw new RuntimeException("Impossible d'ouvrir " + resourcePath, e);
         }
+    }
+
+    private static void applyMainWindowMode() {
+        if (primaryStage == null) {
+            return;
+        }
+        primaryStage.setResizable(true);
+        primaryStage.setMinWidth(1200);
+        primaryStage.setMinHeight(760);
+        primaryStage.setFullScreen(false);
+        primaryStage.setMaximized(true);
+        Platform.runLater(() -> {
+            primaryStage.setFullScreen(false);
+            primaryStage.setMaximized(true);
+        });
     }
 }

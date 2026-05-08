@@ -38,6 +38,10 @@ public class MainApp extends Application {
         stage.setFullScreen(false);
         stage.setMaximized(true);
         stage.show();
+        Platform.runLater(() -> {
+            stage.setFullScreen(false);
+            stage.setMaximized(true);
+        });
     }
 
     public static void main(String[] args) {

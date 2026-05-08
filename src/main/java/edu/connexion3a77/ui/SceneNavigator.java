@@ -1,6 +1,7 @@
 package edu.connexion3a77.ui;
 
 import javafx.fxml.FXMLLoader;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -15,6 +16,7 @@ public final class SceneNavigator {
 
     public static void init(Stage stage) {
         primaryStage = stage;
+        applyMainWindowMode();
     }
 
     public static void showAdminView() {
@@ -38,8 +40,24 @@ public final class SceneNavigator {
             primaryStage.setTitle(title);
             primaryStage.setScene(scene);
             primaryStage.show();
+            applyMainWindowMode();
         } catch (IOException e) {
             throw new RuntimeException("Impossible de charger la vue: " + fxmlPath, e);
         }
+    }
+
+    private static void applyMainWindowMode() {
+        if (primaryStage == null) {
+            return;
+        }
+        primaryStage.setResizable(true);
+        primaryStage.setMinWidth(1200);
+        primaryStage.setMinHeight(760);
+        primaryStage.setFullScreen(false);
+        primaryStage.setMaximized(true);
+        Platform.runLater(() -> {
+            primaryStage.setFullScreen(false);
+            primaryStage.setMaximized(true);
+        });
     }
 }
