@@ -19,9 +19,17 @@ public class UserService implements IService<User> {
 
     public UserService() {
         this.connection = MyConnection.getInstance().getCnx();
+<<<<<<< Updated upstream
+=======
+        if (connection == null) {
+            return;
+        }
+        ensureUserTableExists();
+>>>>>>> Stashed changes
         ensureFaceDescriptorColumnExists();
         ensureLastLoginColumnExists();
         ensureWarningSentAtColumnExists();
+        seedDefaultAdmin();
     }
 
     @Override
@@ -227,6 +235,29 @@ public class UserService implements IService<User> {
             }
             schemaChecked = true;
         }
+    }
+
+    private void ensureUserTableExists() {
+        String sql = "CREATE TABLE IF NOT EXISTS user ("
+                + "id INT PRIMARY KEY AUTO_INCREMENT,"
+                + "nom VARCHAR(120) NOT NULL,"
+                + "pseudo VARCHAR(80) NULL,"
+                + "email VARCHAR(190) NOT NULL UNIQUE,"
+                + "password VARCHAR(255) NOT NULL,"
+                + "role VARCHAR(40) NOT NULL"
+                + ")";
+        try (Statement st = requireConnection().createStatement()) {
+            st.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to initialize user table: " + e.getMessage(), e);
+        }
+    }
+
+    private void seedDefaultAdmin() {
+        if (findByEmail("admin@admin.com").isPresent()) {
+            return;
+        }
+        add(new User("Administrator", "admin", "admin@admin.com", "admin123", "ROLE_ADMIN"));
     }
 
     private void ensureLastLoginColumnExists() {

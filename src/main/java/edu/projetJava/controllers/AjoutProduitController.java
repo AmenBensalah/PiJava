@@ -37,6 +37,17 @@ import edu.ProjetPI.controllers.DashboardSession;
 import edu.ProjetPI.controllers.SceneManager;
 
 public class AjoutProduitController implements Initializable {
+<<<<<<< Updated upstream
+=======
+    private static final String[] FALLBACK_IMAGES = {
+            "/images/gaming.jpg",
+            "/images/esportify-card.jpg",
+            "/images/logo3.png",
+            "/images/logo5.png"
+    };
+
+    private boolean openRecommendationsOnReady;
+>>>>>>> Stashed changes
 
     @FXML private FlowPane produitsContainer;
     @FXML private HBox categoryPillsContainer;
@@ -243,19 +254,12 @@ public class AjoutProduitController implements Initializable {
         imgArea.setPrefHeight(130.0);
         imgArea.getStyleClass().add("product-card-img-area");
 
-        if (p.getImage() != null && !p.getImage().isEmpty() && !p.getImage().equals("placeholder.png")) {
-            try {
-                String urlPath = p.getImage();
-                if (!urlPath.startsWith("http") && !urlPath.startsWith("file:")) {
-                    urlPath = new java.io.File(urlPath).toURI().toString();
-                }
-                javafx.scene.image.ImageView imgView = new javafx.scene.image.ImageView(new javafx.scene.image.Image(urlPath));
-                imgView.setFitWidth(220);
-                imgView.setFitHeight(130);
-                imgView.setPreserveRatio(false);
-                imgArea.getChildren().add(imgView);
-            } catch (Exception ex) { }
-        }
+        Node productImage = buildProductImageNode(p);
+        AnchorPane.setTopAnchor(productImage, 0.0);
+        AnchorPane.setRightAnchor(productImage, 0.0);
+        AnchorPane.setBottomAnchor(productImage, 0.0);
+        AnchorPane.setLeftAnchor(productImage, 0.0);
+        imgArea.getChildren().add(productImage);
 
         Label title = new Label(p.getNom());
         title.getStyleClass().add("card-title");
@@ -317,6 +321,54 @@ public class AjoutProduitController implements Initializable {
 
         card.getChildren().addAll(imgArea, title, priceStockBox, actionBox);
         return card;
+    }
+
+    private Node buildProductImageNode(Produit produit) {
+        String imageSource = resolveProductImageSource(produit);
+        if (imageSource != null) {
+            try {
+                javafx.scene.image.ImageView imgView = new javafx.scene.image.ImageView(new javafx.scene.image.Image(imageSource, true));
+                imgView.setFitWidth(220);
+                imgView.setFitHeight(130);
+                imgView.setPreserveRatio(false);
+                return imgView;
+            } catch (RuntimeException ignored) {
+                // Fall through to a stable visual placeholder.
+            }
+        }
+
+        Label placeholder = new Label("Visuel produit");
+        placeholder.getStyleClass().add("product-image-placeholder");
+        placeholder.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        placeholder.setAlignment(Pos.CENTER);
+        return placeholder;
+    }
+
+    private String resolveProductImageSource(Produit produit) {
+        String imagePath = produit.getImage();
+        if (imagePath != null) {
+            imagePath = imagePath.trim();
+        }
+
+        if (imagePath != null && !imagePath.isBlank() && !"placeholder.png".equalsIgnoreCase(imagePath)) {
+            if (imagePath.startsWith("http://") || imagePath.startsWith("https://") || imagePath.startsWith("file:")) {
+                return imagePath;
+            }
+
+            URL resource = getClass().getResource(imagePath.startsWith("/") ? imagePath : "/" + imagePath);
+            if (resource != null) {
+                return resource.toExternalForm();
+            }
+
+            java.io.File file = new java.io.File(imagePath);
+            if (file.exists()) {
+                return file.toURI().toString();
+            }
+        }
+
+        String fallback = FALLBACK_IMAGES[Math.floorMod(produit.getId(), FALLBACK_IMAGES.length)];
+        URL fallbackResource = getClass().getResource(fallback);
+        return fallbackResource == null ? null : fallbackResource.toExternalForm();
     }
 
     private void ajouterAuPanier(Produit p) {

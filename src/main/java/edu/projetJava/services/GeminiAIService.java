@@ -1,18 +1,36 @@
 package edu.projetJava.services;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Properties;
 
 public class GeminiAIService {
+<<<<<<< Updated upstream
     private static final String API_KEY = "AIzaSyDPdkCzEkJZUtYKyWUZhsFQzREGUt9DVxc";
     private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + API_KEY;
 
     public static String getResponse(String userMessage) {
         try {
             URL url = new URL(API_URL);
+=======
+    private static final String DEFAULT_MODEL = "gemini-2.5-flash";
+    private static final String DEFAULT_API_KEY = "";
+    private static final Properties APP_PROPERTIES = loadAppProperties();
+
+    public static String getResponse(String userMessage) {
+        try {
+            String apiKey = resolveApiKey();
+            if (apiKey.isBlank()) {
+                return "Le chatbot IA n'est pas configure. Ajoutez GEMINI_API_KEY ou gemini.api_key.";
+            }
+
+            URL url = new URL("https://generativelanguage.googleapis.com/v1beta/models/" + resolveModel() + ":generateContent?key=" + apiKey);
+>>>>>>> Stashed changes
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
@@ -61,7 +79,7 @@ public class GeminiAIService {
                 in.close();
                 System.err.println("API Error: " + errorResponse.toString());
                 if (errorResponse.toString().contains("leaked") || responseCode == 403) {
-                    return "Clé API invalide ou révoquée (403). Veuillez insérer une nouvelle clé Google Gemini dans GeminiAIService.java.";
+                    return "ClÃ© API invalide ou rÃ©voquÃ©e (403). Veuillez verifier GEMINI_API_KEY ou gemini.api_key.";
                 }
                 return "L'assistant est hors ligne (Code " + responseCode + " - " + conn.getResponseMessage() + ").";
             }
@@ -70,5 +88,26 @@ public class GeminiAIService {
             e.printStackTrace();
             return "Une erreur serveur interne est survenue avec le chatbot.";
         }
+    }
+
+    private static String resolveApiKey() {
+        String configuredKey = APP_PROPERTIES.getProperty("gemini.api_key", DEFAULT_API_KEY);
+        return EnvConfig.get("GEMINI_API_KEY", configuredKey).trim();
+    }
+
+    private static String resolveModel() {
+        return APP_PROPERTIES.getProperty("gemini.model", DEFAULT_MODEL).trim();
+    }
+
+    private static Properties loadAppProperties() {
+        Properties properties = new Properties();
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
+            if (inputStream != null) {
+                properties.load(inputStream);
+            }
+        } catch (IOException ignored) {
+            // Optional config file.
+        }
+        return properties;
     }
 }

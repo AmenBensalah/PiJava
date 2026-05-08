@@ -1,6 +1,9 @@
 package edu.PROJETPI.services;
 
 import edu.PROJETPI.entites.Produit;
+import edu.esportify.entities.User;
+import edu.esportify.entities.UserRole;
+import edu.esportify.navigation.AppSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +18,7 @@ class OrderSessionDatabaseCartTest extends ServiceTestSupport {
 
     @BeforeEach
     void prepareSession() {
+        AppSession.getInstance().logout();
         clearDashboardSession();
         OrderSession.getInstance().resetAfterCheckout();
         setDashboardUser(TEST_USER_ID);
@@ -45,6 +49,25 @@ class OrderSessionDatabaseCartTest extends ServiceTestSupport {
         assertEquals(1, session.getCartItems().get(0).getProduitId());
         assertEquals(2, session.getCartItems().get(0).getQuantite());
         assertEquals("Casque Gaming", session.getCartItems().get(0).getNomProduit());
+        assertEquals(commandeId, session.getDraftCommande().getId());
+    }
+
+    @Test
+    void logoutThenLoginShouldKeepDatabaseCartForSameUser() throws SQLException {
+        OrderSession session = OrderSession.getInstance();
+        session.addProduct(new Produit(1, "Casque Gaming", 249.0, 10, "Test"), 2);
+        int commandeId = assertOneDraftCommandeForUser();
+
+        AppSession.getInstance().logout();
+        assertEquals(0, session.getCartItems().size());
+        assertCartLine(commandeId, 1, 2, 249.0);
+
+        AppSession.getInstance().login(appUser(TEST_USER_ID));
+        session.reloadCartForCurrentUser();
+
+        assertEquals(1, session.getCartItems().size());
+        assertEquals(1, session.getCartItems().get(0).getProduitId());
+        assertEquals(2, session.getCartItems().get(0).getQuantite());
         assertEquals(commandeId, session.getDraftCommande().getId());
     }
 
@@ -103,5 +126,16 @@ class OrderSessionDatabaseCartTest extends ServiceTestSupport {
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Impossible de nettoyer la session utilisateur de test.", e);
         }
+    }
+
+    private static User appUser(int userId) {
+        User user = new User();
+        user.setId(userId);
+        user.setUsername("aysser");
+        user.setFirstName("Aysser Test");
+        user.setEmail("aysser@test.tn");
+        user.setRole(UserRole.USER);
+        user.setActive(true);
+        return user;
     }
 }

@@ -6,6 +6,7 @@ import edu.PROJETPI.entites.Produit;
 import edu.PROJETPI.tools.MyConexion;
 import edu.ProjetPI.controllers.DashboardSession;
 import edu.ProjetPI.entities.User;
+import edu.esportify.navigation.AppSession;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -112,6 +113,12 @@ public class OrderSession {
     }
 
     public void resetAfterCheckout() {
+        cartItems.clear();
+        draftCommande = null;
+        checkoutMode = CheckoutMode.STRIPE;
+    }
+
+    public void discardLocalCart() {
         cartItems.clear();
         draftCommande = null;
         checkoutMode = CheckoutMode.STRIPE;
@@ -371,7 +378,12 @@ public class OrderSession {
 
     private int currentUserId() {
         User currentUser = DashboardSession.getCurrentUser();
-        return currentUser == null ? 0 : currentUser.getId();
+        if (currentUser != null && currentUser.getId() > 0) {
+            return currentUser.getId();
+        }
+
+        edu.esportify.entities.User appUser = AppSession.getInstance().getCurrentUser();
+        return appUser == null ? 0 : appUser.getId();
     }
 
     private void rollbackQuietly() {
