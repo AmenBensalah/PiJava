@@ -156,7 +156,7 @@ PIDEV – 3A | 2025 – 2026
 
 ## 🙏 Acknowledgments
 
-Nous tenons à exprimer nos remerciements à notre encadrante, Madame **Ayari Asma**, pour son accompagnement, ses conseils et son soutien tout au long du développement de ce projet.
+Nous tenons à exprimer nos remerciements à notre encadrant, Mr.Skander Chamakhi, pour son accompagnement, ses conseils et son soutien tout au long du développement de ce projet.
 
 Un grand merci également à **ESPRIT** pour l’environnement pédagogique, les ressources techniques et l’encadrement académique de qualité.
 
